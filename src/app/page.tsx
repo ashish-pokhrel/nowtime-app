@@ -1,14 +1,23 @@
-// pages/Home.tsx
+"use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaHome, FaTaxi } from "react-icons/fa"; // Import Home and Taxi (Transportation) icons
+import { FaHome, FaTaxi, FaUsers, FaPlane } from "react-icons/fa"; // Import icons from react-icons
 import { fetchData } from "../utils/axios"; // Import the fetchData function
 
 type Box = {
   id: number;
   title: string;
-  icon: string;
+  icon: string;  // Icon will be a string like 'fa-home', 'fa-taxi', etc.
   description: string;
+};
+
+// Map icon strings to React icon components
+const iconMap: { [key: string]: React.ReactNode } = {
+  "fa-home": <FaHome />,
+  "fa-taxi": <FaTaxi />,
+  "fa-users": <FaUsers />,
+  "fa-plane": <FaPlane />,
+  // Add more mappings as needed
 };
 
 export default function Home() {
@@ -48,21 +57,23 @@ export default function Home() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {boxes.map((box) => (
           <Link
-            key={box.id}
-            href={`/homepage/groupdetails/${box.id}`} // Updated path
-            className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 hover:shadow-xl transition"
-          >
-            <div className="flex flex-col items-center">
-              {/* Conditionally render icons with dark mode colors */}
-              <div className="text-4xl">{box.icon}</div>
-              <h2 className="text-2xl font-semibold mt-4 text-gray-900 dark:text-white">
-                {box.title}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300 mt-2 text-center">
-                {box.description}
-              </p>
+          key={box.id}
+          href={`/homepage/groupdetails/${box.id}`} // Updated path
+          className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 hover:shadow-xl transition cursor-pointer"
+        >
+          <div className="flex flex-col items-center">
+            {/* Render the icon dynamically based on the icon string */}
+            <div className="text-4xl">
+              {iconMap[box.icon] || <FaHome />} {/* Default to FaHome if icon not found */}
             </div>
-          </Link>
+            <h2 className="text-2xl font-semibold mt-4 text-gray-900 dark:text-white">
+              {box.title}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-2 text-center">
+              {box.description}
+            </p>
+          </div>
+        </Link>
         ))}
       </div>
     </div>

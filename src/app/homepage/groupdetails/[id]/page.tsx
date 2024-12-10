@@ -1,39 +1,90 @@
-import { useRouter } from "next/navigation";
+"use client";
 import Link from "next/link"; // Import Link from next/link
 import { FaArrowLeft, FaThumbsUp, FaComment, FaShare } from "react-icons/fa"; // Import the icons
+import { useState, useEffect } from "react";
+import { fetchDetail } from "@/utils/axios"; // Import your fetchData utility
+import { useParams } from "next/navigation"; // Use useParams hook to get params
 
-// Sample data for demonstration
-const postList = [
-  {
-    user: {
-      name: "John Doe",
-      profileImage: "/sample1.jpg", // Example user profile image
-      timePosted: "2 hours ago",
-    },
-    description: "This is a post about the event! Looking forward to it.",
-    postImages: ["/sample1.jpg", "/free-sample.png"], // Example post images
-    likes: 20,
-    comments: 5,
-    shares: 2,
-  },
-  {
-    user: {
-      name: "Jane Smith",
-      profileImage: "/free-sample.png",
-      timePosted: "4 hours ago",
-    },
-    description: "Had a great day at the park! #fun #nature",
-    postImages: ["/sample1.jpg", "/free-sample.png"], // Example post image
-    likes: 35,
-    comments: 12,
-    shares: 4,
-  },
-];
+export default function DetailsPage() {
+  const params = useParams(); // Get params using useParams hook
+  const { id } = params; // Unwrap params object to get the id
 
-export default function DetailsPage({ params }: { params: { id: string } }) {
-  const { id } = params; // You can use the id for fetching dynamic data based on this
-  // Replace with actual data fetching logic or handle invalid cases
-  const box = { title: `Box ${id}`, description: `Detailed description for box ${id}` }; 
+  const [postList, setPostList] = useState<any[]>([]); // State for storing the list of posts
+  const [box, setBox] = useState<{ title: string; description: string }>({
+    title: `Box ${id}`,
+    description: `Detailed description for box ${id}`,
+  });
+  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  const [error, setError] = useState<string>(""); // Error state
+
+  useEffect(() => {
+    const fetchDataFromAPI = async () => {
+      try {
+        if (!id) {
+          setError("Box ID is missing");
+          setLoading(false);
+          return;
+        }
+        // Fetch posts related to the box
+        const postsData = await fetchDetail(`post`, id);
+        setPostList(postsData);
+
+        setLoading(false); // Stop loading once data is fetched
+      } catch (error) {
+        setError("Failed to fetch data");
+        setLoading(false);
+      }
+    };
+
+    fetchDataFromAPI(); // Fetch data when the component mounts
+  }, [id]); // Re-fetch data if `id` changes
+
+  const handleLike = async (postId: string) => {
+    // Optimistic UI update - increment like count before sending request
+    setPostList(prevPostList =>
+      prevPostList.map(post =>
+        post.id === postId
+          ? { ...post, likes: post.likes + 1 }
+          : post
+      )
+    );
+
+    try {
+      // Send a POST request to the API to update the like count
+      const response = await fetch(`/api/post/like/${postId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to like the post');
+      }
+
+      // Optionally: handle server response (e.g., show a success message)
+      console.log(data.message);
+    } catch (error) {
+      // Revert the like count in case of an error
+      setPostList(prevPostList =>
+        prevPostList.map(post =>
+          post.id === postId
+            ? { ...post, likes: post.likes - 1 }
+            : post
+        )
+      );
+      setError("Failed to update like count.");
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading message until data is fetched
+  }
+
+  if (error) {
+    return <div>{error}</div>; // Show error message if there is an issue
+  }
 
   return (
     <div className="min-h-screen p-8 bg-gray-900 text-white relative">
@@ -68,7 +119,7 @@ export default function DetailsPage({ params }: { params: { id: string } }) {
 
             {/* Post Images */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              {post.postImages.map((image, index) => (
+              {post.postImages.map((image: string, index: number) => (
                 <img
                   key={index}
                   src={image}
@@ -81,7 +132,10 @@ export default function DetailsPage({ params }: { params: { id: string } }) {
             {/* Like, Comment, Share */}
             <div className="flex items-center justify-between text-gray-400">
               <div className="flex gap-6">
-                <button className="flex items-center gap-2 hover:text-blue-500">
+                <button 
+                  className="flex items-center gap-2 hover:text-blue-500" 
+                  onClick={() => handleLike(post.id)}
+                >
                   <FaThumbsUp /> Like {post.likes}
                 </button>
                 <button className="flex items-center gap-2 hover:text-blue-500">
