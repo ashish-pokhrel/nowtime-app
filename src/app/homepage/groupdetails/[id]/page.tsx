@@ -1,89 +1,73 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link"; // Import Link from next/link
 import { FaArrowLeft, FaThumbsUp, FaComment, FaShare } from "react-icons/fa"; // Import the icons
-import { useState, useEffect } from "react";
-import { fetchDetail } from "@/utils/axios"; // Import your fetchData utility
-import { useParams } from "next/navigation"; // Use useParams hook to get params
+import { fetchData } from "../../../../utils/axios"; // Assuming fetchData is in utils/axios.ts
 
-export default function DetailsPage() {
-  const params = useParams(); // Get params using useParams hook
-  const { id } = params; // Unwrap params object to get the id
+// Define types for the post and user data
+type User = {
+  name: string;
+  profileImage: string;
+  timePosted: string;
+};
 
-  const [postList, setPostList] = useState<any[]>([]); // State for storing the list of posts
-  const [box, setBox] = useState<{ title: string; description: string }>({
-    title: `Box ${id}`,
-    description: `Detailed description for box ${id}`,
-  });
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
-  const [error, setError] = useState<string>(""); // Error state
+type Post = {
+  user: User;
+  description: string;
+  postImages: string[];
+  likes: number;
+  comments: number;
+  shares: number;
+};
+
+type Box = {
+  title: string;
+  description: string;
+};
+
+export default function DetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const [box, setBox] = useState<Box>({ title: "", description: "" });
+  const [postList, setPostList] = useState<Post[]>([]); // Define the type of postList as an array of Post
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
 
   useEffect(() => {
-    const fetchDataFromAPI = async () => {
-      try {
-        if (!id) {
-          setError("Box ID is missing");
-          setLoading(false);
-          return;
-        }
-        // Fetch posts related to the box
-        const postsData = await fetchDetail(`post`, id);
-        setPostList(postsData);
+    const fetchParams = async () => {
+      const paramsData = await params;
+      setResolvedParams(paramsData); // Set the resolved params data
+    };
+    fetchParams();
+  }, [params]);
 
-        setLoading(false); // Stop loading once data is fetched
+  // Ensure resolvedParams is available before fetching data
+  useEffect(() => {
+    if (!resolvedParams) return;
+
+    const fetchDetails = async () => {
+      const { id } = resolvedParams;
+      try {
+        // Fetch box details
+        const postList = await fetchData(`/post?groupId=${id}&page=1&pageSize=5`);
+        setPostList(postList.data.posts);
       } catch (error) {
-        setError("Failed to fetch data");
+        setError("Failed to load data");
+        console.error(error);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchDataFromAPI(); // Fetch data when the component mounts
-  }, [id]); // Re-fetch data if `id` changes
-
-  const handleLike = async (postId: string) => {
-    // Optimistic UI update - increment like count before sending request
-    setPostList(prevPostList =>
-      prevPostList.map(post =>
-        post.id === postId
-          ? { ...post, likes: post.likes + 1 }
-          : post
-      )
-    );
-
-    try {
-      // Send a POST request to the API to update the like count
-      const response = await fetch(`/api/post/like/${postId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to like the post');
-      }
-
-      // Optionally: handle server response (e.g., show a success message)
-      console.log(data.message);
-    } catch (error) {
-      // Revert the like count in case of an error
-      setPostList(prevPostList =>
-        prevPostList.map(post =>
-          post.id === postId
-            ? { ...post, likes: post.likes - 1 }
-            : post
-        )
-      );
-      setError("Failed to update like count.");
-    }
-  };
+    fetchDetails();
+  }, [resolvedParams]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading message until data is fetched
+    return <div className="text-center text-white">Loading...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>; // Show error message if there is an issue
+    return <div className="text-center text-white">{error}</div>;
   }
 
   return (
@@ -119,7 +103,7 @@ export default function DetailsPage() {
 
             {/* Post Images */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              {post.postImages.map((image: string, index: number) => (
+              {post.postImages.map((image, index) => (
                 <img
                   key={index}
                   src={image}
@@ -132,10 +116,7 @@ export default function DetailsPage() {
             {/* Like, Comment, Share */}
             <div className="flex items-center justify-between text-gray-400">
               <div className="flex gap-6">
-                <button 
-                  className="flex items-center gap-2 hover:text-blue-500" 
-                  onClick={() => handleLike(post.id)}
-                >
+                <button className="flex items-center gap-2 hover:text-blue-500">
                   <FaThumbsUp /> Like {post.likes}
                 </button>
                 <button className="flex items-center gap-2 hover:text-blue-500">

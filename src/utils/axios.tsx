@@ -13,7 +13,7 @@ const apiClient = axios.create({
 export const fetchData = async (endpoint: string) => {
   try {
     const response = await apiClient.get(endpoint);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error fetching data:", error);
     throw error;
@@ -23,10 +23,10 @@ export const fetchData = async (endpoint: string) => {
 // Function to fetch details from a given endpoint with an ID (GET)
 export const fetchDetail = async (endpoint: string, id: string) => {
   try {
-    const response = await apiClient.get(`${endpoint}/${id}`);
+    const response = await apiClient.get(`${endpoint}${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching detail from ${endpoint}/${id}:`, error);
+    console.error(`Error fetching detail from ${endpoint}?${id}:`, error);
     throw error;
   }
 };
