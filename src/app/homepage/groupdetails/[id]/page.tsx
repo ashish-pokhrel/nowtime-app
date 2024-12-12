@@ -1,10 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link"; // Import Link from next/link
 import { FaArrowLeft, FaThumbsUp, FaComment, FaShare } from "react-icons/fa"; // Import the icons
 import { fetchData } from "../../../../utils/axios"; // Assuming fetchData is in utils/axios.ts
 
-// Define types for the post and user data
 type User = {
   name: string;
   profileImage: string;
@@ -30,8 +29,10 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   const [postList, setPostList] = useState<Post[]>([]); // Define the type of postList as an array of Post
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [hasMore, setHasMore] = useState(true); // Flag to check if more posts are available
+  const [page, setPage] = useState(1); // Current page
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false); // Flag to prevent multiple API requests
 
   useEffect(() => {
     const fetchParams = async () => {
@@ -41,26 +42,53 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     fetchParams();
   }, [params]);
 
-  // Ensure resolvedParams is available before fetching data
-  useEffect(() => {
-    if (!resolvedParams) return;
+  const fetchDetails = useCallback(async () => {
+    if (!resolvedParams || !hasMore || loadingMore) return; // Prevent request if loading or no more posts
 
-    const fetchDetails = async () => {
-      const { id } = resolvedParams;
-      try {
-        // Fetch box details
-        const postList = await fetchData(`/post?groupId=${id}&page=1&pageSize=5`);
-        setPostList(postList.data.posts);
-      } catch (error) {
-        setError("Failed to load data");
-        console.error(error);
-      } finally {
-        setLoading(false);
+    const { id } = resolvedParams;
+    setLoadingMore(true); // Set loading flag to true before starting the API request
+
+    try {
+      // Fetch box details and posts
+      const postData = await fetchData(`/post?groupId=${id}&page=${page}&pageSize=5`);
+      if(postData == undefined)
+      {
+        setHasMore(false);
+      }
+      else
+      {
+        setPostList((prevPosts) => [...prevPosts, ...postData.data.posts]); // Append new posts to the existing list
+        setHasMore(postData.data.posts.length > 0); // Check if there are more posts to load
+      }
+    } catch (error) {
+      setError("Failed to load data");
+      console.error(error);
+    } finally {
+      setLoadingMore(false); // Reset the loading flag after the request is complete
+      setLoading(false);
+    }
+  }, [resolvedParams, page, hasMore, loadingMore]);
+
+  useEffect(() => {
+    fetchDetails();
+  }, [resolvedParams, page]);
+
+  // Scroll event to check if user reached the bottom
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
+      const bottomPosition = document.documentElement.offsetHeight;
+
+      if (scrollPosition >= bottomPosition - 100 && hasMore && !loadingMore) { // 100px before bottom
+        setPage((prevPage) => prevPage + 1); // Load next page when reaching near the bottom
       }
     };
 
-    fetchDetails();
-  }, [resolvedParams]);
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [hasMore, loadingMore]);
 
   if (loading) {
     return <div className="text-center text-white">Loading...</div>;
@@ -130,6 +158,9 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
           </div>
         ))}
       </div>
+
+      {/* Loading Indicator */}
+      {loading && <div className="text-center text-white">Loading more...</div>}
     </div>
   );
 }

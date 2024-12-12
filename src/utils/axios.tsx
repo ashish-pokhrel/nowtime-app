@@ -15,8 +15,6 @@ export const fetchData = async (endpoint: string) => {
     const response = await apiClient.get(endpoint);
     return response;
   } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error;
   }
 };
 

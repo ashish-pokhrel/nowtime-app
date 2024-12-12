@@ -30,8 +30,8 @@ export default function Home() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const data = await fetchData<Box[]>("/group"); // Fetch the data from the API
-        setBoxes(data); // Set the fetched data into state
+        const data = await fetchData("/group"); // Fetch the data from the API
+        setBoxes(data.data); // Set the fetched data into state
         setLoading(false); // Update loading state
       } catch (err: any) {
         console.error(err); // Log error for debugging
