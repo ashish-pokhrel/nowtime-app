@@ -50,3 +50,29 @@ export const putData = async (endpoint: string, id: string, data: any) => {
     throw error;
   }
 };
+
+export const postFileData = async (url: string, data: FormData) => {
+  try {
+    // Ensure the payload is FormData
+    if (!(data instanceof FormData)) {
+      throw new Error("Provided data is not a FormData instance.");
+    }
+
+    // Debug: Log FormData entries
+    for (const [key, value] of data.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
+    // Perform the POST request with the necessary headers (ensure FormData is handled properly)
+    const response = await apiClient.post(url, data, {
+      headers: {
+        "Content-Type": "multipart/form-data", // Explicitly set Content-Type to multipart/form-data
+      },
+    });
+
+    return response.data; // Return the data received from the server
+  } catch (error) {
+    console.error("Error during POST request:", error);
+    throw error; // Rethrow error for handling by caller
+  }
+};
