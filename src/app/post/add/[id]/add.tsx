@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Use Next.js router
-import { fetchData, postFileData } from "../../utils/axios"; // Utility function for API calls
+import { fetchData, postFileData } from "../../../../utils/axios"; // Utility function for API calls
 import Link from "next/link"; // Import Link from next/link
 import { FaArrowLeft } from "react-icons/fa"; 
 
@@ -27,7 +27,6 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
       const parsedParams = JSON.parse(params.value); // Parse the JSON string to an object
       setSelectedBox(Number(parsedParams.id)); // Set the selectedBox using the parsed 'id'
     }
-
     const fetchGroups = async () => {
       try {
         const data = await fetchData("/group"); // Fetch the data from the API
@@ -68,7 +67,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
       const response = await postFileData("https://localhost:7288/api/post", formData);
       
       // Redirect upon success
-      router.push(`/homepage/groupdetails/${selectedBox}`);
+      router.push(`/post/feed/${selectedBox}`);
     } catch (err) {
       console.error(err);
       setError("Failed to add post. Please try again.");

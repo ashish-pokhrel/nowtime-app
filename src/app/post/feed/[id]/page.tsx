@@ -108,7 +108,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       <h1 className="text-4xl font-bold text-center mb-8">{box.title}</h1>
       <p className="text-center text-gray-400 mb-8">{box.description}</p>
       <Link
-        href={`/posts/${resolvedParams?.id}`}
+        href={`/post/add/${resolvedParams?.id}`}
         className="text-blue-500 underline hover:text-blue-400">
         Add a New Post
       </Link>

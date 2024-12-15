@@ -72,7 +72,7 @@ export default function Home() {
           <Link
             key={box.id}
             href={{
-              pathname: `/homepage/groupdetails/${box.id}`
+              pathname: `/post/feed/${box.id}`
             }}
             aria-label={`View details of ${box.title}`}
             className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 hover:shadow-xl transition cursor-pointer"
