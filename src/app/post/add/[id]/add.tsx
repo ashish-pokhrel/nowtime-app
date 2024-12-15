@@ -25,7 +25,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
   useEffect(() => {
     if (params.value) {
       const parsedParams = JSON.parse(params.value); // Parse the JSON string to an object
-      setSelectedBox(Number(parsedParams.id)); // Set the selectedBox using the parsed 'id'
+      setSelectedBox(parsedParams.id); // Set the selectedBox using the parsed 'id'
     }
     const fetchGroups = async () => {
       try {
