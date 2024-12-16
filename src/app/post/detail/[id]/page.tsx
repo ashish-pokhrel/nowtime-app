@@ -1,7 +1,21 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { FaThumbsUp, FaComment, FaShare } from "react-icons/fa";
-import { fetchData } from "../../../utils/axios";
+import { FaThumbsUp, FaComment, FaShare, FaArrowLeft } from "react-icons/fa";
+import { fetchData } from "../../../../utils/axios";
+
+type User = {
+  name: string;
+  profileImage: string;
+  timePosted: string;
+};
+type Post = {
+  user: User;
+  description: string;
+  postImages: string[];
+  likes: number;
+  comments: number;
+  shares: number;
+};
 
 export default function PostDetailsPage() {
   const router = useRouter();
@@ -15,7 +29,7 @@ export default function PostDetailsPage() {
     const fetchPostDetails = async () => {
       try {
         const response = await fetchData(`/post/${postId}`);
-        setPost(response.data);
+        setPost(response?.data);
       } catch (error) {
         console.error("Failed to fetch post details", error);
       } finally {
@@ -42,6 +56,7 @@ export default function PostDetailsPage() {
       >
         <FaArrowLeft />
       </button>
+       <h2 className="font-semibold text-white">{post.user.name}</h2>
       <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">
         <div className="flex items-center mb-4">
           <img
@@ -56,7 +71,7 @@ export default function PostDetailsPage() {
         </div>
         <p className="text-gray-300 mb-4">{post.description}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          {post.postImages.map((image, index) => (
+          {post.postImages.map((image : any, index : any) => (
             <img
               key={index}
               src={image}

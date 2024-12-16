@@ -114,6 +114,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       </Link>
       {/* List of Posts */}
       <div className="space-y-8">
+      <h2 className="font-semibold text-white top-right">{resolvedParams?.id}</h2>
         {postList.map((post, index) => (
           <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">
             {/* User Info */}
