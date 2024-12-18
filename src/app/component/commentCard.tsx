@@ -20,6 +20,7 @@ interface CommentCardProps {
 const CommentCard: React.FC<CommentCardProps> = ({ comment, onReply, isReply = false }) => {
   const [showReplyBox, setShowReplyBox] = useState<boolean>(false);
   const [replyContent, setReplyContent] = useState<string>("");
+  const [showReplies, setShowReplies] = useState<boolean>(false); // State to manage showing replies
 
   const handleReplySubmit = () => {
     if (!replyContent.trim()) return;
@@ -74,12 +75,24 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, onReply, isReply = f
         </div>
       )}
 
-      {/* Display replies recursively */}
+      {/* Show/hide replies button */}
       {comment.replies && comment.replies.length > 0 && (
+        <div className="mt-2">
+          <button
+            onClick={() => setShowReplies(!showReplies)}
+            className="text-blue-400 hover:underline text-sm"
+          >
+            {showReplies ? "Hide Replies" : "Show Replies"}
+          </button>
+        </div>
+      )}
+
+      {/* Display replies only when showReplies is true */}
+      {showReplies && comment.replies && comment.replies.length > 0 && (
         <div className="ml-6 mt-4 space-y-4">
           {comment.replies.map((reply) => (
             <CommentCard
-              key={`${comment.id}-${reply.id}`} 
+              key={`${comment.id}-${reply.id}`} // Ensure unique key
               comment={reply}
               onReply={onReply}
               isReply={true} // Mark this as a reply
