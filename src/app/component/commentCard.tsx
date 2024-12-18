@@ -1,5 +1,4 @@
-// CommentCard.tsx
-import React from "react";
+import React, { useState } from "react";
 
 type Comment = {
   id: string;
@@ -14,9 +13,21 @@ type Comment = {
 
 interface CommentCardProps {
   comment: Comment;
+  onReply: (commentId: string, replyContent: string) => void;
+  isReply?: boolean; // Add a flag to differentiate between main comments and replies
 }
 
-const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
+const CommentCard: React.FC<CommentCardProps> = ({ comment, onReply, isReply = false }) => {
+  const [showReplyBox, setShowReplyBox] = useState<boolean>(false);
+  const [replyContent, setReplyContent] = useState<string>("");
+
+  const handleReplySubmit = () => {
+    if (!replyContent.trim()) return;
+    onReply(comment.id, replyContent.trim());
+    setReplyContent("");
+    setShowReplyBox(false);
+  };
+
   return (
     <div className="bg-gray-800 p-4 rounded-lg mb-4">
       <div className="flex items-center mb-2">
@@ -32,11 +43,47 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
       </div>
       <p className="text-gray-300">{comment.content}</p>
 
+      {!isReply && (
+        <div className="flex items-center mt-2 space-x-4">
+          {/* Reply button only for top-level comments */}
+          <button
+            onClick={() => setShowReplyBox(!showReplyBox)}
+            className="text-blue-400 hover:underline text-sm"
+          >
+            Reply
+          </button>
+        </div>
+      )}
+
+      {/* Reply input box */}
+      {showReplyBox && (
+        <div className="mt-4 ml-4">
+          <textarea
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            placeholder="Write your reply..."
+            className="w-full p-2 bg-gray-700 text-white rounded-lg"
+            rows={2}
+          />
+          <button
+            onClick={handleReplySubmit}
+            className="mt-2 bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-lg"
+          >
+            Reply
+          </button>
+        </div>
+      )}
+
       {/* Display replies recursively */}
       {comment.replies && comment.replies.length > 0 && (
         <div className="ml-6 mt-4 space-y-4">
           {comment.replies.map((reply) => (
-            <CommentCard key={reply.id} comment={reply} />
+            <CommentCard
+              key={`${comment.id}-${reply.id}`} 
+              comment={reply}
+              onReply={onReply}
+              isReply={true} // Mark this as a reply
+            />
           ))}
         </div>
       )}

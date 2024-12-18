@@ -13,7 +13,7 @@ type Post = {
   description: string;
   postImages: string[];
   likes: number;
-  comments: number;
+  totalComments: number;
   shares: number;
 };
 
@@ -61,7 +61,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
           </button>
           <button className="flex items-center gap-2 hover:text-blue-500">
             <Link href={`/post/comment/${groupId}/${post.id}`}>
-              <FaComment /> Comment {post.comments}
+              <FaComment /> Comment {post.totalComments}
             </Link>
           </button>
           <button className="flex items-center gap-2 hover:text-blue-500">

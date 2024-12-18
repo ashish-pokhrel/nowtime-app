@@ -17,7 +17,7 @@ type Post = {
   description: string;
   postImages: string[];
   likes: number;
-  comments: number;
+  totalComments: number;
   shares: number;
 };
 

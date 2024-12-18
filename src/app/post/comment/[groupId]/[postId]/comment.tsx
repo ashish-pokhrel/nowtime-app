@@ -83,6 +83,23 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
     }
   };
 
+  const handleReply = async (commentId: string, replyContent: string) => {
+    try {
+      await postData(`/comment/reply`, {
+        commentId,
+        content: replyContent,
+      });
+  
+      // Refresh comments after adding reply
+      setPage(1);
+      fetchComments(1);
+    } catch (err) {
+      console.error("Error adding reply:", err);
+      setError("Failed to add reply.");
+    }
+  };
+
+
   // Add new comment
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
@@ -134,7 +151,7 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       ) : (
         <div className="space-y-6">
           {comments.map((comment) => (
-            <CommentCard key={comment.id} comment={comment} />
+            <CommentCard key={comment.id} comment={comment} onReply={handleReply} />
           ))}
         </div>
       )}
