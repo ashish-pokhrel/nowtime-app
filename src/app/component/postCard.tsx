@@ -30,6 +30,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   const sliderRef = useRef<any>(null);
 
@@ -143,6 +144,13 @@ export default function PostCard({ post, groupId }: PostCardProps) {
     }
   };
 
+  // Render description with see more functionality
+  const truncatedDescription = post.description.slice(0, 200);
+  const shouldTruncate = post.description.length > 200;
+  const descriptionToShow = isDescriptionExpanded
+    ? post.description
+    : truncatedDescription;
+
   return (
     <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">
       <div className="flex items-center mb-4">
@@ -157,7 +165,25 @@ export default function PostCard({ post, groupId }: PostCardProps) {
         </div>
       </div>
 
-      <p className="text-gray-300 mb-4">{post.description}</p>
+      <p className="text-gray-300 mb-4">
+        {descriptionToShow}
+        {shouldTruncate && !isDescriptionExpanded && (
+          <button
+            onClick={() => setIsDescriptionExpanded(true)}
+            className="text-blue-500 ml-1"
+          >
+            See more...
+          </button>
+        )}
+        {isDescriptionExpanded && shouldTruncate && (
+          <button
+            onClick={() => setIsDescriptionExpanded(false)}
+            className="text-blue-500 ml-1"
+          >
+            See less...
+          </button>
+        )}
+      </p>
 
       <div className="relative mb-4">
         {post.postImages.length > 2 && (
@@ -217,17 +243,21 @@ export default function PostCard({ post, groupId }: PostCardProps) {
             >
               &times;
             </button>
-            <Slider ref={sliderRef} {...sliderSettings}>
-              {post.postImages.map((image, index) => (
-                <div key={index} className="px-4 py-2">
-                  <img
-                    src={image}
-                    alt={`Post image ${index + 1}`}
-                    className="w-full h-auto object-cover rounded-lg border-2 border-gray-600"
-                  />
-                </div>
-              ))}
-            </Slider>
+              <Slider
+                ref={sliderRef}
+                {...sliderSettings}
+                className="custom-slider"  // Add custom class to the slider
+              >
+                {post.postImages.map((image, index) => (
+                  <div key={index} className="px-4 py-2">
+                    <img
+                      src={image}
+                      alt={`Post image ${index + 1}`}
+                      className="w-full h-auto object-cover rounded-lg border-2 border-gray-600"
+                    />
+                  </div>
+                ))}
+              </Slider>
             <button
               onClick={handlePrevClick}
               className="absolute top-1/2 left-4 text-white text-3xl bg-black bg-opacity-50 rounded-full p-2"

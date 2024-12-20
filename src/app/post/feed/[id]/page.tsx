@@ -93,40 +93,58 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   }, [hasMore, loadingMore]);
 
   if (loading) {
-    return <div className="text-center text-white">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-800 text-white">
+        <div className="text-2xl">Loading...</div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center text-white">{error}</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-800 text-white">
+        <div className="text-xl text-red-500">{error}</div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gray-900 text-white relative">
-      {/* Arrow Icon to Go Back to Landing Page */}
+    <div className="min-h-screen bg-gray-900 text-white p-8 relative">
+      {/* Back Button */}
       <Link href="/" className="absolute top-8 left-8 text-xl text-white hover:text-gray-400">
         <FaArrowLeft /> Back
       </Link>
 
-      {/* Box Title */}
-      <h1 className="text-4xl font-bold text-center mb-6">{box.title}</h1>
-      <p className="text-center text-gray-400 mb-12">{box.description}</p>
+      {/* Box Title & Description */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-semibold">{resolvedParams.id}</h1>
+      </div>
 
-      {/* Add New Post Link */}
-      <Link
-        href={`/post/add/${resolvedParams?.id}`}
-        className="text-blue-500 underline hover:text-blue-400 text-center block mt-4">
-        Add a New Post
-      </Link>
-      {/* List of Posts */}
+      {/* Add New Post Button */}
+      <div className="text-center my-8">
+        <Link
+          href={`/post/add/${resolvedParams?.id}`}
+          className="bg-blue-500 hover:bg-blue-400 text-white text-lg font-semibold py-3 px-6 rounded-full shadow-lg">
+          What's on your mind :)
+        </Link>
+      </div>
+
+      {/* Post List */}
       <div className="space-y-8">
-        <h2 className="font-semibold text-white top-right">{resolvedParams?.id}</h2>
         {postList.map((post, index) => (
           <PostCard key={index} post={post} groupId={resolvedParams?.id || ""} />
         ))}
       </div>
 
-      {/* Loading Indicator */}
-      {loading && <div className="text-center text-white">Loading more...</div>}
+      {/* Scroll-to-load Indicator */}
+      {loadingMore && (
+        <div className="text-center text-white py-4">Loading more posts...</div>
+      )}
+
+      {/* Error handling for no posts */}
+      {!hasMore && !loadingMore && (
+        <div className="text-center text-gray-400 py-4">No more posts to load.</div>
+      )}
     </div>
   );
 }

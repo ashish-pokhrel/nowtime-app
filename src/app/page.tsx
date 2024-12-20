@@ -48,7 +48,7 @@ export default function Home() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {[...Array(6)].map((_, index) => (
-          <div key={index} className="bg-gray-200 dark:bg-gray-700 shadow-lg rounded-lg p-6 animate-pulse"></div>
+          <div key={index} className="bg-gray-300 dark:bg-gray-700 shadow-lg rounded-lg p-6 animate-pulse"></div>
         ))}
       </div>
     );
@@ -59,11 +59,10 @@ export default function Home() {
     return <div className="text-center text-red-500">{error}</div>;
   }
 
-  // Render the groups once data has been fetched
   return (
-    <div className="min-h-screen p-8 bg-white dark:bg-gray-900">
+    <div className="min-h-screen p-8 bg-gray-100 dark:bg-gray-900"> {/* Light/Dark Mode Background */}
       <h1 className="text-4xl font-bold text-center mb-8 text-gray-900 dark:text-white">
-        HAVE SOMETHING ? SELECT ANY ONE. 
+       GO FOR IT
       </h1>
 
       {/* Display the list of groups */}
@@ -75,7 +74,10 @@ export default function Home() {
               pathname: `/post/feed/${box.id}`
             }}
             aria-label={`View details of ${box.title}`}
-            className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 hover:shadow-xl transition cursor-pointer"
+            className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 hover:shadow-xl transition cursor-pointer border-t-4"
+            style={{
+              borderTopColor: box.color, // Use the color from the API for the border top
+            }}
           >
             <div className="flex flex-col items-center">
               {/* Render the icon dynamically based on the icon string */}
@@ -85,7 +87,7 @@ export default function Home() {
               <h2 className="text-2xl font-semibold mt-4 text-gray-900 dark:text-white">
                 {box.title}
               </h2>
-              <p className="text-gray-600 dark:text-gray-300 mt-2 text-center">
+              <p className="text-gray-700 dark:text-gray-300 mt-2 text-center">
                 {box.description}
               </p>
             </div>
