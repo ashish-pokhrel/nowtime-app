@@ -106,12 +106,15 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       <Link href="/" className="absolute top-8 left-8 text-xl text-white hover:text-gray-400">
         <FaArrowLeft /> Back
       </Link>
+
       {/* Box Title */}
-      <h1 className="text-4xl font-bold text-center mb-8">{box.title}</h1>
-      <p className="text-center text-gray-400 mb-8">{box.description}</p>
+      <h1 className="text-4xl font-bold text-center mb-6">{box.title}</h1>
+      <p className="text-center text-gray-400 mb-12">{box.description}</p>
+
+      {/* Add New Post Link */}
       <Link
         href={`/post/add/${resolvedParams?.id}`}
-        className="text-blue-500 underline hover:text-blue-400">
+        className="text-blue-500 underline hover:text-blue-400 text-center block mt-4">
         Add a New Post
       </Link>
       {/* List of Posts */}
