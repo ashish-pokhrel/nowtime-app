@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaThumbsUp, FaComment, FaShare } from "react-icons/fa";
 import Link from "next/link";
 import { postData } from "../../utils/axios";
@@ -31,6 +31,8 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
+  const sliderRef = useRef<any>(null); // Create a ref to the slider instance
+
   const handleLikeToggle = async () => {
     try {
       if (isLiked) {
@@ -53,26 +55,11 @@ export default function PostCard({ post, groupId }: PostCardProps) {
     slidesToShow: 1,
     slidesToScroll: 1,
     initialSlide: selectedImageIndex,
-    centerMode: true, // For better view
-    focusOnSelect: true, // Auto-select slide on click
+    centerMode: true,
+    focusOnSelect: true,
+    arrows: false, // Disable default arrows to use custom ones
   };
 
-  const handleImageClick = (index: number) => {
-    setSelectedImageIndex(index);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const imagesToShow = post.postImages.slice(0, 2);
-  const remainingImages = post.postImages.length - 2;
-
-  const handleMoreImagesClick = () => {
-    setSelectedImageIndex(2);
-    setIsModalOpen(true);
-  };
 
   const handleClickOutside = (e: MouseEvent) => {
     const modal = document.getElementById("modal");
@@ -101,6 +88,36 @@ export default function PostCard({ post, groupId }: PostCardProps) {
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, [isModalOpen]);
+
+
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const imagesToShow = post.postImages.slice(0, 2);
+  const remainingImages = post.postImages.length - 2;
+
+  const handleMoreImagesClick = () => {
+    setSelectedImageIndex(2);
+    setIsModalOpen(true);
+  };
+
+  const handlePrevClick = () => {
+    if (sliderRef.current) {
+      sliderRef.current.slickPrev(); // Go to the previous slide
+    }
+  };
+
+  const handleNextClick = () => {
+    if (sliderRef.current) {
+      sliderRef.current.slickNext(); // Go to the next slide
+    }
+  };
 
   return (
     <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">
@@ -173,7 +190,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
             >
               &times; {/* Close button */}
             </button>
-            <Slider {...sliderSettings}>
+            <Slider ref={sliderRef} {...sliderSettings}>
               {post.postImages.map((image, index) => (
                 <div key={index} className="px-4 py-2">
                   <img
@@ -184,6 +201,19 @@ export default function PostCard({ post, groupId }: PostCardProps) {
                 </div>
               ))}
             </Slider>
+            {/* Custom Arrows */}
+            <button
+              onClick={handlePrevClick}
+              className="absolute top-1/2 left-4 text-white text-3xl bg-black bg-opacity-50 rounded-full p-2"
+            >
+              &lt;
+            </button>
+            <button
+              onClick={handleNextClick}
+              className="absolute top-1/2 right-4 text-white text-3xl bg-black bg-opacity-50 rounded-full p-2"
+            >
+              &gt;
+            </button>
           </div>
         </div>
       )}
