@@ -28,16 +28,20 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   const [likes, setLikes] = useState(post.likes);
   const [isLiked, setIsLiked] = useState(false);
 
-  const handleLike = async () => {
-    if (isLiked) return; // Prevent multiple likes
-
+  const handleLikeToggle = async () => {
     try {
-      // Use postData to send the like request
-      await postData(`post/like/${post.id}`); // Pass groupId or other necessary data
-      setLikes(likes + 1);
-      setIsLiked(true);
+      if (isLiked) {
+        // Unlike the post
+        await postData(`post/unlike/${post.id}`, { groupId });
+        setLikes(likes - 1);
+      } else {
+        // Like the post
+        await postData(`post/like/${post.id}`, { groupId });
+        setLikes(likes + 1);
+      }
+      setIsLiked(!isLiked); // Toggle the like state
     } catch (error) {
-      console.error("Error while liking the post:", error);
+      console.error("Error toggling like/unlike:", error);
     }
   };
 
@@ -75,13 +79,12 @@ export default function PostCard({ post, groupId }: PostCardProps) {
       <div className="flex items-center justify-between text-gray-400">
         <div className="flex gap-6">
           <button
-            onClick={handleLike}
-            className={`flex items-center gap-2 hover:text-blue-500 ${
-              isLiked ? "text-blue-500" : ""
+            onClick={handleLikeToggle}
+            className={`flex items-center gap-2 ${
+              isLiked ? "text-blue-500" : "hover:text-blue-500"
             }`}
-            disabled={isLiked}
           >
-            <FaThumbsUp /> Like {likes}
+            <FaThumbsUp /> {isLiked ? "Unlike" : "Like"} {likes}
           </button>
           <button className="flex items-center gap-2 hover:text-blue-500">
             <Link href={`/post/comment/${groupId}/${post.id}`}>
