@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FaArrowLeft, FaThumbsUp, FaComment, FaShare } from "react-icons/fa";
 import { fetchData } from "../../../../utils/axios"; // Assuming fetchData is in utils/axios.ts
 import PostCard from "../../../component/postCard";
+import Layout from "../../../component/navbar";
 
 type User = {
   name: string;
@@ -120,12 +121,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8 relative">
-      {/* Back Button */}
-      <Link href="/" className="absolute top-8 left-8 text-xl text-white hover:text-gray-400">
-        <FaArrowLeft /> Back
-      </Link>
-
+    <Layout>
       {/* Box Title & Description */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-semibold">{resolvedParams?.id}</h1>
@@ -168,6 +164,6 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       {!hasMore && !loadingMore && (
         <div className="text-center text-gray-400 py-4">No more posts to load.</div>
       )}
-    </div>
+   </Layout>
   );
 }

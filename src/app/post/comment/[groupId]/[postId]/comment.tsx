@@ -6,6 +6,7 @@ import Link from "next/link";
 import { fetchData, postData } from "../../../../../utils/axios";
 import PostCard from "../../../../component/postCard";
 import CommentCard from "../../../../component/commentCard";
+import Layout from "../../../../component/navbar";
 
 type User = {
   name: string;
@@ -137,11 +138,7 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <Link href={"/post/feed/"+parsedParams.groupId} className="text-white hover:text-gray-400 flex items-center mb-4">
-        <FaArrowLeft className="mr-2" /> Back
-      </Link>
-
+    <Layout backHref={"/post/feed/"+ parsedParams.groupId}>
       {post && <PostCard post={post} />}
 
       <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">
@@ -192,6 +189,6 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
         </div>
       </div>
     </div>
-  </div>
+  </Layout>
   );
 }
