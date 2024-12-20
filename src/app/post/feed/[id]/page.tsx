@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link"; // Import Link from next/link
-import { FaArrowLeft, FaThumbsUp, FaComment, FaShare } from "react-icons/fa"; // Import the icons
+import Link from "next/link";
+import { FaArrowLeft, FaThumbsUp, FaComment, FaShare } from "react-icons/fa";
 import { fetchData } from "../../../../utils/axios"; // Assuming fetchData is in utils/axios.ts
 import PostCard from "../../../component/postCard";
 
@@ -28,61 +28,59 @@ type Box = {
 
 export default function DetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const [box, setBox] = useState<Box>({ title: "", description: "" });
-  const [postList, setPostList] = useState<Post[]>([]); // Define the type of postList as an array of Post
+  const [postList, setPostList] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true); // Flag to check if more posts are available
-  const [page, setPage] = useState(1); // Current page
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
-  const [loadingMore, setLoadingMore] = useState(false); // Flag to prevent multiple API requests
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
     const fetchParams = async () => {
       const paramsData = await params;
-      setResolvedParams(paramsData); // Set the resolved params data
+      setResolvedParams(paramsData);
     };
     fetchParams();
   }, [params]);
 
   const fetchDetails = useCallback(async () => {
-    if (!resolvedParams || !hasMore || loadingMore) return; // Prevent request if loading or no more posts
+    if (!resolvedParams || !hasMore || loadingMore) return;
 
     const { id } = resolvedParams;
-    setLoadingMore(true); // Set loading flag to true before starting the API request
+    setLoadingMore(true);
 
     try {
-      // Fetch box details and posts
-      const postData = await fetchData(`/post?groupId=${id}&page=${page}&pageSize=5`);
-      if(postData == undefined)
-      {
+      const postData = await fetchData(`/post?groupId=${id}&page=${page}&pageSize=5&searchTerm=${searchTerm}`);
+      if (postData === undefined) {
         setHasMore(false);
-      }
-      else
-      {
-        setPostList((prevPosts) => [...prevPosts, ...postData.data.posts]); // Append new posts to the existing list
-        setHasMore(postData.data.posts.length > 0); // Check if there are more posts to load
+      } else {
+        setPostList((prevPosts) => [...prevPosts, ...postData.data.posts]);
+        setHasMore(postData.data.posts.length > 0);
       }
     } catch (error) {
       setError("Failed to load data");
       console.error(error);
     } finally {
-      setLoadingMore(false); // Reset the loading flag after the request is complete
+      setLoadingMore(false);
       setLoading(false);
     }
-  }, [resolvedParams, page, hasMore, loadingMore]);
+  }, [resolvedParams, page, hasMore, loadingMore, searchTerm]);
 
   useEffect(() => {
-    fetchDetails();
-  }, [resolvedParams, page]);
+    if (resolvedParams) {
+      fetchDetails();
+    }
+  }, [resolvedParams, page, searchTerm]); 
 
-  // Scroll event to check if user reached the bottom
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
       const bottomPosition = document.documentElement.offsetHeight;
 
-      if (scrollPosition >= bottomPosition - 100 && hasMore && !loadingMore) { // 100px before bottom
-        setPage((prevPage) => prevPage + 1); // Load next page when reaching near the bottom
+      if (scrollPosition >= bottomPosition - 100 && hasMore && !loadingMore) {
+        setPage((prevPage) => prevPage + 1);
       }
     };
 
@@ -91,6 +89,19 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       window.removeEventListener("scroll", handleScroll);
     };
   }, [hasMore, loadingMore]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    // Check if the search term contains at least 3 words (non-empty words)
+    const wordCount = value.length;
+
+    // Only trigger fetch if there are at least 3 words in the search term
+    if (wordCount >= 0) {
+      setPage(1); // Reset to first page when search term changes
+      setPostList([]); // Clear previous posts
+    }
+  };
 
   if (loading) {
     return (
@@ -117,18 +128,30 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
       {/* Box Title & Description */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-semibold">{resolvedParams.id}</h1>
+        <h1 className="text-4xl font-semibold">{resolvedParams?.id}</h1>
       </div>
 
       {/* Add New Post Button */}
       <div className="text-center my-8">
         <Link
           href={`/post/add/${resolvedParams?.id}`}
-          className="bg-blue-500 hover:bg-blue-400 text-white text-lg font-semibold py-3 px-6 rounded-full shadow-lg">
+          className="bg-blue-500 hover:bg-blue-400 text-white text-lg font-semibold py-3 px-6 rounded-full shadow-lg"
+        >
           What's on your mind :)
         </Link>
       </div>
 
+      {/* Search Input */}
+      <div className="text-center mb-4">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="bg-gray-800 text-white p-2 rounded-full w-1/2"
+          placeholder="Search posts..."
+        />
+      </div>
+      
       {/* Post List */}
       <div className="space-y-8">
         {postList.map((post, index) => (
