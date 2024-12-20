@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { FaThumbsUp, FaComment, FaShare } from "react-icons/fa";
 import Link from "next/link";
+import { postData } from "../../utils/axios";
 
 type User = {
   name: string;
@@ -23,6 +25,22 @@ type PostCardProps = {
 };
 
 export default function PostCard({ post, groupId }: PostCardProps) {
+  const [likes, setLikes] = useState(post.likes);
+  const [isLiked, setIsLiked] = useState(false);
+
+  const handleLike = async () => {
+    if (isLiked) return; // Prevent multiple likes
+
+    try {
+      // Use postData to send the like request
+      await postData(`post/like/${post.id}`); // Pass groupId or other necessary data
+      setLikes(likes + 1);
+      setIsLiked(true);
+    } catch (error) {
+      console.error("Error while liking the post:", error);
+    }
+  };
+
   return (
     <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">
       {/* User Info */}
@@ -56,8 +74,14 @@ export default function PostCard({ post, groupId }: PostCardProps) {
       {/* Like, Comment, Share */}
       <div className="flex items-center justify-between text-gray-400">
         <div className="flex gap-6">
-          <button className="flex items-center gap-2 hover:text-blue-500">
-            <FaThumbsUp /> Like {post.likes}
+          <button
+            onClick={handleLike}
+            className={`flex items-center gap-2 hover:text-blue-500 ${
+              isLiked ? "text-blue-500" : ""
+            }`}
+            disabled={isLiked}
+          >
+            <FaThumbsUp /> Like {likes}
           </button>
           <button className="flex items-center gap-2 hover:text-blue-500">
             <Link href={`/post/comment/${groupId}/${post.id}`}>

@@ -138,7 +138,7 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
-      <Link href="/" className="text-white hover:text-gray-400 flex items-center mb-4">
+      <Link href={"/post/feed/"+parsedParams.groupId} className="text-white hover:text-gray-400 flex items-center mb-4">
         <FaArrowLeft className="mr-2" /> Back
       </Link>
 
