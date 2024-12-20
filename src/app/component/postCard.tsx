@@ -7,7 +7,6 @@ import Slider from "react-slick";
 type User = {
   name: string;
   profileImage: string;
-  timePosted: string;
 };
 
 type Post = {
@@ -18,6 +17,7 @@ type Post = {
   likes: number;
   totalComments: number;
   shares: number;
+  timePosted: string;
 };
 
 type PostCardProps = {
@@ -153,7 +153,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
         />
         <div>
           <h2 className="font-semibold text-white">{post.user.name}</h2>
-          <p className="text-gray-500 text-sm">{post.user.timePosted}</p>
+          <p className="text-gray-500 text-sm">{post.timePosted}</p>
         </div>
       </div>
 
