@@ -31,7 +31,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const sliderRef = useRef<any>(null); // Create a ref to the slider instance
+  const sliderRef = useRef<any>(null);
 
   const handleLikeToggle = async () => {
     try {
@@ -57,9 +57,8 @@ export default function PostCard({ post, groupId }: PostCardProps) {
     initialSlide: selectedImageIndex,
     centerMode: true,
     focusOnSelect: true,
-    arrows: false, // Disable default arrows to use custom ones
+    arrows: false,
   };
-
 
   const handleClickOutside = (e: MouseEvent) => {
     const modal = document.getElementById("modal");
@@ -89,7 +88,6 @@ export default function PostCard({ post, groupId }: PostCardProps) {
     };
   }, [isModalOpen]);
 
-
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
     setIsModalOpen(true);
@@ -109,13 +107,39 @@ export default function PostCard({ post, groupId }: PostCardProps) {
 
   const handlePrevClick = () => {
     if (sliderRef.current) {
-      sliderRef.current.slickPrev(); // Go to the previous slide
+      sliderRef.current.slickPrev();
     }
   };
 
   const handleNextClick = () => {
     if (sliderRef.current) {
-      sliderRef.current.slickNext(); // Go to the next slide
+      sliderRef.current.slickNext();
+    }
+  };
+
+  // Share functionality
+  const handleShareClick = async () => {
+    const postDetails = {
+      title: `Check out this post by ${post.user.name}`,
+      text: `${post.description} \n\nImages: ${post.postImages.join(", ")}`,
+      url: `${window.location.origin}/post/comment/${groupId}/${post.id}`,  // Fixed concatenation
+    };
+
+    try {
+      if (navigator.share) {
+        // Web Share API (supported by most modern browsers)
+        await navigator.share({
+          title: postDetails.title,
+          text: postDetails.text,
+          url: postDetails.url,
+        });
+      } else {
+        // Fallback: Open a custom share dialog or redirect to a share URL
+        const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postDetails.url)}`;
+        window.open(shareUrl, "_blank");
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
     }
   };
 
@@ -172,7 +196,10 @@ export default function PostCard({ post, groupId }: PostCardProps) {
               <FaComment /> Comment {post.totalComments}
             </Link>
           </button>
-          <button className="flex items-center gap-2 hover:text-blue-500">
+          <button
+            onClick={handleShareClick}
+            className="flex items-center gap-2 hover:text-blue-500"
+          >
             <FaShare /> Share {post.shares}
           </button>
         </div>
@@ -188,7 +215,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
               className="absolute top-2 right-2 text-white text-xl"
               onClick={handleCloseModal}
             >
-              &times; {/* Close button */}
+              &times;
             </button>
             <Slider ref={sliderRef} {...sliderSettings}>
               {post.postImages.map((image, index) => (
@@ -201,7 +228,6 @@ export default function PostCard({ post, groupId }: PostCardProps) {
                 </div>
               ))}
             </Slider>
-            {/* Custom Arrows */}
             <button
               onClick={handlePrevClick}
               className="absolute top-1/2 left-4 text-white text-3xl bg-black bg-opacity-50 rounded-full p-2"
