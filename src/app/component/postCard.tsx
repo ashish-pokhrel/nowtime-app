@@ -4,20 +4,22 @@ import Link from "next/link";
 import { postData } from "../../utils/axios";
 import Slider from "react-slick";
 
-type User = {
-  name: string;
-  profileImage: string;
-};
-
 type Post = {
-  id: number;
-  user: User;
+  id: string;
+  groupId: string;
+  userFullName: string;
+  profileImage: string;
   description: string;
-  postImages: string[];
-  likes: number;
+  images: {
+    id: number;
+    postId: string;
+    imageUrl: string;
+  }[];
+  totalLikes: number;
   totalComments: number;
-  shares: number;
+  totalShares: number;
   timePosted: string;
+  isLikedByCurrentUser: boolean;
 };
 
 type PostCardProps = {
@@ -26,7 +28,7 @@ type PostCardProps = {
 };
 
 export default function PostCard({ post, groupId }: PostCardProps) {
-  const [likes, setLikes] = useState(post.likes);
+  const [likes, setLikes] = useState(post.totalLikes);
   const [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -98,8 +100,8 @@ export default function PostCard({ post, groupId }: PostCardProps) {
     setIsModalOpen(false);
   };
 
-  const imagesToShow = post.postImages.slice(0, 2);
-  const remainingImages = post.postImages.length - 2;
+  const imagesToShow = post.images.slice(0, 2);
+  const remainingImages = post.images.length - 2;
 
   const handleMoreImagesClick = () => {
     setSelectedImageIndex(2);
@@ -121,8 +123,8 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   // Share functionality
   const handleShareClick = async () => {
     const postDetails = {
-      title: `Check out this post by ${post.user.name}`,
-      text: `${post.description} \n\nImages: ${post.postImages.join(", ")}`,
+      title: `Check out this post by ${post.fullName}`,
+      text: `${post.description} \n\nImages: ${post.images.join(", ")}`,
       url: `${window.location.origin}/post/comment/${groupId}/${post.id}`,  // Fixed concatenation
     };
 
@@ -145,8 +147,8 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   };
 
   // Render description with see more functionality
-  const truncatedDescription = post.description.slice(0, 200);
-  const shouldTruncate = post.description.length > 200;
+  const truncatedDescription = post.description?.slice(0, 200);
+  const shouldTruncate = post.description?.length > 200;
   const descriptionToShow = isDescriptionExpanded
     ? post.description
     : truncatedDescription;
@@ -155,12 +157,12 @@ export default function PostCard({ post, groupId }: PostCardProps) {
     <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">
       <div className="flex items-center mb-4">
         <img
-          src={post.user.profileImage}
-          alt={`${post.user.name}'s profile`}
+          src={post?.profileImage}
+          alt={`${post?.userFullName}'s profile`}
           className="w-12 h-12 rounded-full mr-4"
         />
         <div>
-          <h2 className="font-semibold text-white">{post.user.name}</h2>
+          <h2 className="font-semibold text-white">{post?.userFullName}</h2>
           <p className="text-gray-500 text-sm">{post.timePosted}</p>
         </div>
       </div>
@@ -186,7 +188,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
       </p>
 
       <div className="relative mb-4">
-        {post.postImages.length > 2 && (
+        {post.images.length > 2 && (
           <div
             className="absolute top-2 left-2 text-white bg-black bg-opacity-50 px-2 py-1 rounded-lg cursor-pointer"
             onClick={handleMoreImagesClick}
@@ -198,7 +200,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
           {imagesToShow.map((image, index) => (
             <img
               key={index}
-              src={image}
+              src={image.imageUrl}
               alt={`Post image ${index + 1}`}
               className="w-full h-64 object-cover rounded-lg cursor-pointer"
               onClick={() => handleImageClick(index)}
@@ -226,7 +228,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
             onClick={handleShareClick}
             className="flex items-center gap-2 hover:text-blue-500"
           >
-            <FaShare /> Share {post.shares}
+            <FaShare /> Share {post.totalShares}
           </button>
         </div>
       </div>
@@ -248,10 +250,10 @@ export default function PostCard({ post, groupId }: PostCardProps) {
                 {...sliderSettings}
                 className="custom-slider"  // Add custom class to the slider
               >
-                {post.postImages.map((image, index) => (
+                {post.images.map((image, index) => (
                   <div key={index} className="px-4 py-2">
                     <img
-                      src={image}
+                      src={image.imageUrl}
                       alt={`Post image ${index + 1}`}
                       className="w-full h-auto object-cover rounded-lg border-2 border-gray-600"
                     />

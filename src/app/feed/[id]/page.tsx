@@ -2,19 +2,15 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { FaArrowLeft, FaThumbsUp, FaComment, FaShare } from "react-icons/fa";
-import { fetchData } from "../../../../utils/axios"; // Assuming fetchData is in utils/axios.ts
-import PostCard from "../../../component/postCard";
-import Layout from "../../../component/navbar";
-
-type User = {
-  name: string;
-  profileImage: string;
-  timePosted: string;
-};
+import { fetchData } from "../../../utils/axios"; // Assuming fetchData is in utils/axios.ts
+import PostCard from "../../component/postCard";
+import Layout from "../../component/navbar";
 
 type Post = {
   id: number;
-  user: User;
+  userFullName: string;
+  profileImage: string;
+  timePosted: string;
   description: string;
   postImages: string[];
   likes: number;
@@ -58,7 +54,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
         setHasMore(false);
       } else {
         setPostList((prevPosts) => [...prevPosts, ...postData.data.posts]);
-        setHasMore(postData.data.posts.length > 0);
+        setHasMore(postData.data.count > 0);
       }
     } catch (error) {
       setError("Failed to load data");

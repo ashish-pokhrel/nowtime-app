@@ -166,7 +166,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
       images.forEach((file) => formData.append("images", file));
 
       await postFileData("https://localhost:7288/api/post", formData);
-      router.push(`/post/feed/${selectedBox}`);
+      router.push(`/feed/${selectedBox}`);
     } catch (err) {
       setError("Failed to add post. Please try again.");
     } finally {
