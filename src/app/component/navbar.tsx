@@ -1,4 +1,5 @@
 // components/Layout.tsx
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { FaArrowLeft, FaUserCircle } from "react-icons/fa";
 
@@ -8,17 +9,68 @@ interface LayoutProps {
 }
 
 const Layout = ({ children, backHref = "/" }: LayoutProps) => {
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Toggle dropdown visibility
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Sticky Navbar */}
       <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-800 shadow-lg">
+        {/* Back Button */}
         <Link href={backHref} className="text-xl text-white hover:text-gray-400 flex items-center">
           <FaArrowLeft className="mr-2" />
           Back
         </Link>
-        <Link href="/profile" className="text-xl text-white hover:text-gray-400">
-          <FaUserCircle />
-        </Link>
+
+        {/* Profile Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          {/* Profile Icon with Hover Effects */}
+          <button
+            className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none"
+            onClick={toggleDropdown}
+          >
+            <FaUserCircle className="text-2xl" />
+          </button>
+
+          {/* Dropdown Menu */}
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden">
+              <Link
+                href="/profile"
+                className="block px-4 py-2 text-white hover:bg-gray-600"
+              >
+                View Profile
+              </Link>
+              <button
+                className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
+                onClick={() => {
+                  // Logic for logout
+                  console.log("Logout clicked");
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Main Content */}

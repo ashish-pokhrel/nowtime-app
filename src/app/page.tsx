@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaHome, FaTaxi, FaUsers, FaPlane } from "react-icons/fa"; // Import icons from react-icons
+import { FaHome, FaComment, FaUsers, FaPlane, FaShoppingCart, FaBriefcase } from "react-icons/fa"; // Import icons from react-icons
 import { fetchData } from "../utils/axios"; // Import the fetchData function
 
 type Box = {
-  id: number;
+  id: string;
   title: string;
   icon: string;  // Icon will be a string like 'fa-home', 'fa-taxi', etc.
   description: string;
@@ -15,10 +15,11 @@ type Box = {
 // Map icon strings to React icon components
 const iconMap: { [key: string]: React.ReactNode } = {
   "fa-home": <FaHome />,
-  "fa-taxi": <FaTaxi />,
+  "fa-comments": <FaComment />,
   "fa-users": <FaUsers />,
   "fa-plane": <FaPlane />,
-  // Add more mappings as needed
+  "fa-shopping-cart": <FaShoppingCart />,
+  "fa-briefcase": <FaBriefcase/>
 };
 
 export default function Home() {

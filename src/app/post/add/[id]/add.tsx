@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { fetchData, postFileData } from "../../../../utils/axios";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
+import Layout from "../../../component/navbar";
 
 type Box = {
   id: number;
@@ -174,7 +175,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
   };
 
   return (
-    <div className="min-h-screen p-8 bg-gray-900 text-white">
+    <Layout>
       <Link href={`/post/feed/${resolvedParams?.id}`} className="absolute top-8 left-8 text-xl text-white hover:text-gray-400">
         <FaArrowLeft />
       </Link>
@@ -195,6 +196,6 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
         loading={loading}
         error={error}
       />
-    </div>
+    </Layout>
   );
 }
