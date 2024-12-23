@@ -9,7 +9,7 @@ import CommentCard from "../../../../component/commentCard";
 import Layout from "../../../../component/navbar";
 
 type User = {
-  name: string;
+  fullName: string;
   profileImage: string;
   displayDateTime: string;
 };
@@ -20,7 +20,7 @@ type Post = {
   description: string;
   postImages: string[];
   likes: number;
-  comments: number;
+  totalComments: number;
   shares: number;
 };
 
@@ -43,11 +43,11 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
   const [loadingComments, setLoadingComments] = useState<boolean>(true);
   const [addingComment, setAddingComment] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [parsedParams, setParsedParams] =  useState<{ groupId: string; postId: string } | null>(null);
 
-  const COMMENTS_PER_PAGE = 5;
+  const COMMENTS_PER_PAGE = 10;
 
   // Fetch post data (only once on startup)
   const fetchPost = async () => {
@@ -71,11 +71,12 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       setLoadingComments(true);
       const parsedParams = JSON.parse(params.value);
       const commentResponse = await fetchData(
-        `/comment?postId=${parsedParams.postId}&page=${pageNumber}&pageSize=${COMMENTS_PER_PAGE}`
+        `/comment?postId=${parsedParams.postId}&skip=${pageNumber}`
       );
       const newComments = commentResponse?.data?.comments || [];
-      setComments((prev) => (pageNumber === 1 ? newComments : [...prev, ...newComments]));
-      setHasMore(pageNumber*COMMENTS_PER_PAGE < commentResponse?.data?.count);
+      setComments((prev) => (pageNumber === 0 ? newComments : [...prev, ...newComments]));
+      const pgNumber = pageNumber === 0 ? 1 : pageNumber;
+      setHasMore(pgNumber*COMMENTS_PER_PAGE < commentResponse?.data?.count);
     } catch (err) {
       console.error("Error fetching comments:", err);
       setError("Failed to load comments.");
@@ -87,13 +88,14 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
   const handleReply = async (commentId: string, replyContent: string) => {
     try {
       await postData(`/comment/reply`, {
+        postId: parsedParams.postId,
         commentId,
         content: replyContent,
       });
   
       // Refresh comments after adding reply
-      setPage(1);
-      fetchComments(1);
+      setPage(0);
+      fetchComments(0);
     } catch (err) {
       console.error("Error adding reply:", err);
       setError("Failed to add reply.");
@@ -113,8 +115,8 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       });
 
       setNewComment("");
-      setPage(1); // Reset to page 1 to fetch the updated comment list
-      fetchComments(1);
+      setPage(0); // Reset to page 1 to fetch the updated comment list
+      fetchComments(0);
     } catch (err) {
       console.error("Error adding comment:", err);
       setError("Failed to add comment.");
@@ -131,14 +133,14 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
 
   useEffect(() => {
     // Fetch more comments when the page number changes
-    if (page > 1) fetchComments(page);
+    if (page > 0) fetchComments(page);
   }, [page]);
 
   if (loadingPost) return <div className="text-center text-white">Loading post...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   return (
-    <Layout backHref={"/post/feed/"+ parsedParams.groupId}>
+    <Layout backHref={"/feed/"+ parsedParams.groupId}>
       {post && <PostCard post={post} />}
 
       <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">

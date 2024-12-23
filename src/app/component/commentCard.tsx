@@ -3,8 +3,9 @@ import React, { useState } from "react";
 type Comment = {
   id: string;
   user: {
-    name: string;
+    fullName: string;
     profileImage: string;
+    displayDateTime: string;
   };
   content: string;
   timePosted: string;
@@ -39,11 +40,11 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, onReply, isReply = f
       <div className="flex items-center mb-3">
         <img
           src={comment.user.profileImage}
-          alt={comment.user.name}
+          alt={comment.user.fullName}
           className="w-10 h-10 rounded-full mr-3 object-cover"
         />
         <div>
-          <p className="font-bold text-white">{comment.user.name}</p>
+          <p className="font-bold text-white">{comment.user.fullName}</p>
           <p className="text-sm text-gray-500">{comment.timePosted}</p>
         </div>
       </div>
