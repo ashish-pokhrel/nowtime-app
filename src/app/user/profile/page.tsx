@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FaEdit, FaEnvelope, FaEye, FaEyeSlash, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
-import Layout from "../component/navbar";
+import Layout from "../../component/navbar";
 
 const Profile = () => {
   // User data with initial visibility settings
