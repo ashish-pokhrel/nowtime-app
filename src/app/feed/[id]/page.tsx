@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { FaArrowLeft, FaThumbsUp, FaComment, FaShare } from "react-icons/fa";
 import { fetchData } from "../../../utils/axios"; // Assuming fetchData is in utils/axios.ts
 import PostCard from "../../component/postCard";
 import Layout from "../../component/navbar";
@@ -34,7 +33,20 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
 
+  // Debounce search term
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300); // 300ms debounce time
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  // Resolve params
   useEffect(() => {
     const fetchParams = async () => {
       const paramsData = await params;
@@ -43,6 +55,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     fetchParams();
   }, [params]);
 
+  // Fetch post details
   const fetchDetails = useCallback(async () => {
     if (!resolvedParams || !hasMore || loadingMore) return;
 
@@ -50,8 +63,8 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     setLoadingMore(true);
 
     try {
-      const postData = await fetchData(`/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${searchTerm}`);
-      if (postData === undefined) {
+      const postData = await fetchData(`/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}`);
+      if (!postData || !postData.data.posts.length) {
         setHasMore(false);
       } else {
         setPostList((prevPosts) => [...prevPosts, ...postData.data.posts]);
@@ -64,14 +77,15 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       setLoadingMore(false);
       setLoading(false);
     }
-  }, [resolvedParams, page, hasMore, loadingMore, searchTerm]);
+  }, [resolvedParams, page, hasMore, loadingMore, debouncedSearchTerm]);
 
   useEffect(() => {
     if (resolvedParams) {
       fetchDetails();
     }
-  }, [resolvedParams, page, searchTerm]); 
+  }, [resolvedParams, page, debouncedSearchTerm]);
 
+  // Infinite scroll
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
@@ -88,16 +102,14 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     };
   }, [hasMore, loadingMore]);
 
+  // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    debugger
     setSearchTerm(value);
-    // Check if the search term contains at least 3 words (non-empty words)
-    const wordCount = value.length;
-
-    // Only trigger fetch if there are at least 3 words in the search term
-    if (wordCount >= 0) {
-      setPage(0); // Reset to first page when search term changes
+    if(value.length > 2 || value.length == 0)
+    {
+      setHasMore(true);
+      setPage(0); // Reset to first page
       setPostList([]); // Clear previous posts
     }
   };
