@@ -211,28 +211,44 @@ export default function PostCard({ post, groupId }: PostCardProps) {
 
       <div className="flex items-center justify-between text-gray-400">
         <div className="flex gap-6">
+          {/* Like Button */}
           <button
             onClick={handleLikeToggle}
             className={`flex items-center gap-2 ${
               isLiked ? "text-blue-500" : "hover:text-blue-500"
             }`}
+            aria-label={isLiked ? "Unlike" : "Like"}
           >
-            <FaThumbsUp /> {isLiked ? "Unlike" : "Like"} {likes}
+            <FaThumbsUp className="text-lg" />
+            <span>{isLiked ? "Unlike" : "Like"}</span>
+            <span>{likes}</span>
           </button>
+
+          {/* Comment Button */}
           <button className="flex items-center gap-2 hover:text-blue-500">
-            <Link href={`/post/comment/${groupId}/${post.id}`}>
-              <FaComment /> Comment {post.totalComments}
+            <Link
+              href={`/post/comment/${groupId}/${post.id}`}
+              className="flex items-center gap-2"
+              aria-label={`View comments (${post.totalComments})`}
+            >
+              <FaComment className="text-lg" />
+              <span>Comment</span>
+              <span>{post.totalComments}</span>
             </Link>
           </button>
+
+          {/* Share Button */}
           <button
             onClick={handleShareClick}
             className="flex items-center gap-2 hover:text-blue-500"
+            aria-label="Share"
           >
-            <FaShare /> Share {post.totalShares}
+            <FaShare className="text-lg" />
+            <span>Share</span>
+            {/* <span>{post.totalShares}</span> */}
           </button>
         </div>
       </div>
-
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center">
           <div
@@ -250,7 +266,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
                 {...sliderSettings}
                 className="custom-slider"
               >
-                {post.images.map((image, index) => (
+                {post.images.map((image, index)  => (
                   <div key={index} className="px-4 py-2">
                     <img
                       src={image.imageUrl}

@@ -29,7 +29,8 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
+  const [take, setTake] = useState(10);
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -49,12 +50,12 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     setLoadingMore(true);
 
     try {
-      const postData = await fetchData(`/post?groupId=${id}&page=${page}&pageSize=5&searchTerm=${searchTerm}`);
+      const postData = await fetchData(`/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${searchTerm}`);
       if (postData === undefined) {
         setHasMore(false);
       } else {
         setPostList((prevPosts) => [...prevPosts, ...postData.data.posts]);
-        setHasMore(postData.data.count > 0);
+        setHasMore(postData.data.count > take);
       }
     } catch (error) {
       setError("Failed to load data");
@@ -77,7 +78,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       const bottomPosition = document.documentElement.offsetHeight;
 
       if (scrollPosition >= bottomPosition - 100 && hasMore && !loadingMore) {
-        setPage((prevPage) => prevPage + 1);
+        setPage((prevPage) => prevPage + take);
       }
     };
 
@@ -89,13 +90,14 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    debugger
     setSearchTerm(value);
     // Check if the search term contains at least 3 words (non-empty words)
     const wordCount = value.length;
 
     // Only trigger fetch if there are at least 3 words in the search term
     if (wordCount >= 0) {
-      setPage(1); // Reset to first page when search term changes
+      setPage(0); // Reset to first page when search term changes
       setPostList([]); // Clear previous posts
     }
   };
