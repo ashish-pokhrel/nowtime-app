@@ -29,7 +29,7 @@ type PostCardProps = {
 
 export default function PostCard({ post, groupId }: PostCardProps) {
   const [likes, setLikes] = useState(post.totalLikes);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(post.isLikedByCurrentUser);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -248,7 +248,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
               <Slider
                 ref={sliderRef}
                 {...sliderSettings}
-                className="custom-slider"  // Add custom class to the slider
+                className="custom-slider"
               >
                 {post.images.map((image, index) => (
                   <div key={index} className="px-4 py-2">
