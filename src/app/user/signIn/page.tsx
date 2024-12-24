@@ -11,10 +11,16 @@ export default function SignIn() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    deviceInfo: "", 
   });
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // Add a loading state
+
+  // Get device information
+  const getDeviceInfo = () => {
+    return `${navigator.userAgent}, ${navigator.platform}`;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -28,8 +34,13 @@ export default function SignIn() {
     e.preventDefault();
     setLoading(true); // Set loading to true when submitting
 
+    const updatedFormData = {
+      ...formData,
+      deviceInfo: getDeviceInfo(),
+    };
+
     try {
-      const response = await postData("/user/signin", formData);
+      const response = await postData("/user/signin", updatedFormData);
 
       const currentDateTime = new Date();
       currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
