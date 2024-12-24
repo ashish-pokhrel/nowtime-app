@@ -25,10 +25,10 @@ const useAuth = () => {
             {
               const response = await fetchData(`/user/refreshToken?refreshToken=${refreshToken}`);
               if (response?.data?.length) {
+                localStorage.clear();
                 currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
-                localStorage.setItem("tokenExpiresIn", currentDateTime.toISOString());
-
                 const { jwtToken, refreshToken, email, fullName, profileImage } = response.data;
+                localStorage.setItem("tokenExpiresIn", currentDateTime.toISOString());
                 localStorage.setItem("accessToken", jwtToken);
                 localStorage.setItem("userGuid", refreshToken);
                 localStorage.setItem("profileImage", profileImage);

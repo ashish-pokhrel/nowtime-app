@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { FaArrowLeft, FaUserCircle } from "react-icons/fa";
 import Logo from "../../app/component/logo";
+import { useRouter } from "next/navigation"; // Import useRouter for redirect
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ interface LayoutProps {
 const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter(); // Use useRouter hook
 
   // Toggle dropdown visibility
   const toggleDropdown = () => {
@@ -28,6 +30,20 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    // Clear authentication data from localStorage
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userGuid");
+    localStorage.removeItem("profileImage");
+    localStorage.removeItem("user");
+    localStorage.removeItem("tokenExpiresIn");
+
+    // Redirect user to the login page
+    router.push("/user/signIn"); // You can modify this path as needed
+    console.log("User logged out");
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -63,10 +79,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
               </Link>
               <button
                 className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
-                onClick={() => {
-                  // Logic for logout
-                  console.log("Logout clicked");
-                }}
+                onClick={handleLogout} // Call the logout function on click
               >
                 Logout
               </button>

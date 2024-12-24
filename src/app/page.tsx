@@ -66,10 +66,9 @@ export default function Home() {
       <div className="absolute top-4 left-4">
         <Logo />
       </div>
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-900 dark:text-white">
-       GO FOR IT
+      <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-blue-500 via-green-400 to-pink-500 text-transparent bg-clip-text">
+        GO FOR IT
       </h1>
-
       {/* Display the list of groups */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {boxes.map((box) => (
@@ -98,6 +97,10 @@ export default function Home() {
             </div>
           </Link>
         ))}
+      </div>
+       {/* Footer */}
+       <div className="absolute bottom-4 text-center text-gray-400">
+        <p>&copy; {new Date().getFullYear()} Your Company</p>
       </div>
     </div>
   );
