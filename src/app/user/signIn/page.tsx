@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postData } from "../../../utils/axios";
 import Logo from "../../../app/component/logo";
+import { EXPIRE_MINUTES } from '../../../constant/constants';
 
 export default function SignIn() {
   const router = useRouter();
@@ -28,9 +29,9 @@ export default function SignIn() {
       const response = await postData("/user/signin", formData);
 
       const currentDateTime = new Date();
-      currentDateTime.setMinutes(currentDateTime.getMinutes() + 1);
+      currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
       localStorage.setItem("tokenExpiresIn", currentDateTime.toISOString());
-      const { jwtToken, refreshToken, email, fullName, profileImage} = response.user;
+      const { jwtToken, refreshToken, email, fullName, profileImage } = response.user;
       localStorage.setItem("accessToken", jwtToken);
       localStorage.setItem("userGuid", refreshToken);
       localStorage.setItem("profileImage", profileImage);
@@ -63,25 +64,25 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-800 to-black">
       {/* Logo at Top Left */}
       <div className="absolute top-4 left-4">
         <Logo />
       </div>
 
       {/* Sign-In Form */}
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Sign In</h1>
+      <div className="w-full max-w-md bg-gray-900 text-white rounded-lg shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-center text-gray-200 mb-8">Sign In</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Email *</label>
+            <label className="block text-gray-300 font-medium mb-2">Email *</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-300"
               placeholder="Enter your email address"
               required
             />
@@ -89,13 +90,13 @@ export default function SignIn() {
 
           {/* Password */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Password *</label>
+            <label className="block text-gray-300 font-medium mb-2">Password *</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+              className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-300"
               placeholder="Enter your password"
               required
             />
@@ -132,7 +133,7 @@ export default function SignIn() {
 
         {/* Register Link */}
         <div className="mt-6 text-center">
-          <span className="text-gray-700">Don't have an account?</span>
+          <span className="text-gray-300">Don't have an account?</span>
           <button
             onClick={handleRegisterRedirect}
             className="ml-2 text-blue-500 hover:text-blue-600"

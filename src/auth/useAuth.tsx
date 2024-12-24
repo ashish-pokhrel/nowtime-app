@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchData } from "../utils/axios";
+import { EXPIRE_MINUTES } from '../constant/constants';
 
 const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Initial state is null, will be set based on auth check
@@ -24,7 +25,7 @@ const useAuth = () => {
             {
               const response = await fetchData(`/user/refreshToken?refreshToken=${refreshToken}`);
               if (response?.data?.length) {
-                currentDateTime.setMinutes(currentDateTime.getMinutes() + 1);
+                currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
                 localStorage.setItem("tokenExpiresIn", currentDateTime.toISOString());
 
                 const { jwtToken, refreshToken, email, fullName, profileImage } = response.data;
