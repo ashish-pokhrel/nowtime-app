@@ -6,6 +6,7 @@ import { fetchData, postFileData } from "../../../../utils/axios";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import Layout from "../../../component/navbar";
+import useAuth from "../../../../auth/useAuth";
 
 type Box = {
   id: number;
@@ -128,6 +129,13 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
   const [loading, setLoading] = useState(false);
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const router = useRouter();
+  const isAuthenticated = useAuth(); // Using the useAuth hook
+
+  useEffect(() => {
+    if (isAuthenticated === false) {
+      router.push("/user/signIn"); // Redirect to sign-in if not authenticated
+    }
+  }, [isAuthenticated, router]);
 
   useEffect(() => {
     if (params.value) {
@@ -174,8 +182,12 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
     }
   };
 
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>; // Loading state while checking authentication
+  }
+
   return (
-    <Layout>
+    <Layout backHref={`/feed/${resolvedParams?.id}`}>
       <Link href={`/post/feed/${resolvedParams?.id}`} className="absolute top-8 left-8 text-xl text-white hover:text-gray-400">
         <FaArrowLeft />
       </Link>

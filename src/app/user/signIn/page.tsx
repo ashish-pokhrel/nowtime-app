@@ -26,8 +26,24 @@ export default function SignIn() {
     e.preventDefault();
     try {
       const response = await postData("/user/signin", formData);
+
+      const currentDateTime = new Date();
+      currentDateTime.setMinutes(currentDateTime.getMinutes() + 1);
+      localStorage.setItem("tokenExpiresIn", currentDateTime.toISOString());
+      const { jwtToken, refreshToken, email, fullName, profileImage} = response.user;
+      localStorage.setItem("accessToken", jwtToken);
+      localStorage.setItem("userGuid", refreshToken);
+      localStorage.setItem("profileImage", profileImage);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email,
+          fullName,
+        })
+      );
+
       console.log("Login successful:", response);
-      router.push("/dashboard");
+      router.push("/");
     } catch (error) {
       setError("Invalid email or password");
       console.error("Error during login:", error);
