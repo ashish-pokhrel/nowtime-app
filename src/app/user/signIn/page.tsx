@@ -115,32 +115,37 @@ export default function SignIn() {
           </div>
         </form>
 
-        {/* Google and Facebook Sign-In */}
-        <div className="text-center mt-6">
+        {/* Social Login */}
+        {/* <div className="mt-6 space-y-4 text-center">
           <button
             onClick={handleGoogleSignIn}
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full transition duration-300 mb-3 w-full"
+            className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full transition duration-300"
           >
             Sign In with Google
           </button>
           <button
             onClick={handleFacebookSignIn}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full transition duration-300 w-full"
+            className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-6 rounded-full transition duration-300"
           >
             Sign In with Facebook
           </button>
-        </div>
+        </div> */}
 
         {/* Register Link */}
         <div className="mt-6 text-center">
           <span className="text-gray-300">Don't have an account?</span>
           <button
             onClick={handleRegisterRedirect}
-            className="ml-2 text-blue-500 hover:text-blue-600"
+            className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-6 rounded-full transition duration-300"
           >
             Register
           </button>
         </div>
+      </div>
+
+      {/* Footer */}
+      <div className="absolute bottom-4 text-center text-gray-400">
+        <p>&copy; {new Date().getFullYear()} Your Company</p>
       </div>
     </div>
   );
