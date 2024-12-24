@@ -1,11 +1,11 @@
-// components/Layout.tsx
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { FaArrowLeft, FaUserCircle } from "react-icons/fa";
+import Logo from "../../app/component/logo";
 
 interface LayoutProps {
   children: React.ReactNode;
-  backHref?: string; // Optional prop for the back button link
+  backHref?: string; 
 }
 
 const Layout = ({ children, backHref = "/" }: LayoutProps) => {
@@ -17,7 +17,6 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
     setDropdownOpen(!isDropdownOpen);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -34,11 +33,14 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Sticky Navbar */}
       <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-800 shadow-lg">
-        {/* Back Button */}
-        <Link href={backHref} className="text-xl text-white hover:text-gray-400 flex items-center">
-          <FaArrowLeft className="mr-2" />
-          Back
-        </Link>
+        {/* Logo and Back Button */}
+        <div className="flex items-center space-x-4">
+          <Logo />
+          <Link href={backHref} className="text-xl text-white hover:text-gray-400 flex items-center">
+            <FaArrowLeft className="mr-2" />
+            Back
+          </Link>
+        </div>
 
         {/* Profile Dropdown */}
         <div className="relative" ref={dropdownRef}>
@@ -54,7 +56,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden">
               <Link
-                href="/profile"
+                href="/user/profile"
                 className="block px-4 py-2 text-white hover:bg-gray-600"
               >
                 View Profile

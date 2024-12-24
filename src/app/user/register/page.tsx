@@ -1,8 +1,11 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { postFileData } from "../../../utils/axios";
 
 export default function UserRegister() {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
@@ -68,7 +71,7 @@ export default function UserRegister() {
       alert("Please fix the errors in the form.");
       return;
     }
-    
+
     try {
       const data = new FormData();
       data.append("firstName", formData.firstName);
@@ -85,7 +88,9 @@ export default function UserRegister() {
       // Call the postFileData function to submit the form data
       const response = await postFileData("/user/register", data);
       console.log("Registration successful:", response);
-      // Handle success (e.g., redirect or display success message)
+      
+      // Redirect to the previous page
+      router.back(); // Navigate back to the previous page
     } catch (error) {
       console.error("Error during registration:", error);
       // Handle error (e.g., display error message)

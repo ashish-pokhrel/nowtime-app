@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaHome, FaComment, FaUsers, FaPlane, FaShoppingCart, FaBriefcase } from "react-icons/fa"; // Import icons from react-icons
-import { fetchData } from "../utils/axios"; // Import the fetchData function
+import { FaHome, FaComment, FaUsers, FaPlane, FaShoppingCart, FaBriefcase } from "react-icons/fa"; 
+import { fetchData } from "../utils/axios"; 
+import Logo from "../app/component/logo";
 
 type Box = {
   id: string;
@@ -61,7 +62,10 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gray-100 dark:bg-gray-900"> {/* Light/Dark Mode Background */}
+    <div className="min-h-screen p-8 bg-gray-100 dark:bg-gray-900">
+      <div className="absolute top-4 left-4">
+        <Logo />
+      </div>
       <h1 className="text-4xl font-bold text-center mb-8 text-gray-900 dark:text-white">
        GO FOR IT
       </h1>
