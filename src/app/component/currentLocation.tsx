@@ -4,21 +4,25 @@ import {IP_LOCATION_URL} from "../../constant/constants";
 
 const CurrentLocation = () => {
   useEffect(() => {
+    var userLocation = localStorage.getItem("userLocation");
     const fetchGeolocation = () => {
-      if (navigator.geolocation) {
-        // If geolocation is available, get the user's position
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            const location = { latitude, longitude };
-            localStorage.setItem("userLocation", JSON.stringify(location));
-          },
-          (error) => {
+      if(!userLocation)
+        {
+          if (navigator.geolocation) {
+            // If geolocation is available, get the user's position
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
+                const location = { latitude, longitude };
+                localStorage.setItem("userLocation", JSON.stringify(location));
+              },
+              (error) => {
+                fetchIPBasedLocation();
+              }
+            );
+          } else {
             fetchIPBasedLocation();
           }
-        );
-      } else {
-        fetchIPBasedLocation();
       }
     };
 
@@ -33,11 +37,10 @@ const CurrentLocation = () => {
       }
     };
 
-    // Call the function to fetch geolocation
     fetchGeolocation();
   }, []);
 
-  return null; // No UI needed for this component, it only does the work in the background
+  return null;
 };
 
 export default CurrentLocation;

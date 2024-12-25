@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { FaArrowLeft, FaUserCircle } from "react-icons/fa";
 import Logo from "../../app/component/logo";
-import { useRouter } from "next/navigation"; // Import useRouter for redirect
+import { useRouter } from "next/navigation";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,8 +11,9 @@ interface LayoutProps {
 
 const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const[isSignedIn, setIsSignedIn] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const router = useRouter(); // Use useRouter hook
+  const router = useRouter();
 
   // Toggle dropdown visibility
   const toggleDropdown = () => {
@@ -25,6 +26,11 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         setDropdownOpen(false);
       }
     };
+    if(localStorage.getItem("accessToken"))
+    {
+      setIsSignedIn(true);
+    }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -66,7 +72,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
           <span className="text-sm text-gray-400 md:block">Dallas, Texas</span>
           
           {/* Profile Icon with Hover Effects */}
-          <div className="relative" ref={dropdownRef}>
+          { isSignedIn && (<div className="relative" ref={dropdownRef}>
             <button
               className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none"
               onClick={toggleDropdown}
@@ -91,7 +97,15 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                 </button>
               </div>
             )}
-          </div>
+          </div> )}
+          { !isSignedIn && (
+             <Link
+             href="/user/signIn"
+             className="block px-4 py-2 text-white hover:bg-gray-600"
+           >
+             Sign In
+           </Link>
+          )}
         </div>
       </header>
 
