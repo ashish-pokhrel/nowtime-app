@@ -56,7 +56,7 @@ const PostForm = ({
 }: {
   boxes: Box[];
   selectedBox: number | "";
-  setSelectedBox: (value: number | "") => void;
+  setSelectedBox: (value: string | "") => void;
   description: string;
   setDescription: (value: string) => void;
   images: File[];
@@ -88,7 +88,7 @@ const PostForm = ({
       <select
         id="box"
         value={selectedBox}
-        onChange={(e) => setSelectedBox(Number(e.target.value) || "")}
+        onChange={(e) => setSelectedBox(e.target.value || "")}
         className="w-full p-4 rounded-lg bg-gray-800 text-white"
         required
       >
@@ -146,7 +146,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
 
     const fetchGroups = async () => {
       try {
-        const data = await fetchData("/group");
+        const data = await fetchData("/group/GetAllDropDown");
         setBoxes(data.data);
       } catch (err: any) {
         setError(err.message || "Failed to fetch groups");
