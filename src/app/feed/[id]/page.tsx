@@ -23,7 +23,6 @@ type Box = {
 };
 
 export default function DetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const [box, setBox] = useState<Box>({ title: "", description: "" });
   const [postList, setPostList] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +38,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-    }, 300); // 300ms debounce time
+    }, 300);
 
     return () => {
       clearTimeout(handler);
@@ -63,7 +62,9 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     setLoadingMore(true);
 
     try {
-      const postData = await fetchData(`/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}`);
+      const postData = await fetchData(
+        `/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}`
+      );
       if (!postData || !postData.data.posts.length) {
         setHasMore(false);
       } else {
@@ -106,8 +107,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    if(value.length > 2 || value.length == 0)
-    {
+    if (value.length > 2 || value.length === 0) {
       setHasMore(true);
       setPage(0); // Reset to first page
       setPostList([]); // Clear previous posts
@@ -116,7 +116,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-800 text-white">
+      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
         <div className="text-2xl">Loading...</div>
       </div>
     );
@@ -124,7 +124,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-800 text-white">
+      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
         <div className="text-xl text-red-500">{error}</div>
       </div>
     );
@@ -132,48 +132,60 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
   return (
     <Layout>
-      {/* Box Title & Description */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-semibold">{resolvedParams?.id}</h1>
-      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Box Title & Description */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-semibold text-white">
+            {resolvedParams?.id}
+          </h1>
+        </div>
 
-      {/* Add New Post Button */}
-      <div className="text-center my-8">
-        <Link
-          href={`/post/add/${resolvedParams?.id}`}
-          className="bg-blue-500 hover:bg-blue-400 text-white text-lg font-semibold py-3 px-6 rounded-full shadow-lg"
-        >
-          What's on your mind :)
-        </Link>
-      </div>
+        {/* Add New Post Button */}
+        <div className="text-center my-8">
+          <Link
+            href={`/post/add/${resolvedParams?.id}`}
+            className="bg-blue-600 hover:bg-blue-500 text-white text-lg font-semibold py-3 px-6 rounded-full shadow-lg transition duration-300"
+          >
+            What's on your mind :)
+          </Link>
+        </div>
 
-      {/* Search Input */}
-      <div className="text-center mb-4">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          className="bg-gray-800 text-white p-2 rounded-full w-1/2"
-          placeholder="Search posts..."
-        />
-      </div>
-      
-      {/* Post List */}
-      <div className="space-y-8">
-        {postList.map((post, index) => (
-          <PostCard key={index} post={post} groupId={resolvedParams?.id || ""} />
-        ))}
-      </div>
+        {/* Search and Location */}
+        <section className="my-8 px-4 max-w-7xl mx-auto">
+          {/* Flex Container for Centered Location and Search */}
+          <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-6">
+          
+            {/* Search Input */}
+            <div className="w-full md:w-96">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="bg-gray-800 text-white p-3 rounded-lg w-full border border-gray-600 focus:border-blue-500 focus:ring focus:ring-blue-300 transition duration-200"
+                placeholder="Search posts..."
+                aria-label="Search posts"
+              />
+            </div>
+          </div>
+        </section>
 
-      {/* Scroll-to-load Indicator */}
-      {loadingMore && (
-        <div className="text-center text-white py-4">Loading more posts...</div>
-      )}
+        {/* Post List */}
+        <div className="space-y-8">
+          {postList.map((post) => (
+            <PostCard key={post.id} post={post} groupId={resolvedParams?.id || ""} />
+          ))}
+        </div>
 
-      {/* Error handling for no posts */}
-      {!hasMore && !loadingMore && (
-        <div className="text-center text-gray-400 py-4">No more posts to load.</div>
-      )}
-   </Layout>
+        {/* Scroll-to-load Indicator */}
+        {loadingMore && (
+          <div className="text-center text-white py-4">Loading more posts...</div>
+        )}
+
+        {/* Error handling for no posts */}
+        {!hasMore && !loadingMore && (
+          <div className="text-center text-gray-400 py-4">No more posts to load.</div>
+        )}
+      </div>
+    </Layout>
   );
 }

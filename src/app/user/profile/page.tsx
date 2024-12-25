@@ -19,7 +19,7 @@ const Profile = () => {
   const [showPhone, setShowPhone] = useState(user.showPhoneNo);
 
   return (
-    <Layout>
+    <Layout backHref="/feed/All">
       <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
         {/* Profile Card */}
         <div className="w-full max-w-2xl bg-gray-800 rounded-lg shadow-2xl p-8">

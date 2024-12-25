@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"; // Import useRouter for redirect
 
 interface LayoutProps {
   children: React.ReactNode;
-  backHref?: string; 
+  backHref?: string;
 }
 
 const Layout = ({ children, backHref = "/" }: LayoutProps) => {
@@ -52,44 +52,52 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         {/* Logo and Back Button */}
         <div className="flex items-center space-x-4">
           <Logo />
-          <Link href={backHref} className="text-xl text-white hover:text-gray-400 flex items-center">
-            <FaArrowLeft className="mr-2" />
-            Back
+          <Link
+            href={backHref}
+            className="text-xl text-white hover:text-gray-400 flex items-center space-x-2"
+          >
+            <FaArrowLeft className="text-xl" />
+            <span>Back</span>
           </Link>
         </div>
 
-        {/* Profile Dropdown */}
-        <div className="relative" ref={dropdownRef}>
+        {/* Profile and Location (Side by Side) */}
+        <div className="flex items-center space-x-6">
+          {/* Location Information */}
+          <span className="text-sm text-gray-400 md:block">Dallas, Texas</span>
+          
           {/* Profile Icon with Hover Effects */}
-          <button
-            className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none"
-            onClick={toggleDropdown}
-          >
-            <FaUserCircle className="text-2xl" />
-          </button>
+          <div className="relative" ref={dropdownRef}>
+            <button
+              className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none"
+              onClick={toggleDropdown}
+            >
+              <FaUserCircle className="text-2xl" />
+            </button>
 
-          {/* Dropdown Menu */}
-          {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden">
-              <Link
-                href="/user/profile"
-                className="block px-4 py-2 text-white hover:bg-gray-600"
-              >
-                View Profile
-              </Link>
-              <button
-                className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
-                onClick={handleLogout} // Call the logout function on click
-              >
-                Logout
-              </button>
-            </div>
-          )}
+            {/* Dropdown Menu */}
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden">
+                <Link
+                  href="/user/profile"
+                  className="block px-4 py-2 text-white hover:bg-gray-600"
+                >
+                  View Profile
+                </Link>
+                <button
+                  className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
+                  onClick={handleLogout} 
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="p-4">{children}</main>
+      <main className="p-4 md:px-8 md:py-6">{children}</main>
     </div>
   );
 };
