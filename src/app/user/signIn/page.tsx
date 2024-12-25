@@ -57,13 +57,11 @@ export default function SignIn() {
         })
       );
 
-      console.log("Login successful:", response);
       router.push("/");
     } catch (error) {
       setError("Invalid email or password");
-      console.error("Error during login:", error);
     } finally {
-      setLoading(false); // Set loading to false after the request completes
+      setLoading(false); 
     }
   };
 

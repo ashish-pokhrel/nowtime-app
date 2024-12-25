@@ -31,7 +31,6 @@ export default function PostDetailsPage() {
         const response = await fetchData(`/post/${postId}`);
         setPost(response?.data);
       } catch (error) {
-        console.error("Failed to fetch post details", error);
       } finally {
         setLoading(false);
       }

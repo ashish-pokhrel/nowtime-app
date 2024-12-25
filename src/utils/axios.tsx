@@ -31,8 +31,7 @@ export const fetchData = async (endpoint: string) => {
     const response = await apiClient.get(endpoint);
     return response;
   } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error; // Handle the error or rethrow it
+    throw error; 
   }
 };
 
@@ -43,7 +42,6 @@ export const fetchDetail = async (endpoint: string, id: string) => {
     const response = await apiClient.get(`${endpoint}${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching detail from ${endpoint}?${id}:`, error);
     throw error;
   }
 };
@@ -55,7 +53,6 @@ export const postData = async (endpoint: string, data: any) => {
     const response = await apiClient.post(endpoint, data);
     return response.data;
   } catch (error) {
-    console.error("Error posting data:", error);
     throw error;
   }
 };
@@ -67,7 +64,6 @@ export const putData = async (endpoint: string, id: string, data: any) => {
     const response = await apiClient.put(`${endpoint}/${id}`, data);
     return response.data;
   } catch (error) {
-    console.error(`Error updating data at ${endpoint}/${id}:`, error);
     throw error;
   }
 };
@@ -82,11 +78,6 @@ export const postFileData = async (url: string, data: FormData) => {
       throw new Error("Provided data is not a FormData instance.");
     }
 
-    // Debug: Log FormData entries
-    for (const [key, value] of data.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-
     // Perform the POST request with the necessary headers (ensure FormData is handled properly)
     const response = await apiClient.post(url, data, {
       headers: {
@@ -96,7 +87,6 @@ export const postFileData = async (url: string, data: FormData) => {
 
     return response.data; // Return the data received from the server
   } catch (error) {
-    console.error("Error during POST request:", error);
     throw error; // Rethrow error for handling by caller
   }
 };

@@ -87,12 +87,10 @@ export default function UserRegister() {
 
       // Call the postFileData function to submit the form data
       const response = await postFileData("/user/register", data);
-      console.log("Registration successful:", response);
       
       // Redirect to the previous page
       router.back(); // Navigate back to the previous page
     } catch (error) {
-      console.error("Error during registration:", error);
       // Handle error (e.g., display error message)
     }
   };

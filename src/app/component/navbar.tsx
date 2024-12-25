@@ -42,7 +42,6 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
 
     // Redirect user to the login page
     router.push("/user/signIn"); // You can modify this path as needed
-    console.log("User logged out");
   };
 
   return (

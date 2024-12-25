@@ -47,7 +47,6 @@ export default function PostCard({ post, groupId }: PostCardProps) {
       }
       setIsLiked(!isLiked);
     } catch (error) {
-      console.error("Error toggling like/unlike:", error);
     }
   };
 
@@ -142,7 +141,6 @@ export default function PostCard({ post, groupId }: PostCardProps) {
         window.open(shareUrl, "_blank");
       }
     } catch (error) {
-      console.error("Error sharing:", error);
     }
   };
 

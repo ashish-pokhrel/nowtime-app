@@ -36,7 +36,6 @@ export default function Home() {
         setBoxes(data.data); // Set the fetched data into state
         setLoading(false); // Update loading state
       } catch (err: any) {
-        console.error(err); // Log error for debugging
         setError(err.message || "Failed to fetch groups"); // Update error state
         setLoading(false); // Update loading state
       }

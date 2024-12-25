@@ -58,7 +58,6 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       const postResponse = await fetchData(`/post/GetPostById?postId=${parsedParams.postId}`);
       setPost(postResponse.data);
     } catch (err) {
-      console.error("Error fetching post:", err);
       setError("Failed to load post.");
     } finally {
       setLoadingPost(false);
@@ -78,7 +77,6 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       const pgNumber = pageNumber === 0 ? 1 : pageNumber;
       setHasMore(pgNumber*COMMENTS_PER_PAGE < commentResponse?.data?.count);
     } catch (err) {
-      console.error("Error fetching comments:", err);
       setError("Failed to load comments.");
     } finally {
       setLoadingComments(false);
@@ -97,7 +95,6 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       setPage(0);
       fetchComments(0);
     } catch (err) {
-      console.error("Error adding reply:", err);
       setError("Failed to add reply.");
     }
   };
@@ -118,7 +115,6 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       setPage(0); // Reset to page 1 to fetch the updated comment list
       fetchComments(0);
     } catch (err) {
-      console.error("Error adding comment:", err);
       setError("Failed to add comment.");
     } finally {
       setAddingComment(false);

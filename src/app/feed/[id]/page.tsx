@@ -73,7 +73,6 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       }
     } catch (error) {
       setError("Failed to load data");
-      console.error(error);
     } finally {
       setLoadingMore(false);
       setLoading(false);
