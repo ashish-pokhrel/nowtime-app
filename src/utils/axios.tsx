@@ -63,7 +63,7 @@ export const refreshTokenAndRetry = async () => {
   if (response.status === 200) {
     sessionStorage.clear();
     const currentDateTime = new Date();
-    currentDateTime.setMinutes(currentDateTime.getSeconds() + EXPIRE_MINUTES);
+    currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
     sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
     const { jwtToken, refreshToken, profileImage } = response.data.user;
     sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
