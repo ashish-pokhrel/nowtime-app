@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postData } from "../../../utils/axios";
 import Logo from "../../../app/component/logo";
-import { EXPIRE_MINUTES } from '../../../constant/constants';
+import {EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage} from "../../../constant/constants";
 
 export default function SignIn() {
   const router = useRouter();
@@ -44,18 +44,11 @@ export default function SignIn() {
 
       const currentDateTime = new Date();
       currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
-      localStorage.setItem("tokenExpiresIn", currentDateTime.toISOString());
-      const { jwtToken, refreshToken, email, fullName, profileImage } = response.user;
-      localStorage.setItem("accessToken", jwtToken);
-      localStorage.setItem("userGuid", refreshToken);
-      localStorage.setItem("profileImage", profileImage);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          email,
-          fullName,
-        })
-      );
+      sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
+      const { jwtToken, refreshToken, profileImage } = response.user;
+      sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
+      sessionStorage.setItem(userGuidLocalStorage, refreshToken);
+      sessionStorage.setItem(profileImageLocalStorage, profileImage);
 
       router.push("/");
     } catch (error) {

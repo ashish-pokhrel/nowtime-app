@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchData, postFileData } from "../../../../utils/axios";
+import { authorizedFetchData, postFileData } from "../../../../utils/axios";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import Layout from "../../../component/navbar";
-import useAuth from "../../../../auth/useAuth";
 
 type Box = {
   id: number;
@@ -129,13 +128,6 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
   const [loading, setLoading] = useState(false);
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const router = useRouter();
-  const isAuthenticated = useAuth(); // Using the useAuth hook
-
-  useEffect(() => {
-    if (isAuthenticated === false) {
-      router.push("/user/signIn"); // Redirect to sign-in if not authenticated
-    }
-  }, [isAuthenticated, router]);
 
   useEffect(() => {
     if (params.value) {
@@ -146,7 +138,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
 
     const fetchGroups = async () => {
       try {
-        const data = await fetchData("/group/GetAllDropDown");
+        const data = await authorizedFetchData("/group/GetAllDropDown");
         setBoxes(data.data);
       } catch (err: any) {
         setError(err.message || "Failed to fetch groups");
@@ -169,22 +161,19 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
 
     try {
       const formData = new FormData();
+      var selectedGroupId = selectedBox.toString().toLowerCase() == "other" ? "All" : selectedBox.toString();
       formData.append("description", description);
-      formData.append("groupId", selectedBox.toString());
+      formData.append("groupId", selectedGroupId);
       images.forEach((file) => formData.append("images", file));
 
       await postFileData("/post", formData);
-      router.push(`/feed/${selectedBox}`);
+      router.push(`/feed/${selectedGroupId}`);
     } catch (err) {
       setError("Failed to add post. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-
-  if (isAuthenticated === null) {
-    return <div>Loading...</div>; // Loading state while checking authentication
-  }
 
   return (
     <Layout backHref={`/feed/${resolvedParams?.id}`}>
