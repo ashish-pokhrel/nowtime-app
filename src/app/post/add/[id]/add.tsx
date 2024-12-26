@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authorizedFetchData, postFileData } from "../../../../utils/axios";
+import { fetchData, refreshTokenAndRetry, postFileData } from "../../../../utils/axios";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import Layout from "../../../component/navbar";
+import {tokenExpiresInLocalStorage} from "../../../../constant/constants";
+
 
 type Box = {
   id: number;
@@ -137,9 +139,16 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
     }
 
     const fetchGroups = async () => {
+      console.log(1);
       try {
-        const data = await authorizedFetchData("/group/GetAllDropDown");
-        setBoxes(data.data);
+        // var getStoredToken = sessionStorage.getItem(tokenExpiresInLocalStorage);
+        // const expiresAt = new Date(getStoredToken);
+        // const currentDateTime = new Date();
+        // if (expiresAt <= currentDateTime) {
+        //   const responseToken = await refreshTokenAndRetry();
+        // }
+        const response = await fetchData("/group/GetAllDropDown");
+        setBoxes(response.data);
       } catch (err: any) {
         setError(err.message || "Failed to fetch groups");
       }

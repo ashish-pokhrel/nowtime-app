@@ -43,7 +43,7 @@ export default function SignIn() {
       const response = await postData("/user/signin", updatedFormData);
 
       const currentDateTime = new Date();
-      currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
+      currentDateTime.setMinutes(currentDateTime.getSeconds() + EXPIRE_MINUTES);
       sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
       const { jwtToken, refreshToken, profileImage } = response.user;
       sessionStorage.setItem(accessTokenLocalStorage, jwtToken);

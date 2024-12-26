@@ -26,6 +26,14 @@ const setAuthHeader = (newToken? : any) => {
 };
 
 const handleError = (error: any) => {
+  if(error.status == 401)
+  {
+    sessionStorage.removeItem(accessTokenLocalStorage);
+    sessionStorage.removeItem(userGuidLocalStorage);
+    sessionStorage.removeItem(profileImageLocalStorage);
+    sessionStorage.removeItem(tokenExpiresInLocalStorage);
+    window.location.href = "/user/signIn";
+  }
   if (axios.isAxiosError(error)) {
     const message = error.response?.data?.message || "Something went wrong";
     throw new Error(message);
@@ -48,51 +56,26 @@ export const fetchData = async (endpoint: string) => {
   }
 };
 
-const refreshTokenAndRetry = async (endpoint: string) => {
+export const refreshTokenAndRetry = async () => {
+  try {
   const refreshToken = sessionStorage.getItem("userGuid");
-  const reTryResponse = await apiClient.get(`/user/refreshToken?refreshToken=${refreshToken}`);
-  if (reTryResponse.status === 200) {
+  const response = await apiClient.get(`/user/refreshToken?refreshToken=${refreshToken}`);
+  if (response.status === 200) {
     sessionStorage.clear();
     const currentDateTime = new Date();
-    currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
+    currentDateTime.setMinutes(currentDateTime.getSeconds() + EXPIRE_MINUTES);
     sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
-    const { jwtToken, refreshToken, profileImage } = reTryResponse.data.user;
+    const { jwtToken, refreshToken, profileImage } = response.data.user;
     sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
     sessionStorage.setItem(userGuidLocalStorage, refreshToken);
     sessionStorage.setItem(profileImageLocalStorage, profileImage);
-    if(sessionStorage.getItem(userGuidLocalStorage) === refreshToken)
-    {
-      return await authorizedFetchData(endpoint);  
+    return response;
     }
   }
-  throw new Error("Unable to refresh token");
-};
-
-export const authorizedFetchData = async (endpoint: string) => {
-  try {
-    setAuthHeader();
-    const response = await apiClient.get(endpoint);
-    if (response.status === 200) {
-      return response;
-    } else if (response.status === 401) {
-      return await refreshTokenAndRetry(endpoint);
-    }
-
-    throw new Error("Something went wrong");
-  } catch (error) {
-    if (error.response && error.response.status === 401) {
-      try {
-        return await refreshTokenAndRetry(endpoint);
-      } catch (error) {
-        // Handle failed token refresh
-        window.location.href = "/user/signIn";
-      }
-    }
-
-    throw new Error("Something went wrong");
+  catch (error) {
+    handleError(error);
   }
 };
-
 
 // Function to fetch details from a given endpoint with an ID (GET)
 export const fetchDetail = async (endpoint: string, id: string) => {

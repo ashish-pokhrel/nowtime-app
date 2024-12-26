@@ -3,6 +3,9 @@ import Link from "next/link";
 import { FaArrowLeft, FaUserCircle } from "react-icons/fa";
 import Logo from "../../app/component/logo";
 import { useRouter } from "next/navigation";
+import {accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage} from "../../constant/constants";
+
+
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -26,7 +29,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         setDropdownOpen(false);
       }
     };
-    if(localStorage.getItem("accessToken"))
+    if(sessionStorage.getItem(accessTokenLocalStorage))
     {
       setIsSignedIn(true);
     }
@@ -40,11 +43,10 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   // Logout function
   const handleLogout = () => {
     // Clear authentication data from localStorage
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userGuid");
-    localStorage.removeItem("profileImage");
-    localStorage.removeItem("user");
-    localStorage.removeItem("tokenExpiresIn");
+    sessionStorage.removeItem(accessTokenLocalStorage);
+    sessionStorage.removeItem(userGuidLocalStorage);
+    sessionStorage.removeItem(profileImageLocalStorage);
+    sessionStorage.removeItem(tokenExpiresInLocalStorage);
 
     // Redirect user to the login page
     router.push("/user/signIn"); // You can modify this path as needed
