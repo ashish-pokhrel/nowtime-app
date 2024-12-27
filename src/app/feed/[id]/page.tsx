@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { fetchData } from "../../../utils/axios"; // Assuming fetchData is in utils/axios.ts
+import { fetchData } from "../../../utils/axios"; 
 import PostCard from "../../component/postCard";
 import Layout from "../../component/navbar";
 

@@ -173,6 +173,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
       var selectedGroupId = selectedBox.toString().toLowerCase() == "other" ? "All" : selectedBox.toString();
       formData.append("description", description);
       formData.append("groupId", selectedGroupId);
+      formData.append("locationString", localStorage.getItem("userLocation"));
       images.forEach((file) => formData.append("images", file));
 
       await postFileData("/post", formData);

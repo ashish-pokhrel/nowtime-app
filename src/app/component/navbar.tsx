@@ -1,36 +1,89 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { FaArrowLeft, FaUserCircle } from "react-icons/fa";
+import { FaArrowLeft, FaUserCircle, FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 import Logo from "../../app/component/logo";
 import { useRouter } from "next/navigation";
-import {accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage} from "../../constant/constants";
-
-
+import {
+  accessTokenLocalStorage,
+  userGuidLocalStorage,
+  profileImageLocalStorage,
+  tokenExpiresInLocalStorage,
+} from "../../constant/constants";
+import { fetchData } from "../../utils/axios";
 
 interface LayoutProps {
   children: React.ReactNode;
   backHref?: string;
 }
 
+type Location = {
+  id: number;
+  city: string;
+  region: string;
+  country: string;
+  postalCode: string;
+};
+
 const Layout = ({ children, backHref = "/" }: LayoutProps) => {
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const[isSignedIn, setIsSignedIn] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("Dallas, Texas");
+  const [addressSearchTerm, setAddressSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
+  const [availableAddresses, setAvailableAddresses] = useState<Location[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [take] = useState(10);
+  const [page, setPage] = useState(0);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const addressDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Toggle dropdown visibility
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
+  // Debounce effect for search term
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(addressSearchTerm);
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [addressSearchTerm]);
+
+  // Fetch locations based on the search term
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const skip = page * take;
+        const postData = await fetchData(
+          `/location?searchTerm=${debouncedSearchTerm}&skip=${skip}&top=${take}`
+        );
+
+        if (postData?.data?.locations?.length) {
+          // setAvailableAddresses((prev) => [...prev, ...postData.data.locations]);
+          setAvailableAddresses(postData.data.locations);
+          setHasMore(postData.data.count > skip + postData.data.locations.length);
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+
+    fetchLocation();
+  }, [debouncedSearchTerm, page, take]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
+        setIsDropdownOpen(false);
+      }
+      if (addressDropdownRef.current && !addressDropdownRef.current.contains(event.target as Node)) {
+        setIsAddressDropdownOpen(false);
       }
     };
-    if(sessionStorage.getItem(accessTokenLocalStorage))
-    {
+
+    if (sessionStorage.getItem(accessTokenLocalStorage)) {
       setIsSignedIn(true);
     }
 
@@ -40,23 +93,27 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
     };
   }, []);
 
-  // Logout function
+  const toggleAddressDropdown = () => {
+    setIsAddressDropdownOpen(!isAddressDropdownOpen);
+    if (!isAddressDropdownOpen) setAddressSearchTerm(""); // Clear input when reopening
+  };
+
+  const handleAddressSelect = (address: Location) => {
+    setSelectedAddress(`${address.city}, ${address.region}`);
+    setIsAddressDropdownOpen(false);
+  };
+
   const handleLogout = () => {
-    // Clear authentication data from localStorage
     sessionStorage.removeItem(accessTokenLocalStorage);
     sessionStorage.removeItem(userGuidLocalStorage);
     sessionStorage.removeItem(profileImageLocalStorage);
     sessionStorage.removeItem(tokenExpiresInLocalStorage);
-
-    // Redirect user to the login page
-    router.push("/user/signIn"); // You can modify this path as needed
+    router.push("/user/signIn");
   };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Sticky Navbar */}
       <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-800 shadow-lg">
-        {/* Logo and Back Button */}
         <div className="flex items-center space-x-4">
           <Logo />
           <Link
@@ -68,50 +125,78 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
           </Link>
         </div>
 
-        {/* Profile and Location (Side by Side) */}
         <div className="flex items-center space-x-6">
-          {/* Location Information */}
-          <span className="text-sm text-gray-400 md:block">Dallas, Texas</span>
-          
-          {/* Profile Icon with Hover Effects */}
-          { isSignedIn && (<div className="relative" ref={dropdownRef}>
+          <div className="relative" ref={addressDropdownRef}>
             <button
-              className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none"
-              onClick={toggleDropdown}
+              className="flex items-center justify-center text-sm text-gray-400 hover:text-white focus:outline-none md:block"
+              onClick={toggleAddressDropdown}
             >
-              <FaUserCircle className="text-2xl" />
+              <FaMapMarkerAlt className="mr-2" /> {selectedAddress}
             </button>
-
-            {/* Dropdown Menu */}
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden">
-                <Link
-                  href="/user/profile"
-                  className="block px-4 py-2 text-white hover:bg-gray-600"
-                >
-                  View Profile
-                </Link>
-                <button
-                  className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
-                  onClick={handleLogout} 
-                >
-                  Logout
-                </button>
+            {isAddressDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search address..."
+                    className="w-full px-3 py-2 bg-gray-600 text-white rounded-t-lg focus:outline-none"
+                    value={addressSearchTerm}
+                    onChange={(e) => setAddressSearchTerm(e.target.value)}
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <FaSearch className="text-gray-400" />
+                  </div>
+                </div>
+                <div className="max-h-48 overflow-y-auto">
+                  {availableAddresses.length > 0 ? (
+                    availableAddresses.map((address) => (
+                      <button
+                        key={address.id}
+                        className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
+                        onClick={() => handleAddressSelect(address)}
+                      >
+                        {address.city}, {address.region}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-gray-400">No addresses found.</div>
+                  )}
+                </div>
               </div>
             )}
-          </div> )}
-          { !isSignedIn && (
-             <Link
-             href="/user/signIn"
-             className="block px-4 py-2 text-white hover:bg-gray-600"
-           >
-             Sign In
-           </Link>
+          </div>
+
+          {isSignedIn ? (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                <FaUserCircle className="text-2xl" />
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
+                  <Link href="/user/profile" className="block px-4 py-2 text-white hover:bg-gray-600">
+                    View Profile
+                  </Link>
+                  <button
+                    className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link href="/user/signIn" className="block px-4 py-2 text-white hover:bg-gray-600">
+              Sign In
+            </Link>
           )}
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="p-4 md:px-8 md:py-6">{children}</main>
     </div>
   );

@@ -19,6 +19,7 @@ type Post = {
   totalComments: number;
   totalShares: number;
   timePosted: string;
+  timeElapsed: string,
   isLikedByCurrentUser: boolean;
 };
 
@@ -161,7 +162,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
         />
         <div>
           <h2 className="font-semibold text-white">{post?.userFullName}</h2>
-          <p className="text-gray-500 text-sm">{post.timePosted}</p>
+          <p className="text-gray-500 text-sm">{post.timeElapsed}</p>
         </div>
       </div>
 

@@ -50,7 +50,6 @@ export const fetchData = async (endpoint: string) => {
     if (response.status === 200) {
       return response;
     }
-    throw new Error("Something went wrong");
   } catch (error) {
     handleError(error);
   }
@@ -85,7 +84,6 @@ export const fetchDetail = async (endpoint: string, id: string) => {
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error("Something went wrong");
   } catch (error) {
     handleError(error);
   }
@@ -99,7 +97,6 @@ export const postData = async (endpoint: string, data: any) => {
     if (response.status === 200 || response.status === 201) {
       return response.data;
     }
-    throw new Error("Something went wrong");
   } catch (error) {
     handleError(error);
   }
@@ -113,7 +110,6 @@ export const putData = async (endpoint: string, id: string, data: any) => {
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error("Something went wrong");
   } catch (error) {
     handleError(error);
   }
@@ -134,7 +130,6 @@ export const postFileData = async (url: string, data: FormData) => {
     if (response.status === 200 || response.status === 201) {
       return response.data;
     }
-    throw new Error("Something went wrong");
   } catch (error) {
     handleError(error);
   }
