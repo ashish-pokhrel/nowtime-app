@@ -6,8 +6,7 @@ import { fetchData, refreshTokenAndRetry, postFileData } from "../../../../utils
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import Layout from "../../../component/navbar";
-import {userLocationLocalStorage} from "../../../../constant/constants";
-
+import { userLocationLocalStorage } from "../../../../constant/constants";
 
 type Box = {
   id: number;
@@ -17,7 +16,13 @@ type Box = {
   color: string;
 };
 
-const FileUpload = ({ images, onFileChange }: { images: File[]; onFileChange: (files: File[]) => void }) => (
+const FileUpload = ({
+  images,
+  onFileChange,
+}: {
+  images: File[];
+  onFileChange: (files: File[]) => void;
+}) => (
   <div>
     <label htmlFor="images" className="block text-gray-300 mb-2">Upload Images</label>
     <input
@@ -43,84 +48,6 @@ const FileUpload = ({ images, onFileChange }: { images: File[]; onFileChange: (f
   </div>
 );
 
-const PostForm = ({
-  boxes,
-  selectedBox,
-  setSelectedBox,
-  description,
-  setDescription,
-  images,
-  setImages,
-  handleSubmit,
-  loading,
-  error,
-}: {
-  boxes: Box[];
-  selectedBox: number | "";
-  setSelectedBox: (value: string | "") => void;
-  description: string;
-  setDescription: (value: string) => void;
-  images: File[];
-  setImages: (value: File[]) => void;
-  handleSubmit: (e: React.FormEvent) => void;
-  loading: boolean;
-  error: string | null;
-}) => (
-  <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto">
-    <div>
-      <label htmlFor="description" className="block text-gray-300 mb-2">
-        Description
-      </label>
-      <textarea
-        id="description"
-        rows={5}
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="w-full p-4 rounded-lg bg-gray-800 text-white"
-        placeholder="Write your post description here..."
-        required
-      />
-    </div>
-
-    <div>
-      <label htmlFor="box" className="block text-gray-300 mb-2">
-        Select Box
-      </label>
-      <select
-        id="box"
-        value={selectedBox}
-        onChange={(e) => setSelectedBox(e.target.value || "")}
-        className="w-full p-4 rounded-lg bg-gray-800 text-white"
-        required
-      >
-        <option value="">Select a box</option>
-        {boxes.map((box) => (
-          <option key={box.id} value={box.id}>
-            {box.title}
-          </option>
-        ))}
-      </select>
-    </div>
-
-    <FileUpload images={images} onFileChange={setImages} />
-
-    <div className="flex justify-between items-center">
-      {loading ? (
-        <p className="text-blue-500">Submitting...</p>
-      ) : (
-        <button
-          type="submit"
-          className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500"
-          disabled={loading}
-        >
-          {loading ? "Submitting..." : "Add Post"}
-        </button>
-      )}
-      {error && <p className="text-red-500">{error}</p>}
-    </div>
-  </form>
-);
-
 export default function AddPostPage({ params }: { params: Promise<{ id: string }> }) {
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [selectedBox, setSelectedBox] = useState<number | "">("");
@@ -139,16 +66,9 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
     }
 
     const fetchGroups = async () => {
-      console.log(1);
       try {
-        // var getStoredToken = sessionStorage.getItem(tokenExpiresInLocalStorage);
-        // const expiresAt = new Date(getStoredToken);
-        // const currentDateTime = new Date();
-        // if (expiresAt <= currentDateTime) {
-        //   const responseToken = await refreshTokenAndRetry();
-        // }
         const response = await fetchData("/group/GetAllDropDown");
-        setBoxes(response.data);
+        setBoxes(response?.data);
       } catch (err: any) {
         setError(err.message || "Failed to fetch groups");
       }
@@ -170,8 +90,9 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
 
     try {
       const formData = new FormData();
-      var selectedGroupId = selectedBox.toString().toLowerCase() == "other" ? "All" : selectedBox.toString();
-      var userLocation = localStorage.getItem(userLocationLocalStorage);
+      const selectedGroupId =
+        selectedBox.toString().toLowerCase() === "other" ? "All" : selectedBox.toString();
+      const userLocation = localStorage.getItem(userLocationLocalStorage);
       formData.append("description", description);
       formData.append("groupId", selectedGroupId);
       formData.append("locationString", userLocation ?? "");
@@ -188,7 +109,10 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
 
   return (
     <Layout backHref={`/feed/${resolvedParams?.id}`}>
-      <Link href={`/post/feed/${resolvedParams?.id}`} className="absolute top-8 left-8 text-xl text-white hover:text-gray-400">
+      <Link
+        href={`/post/feed/${resolvedParams?.id}`}
+        className="absolute top-8 left-8 text-xl text-white hover:text-gray-400"
+      >
         <FaArrowLeft />
       </Link>
 
@@ -196,18 +120,63 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
         <h1 className="text-4xl font-semibold">Create Post</h1>
       </div>
 
-      <PostForm
-        boxes={boxes}
-        selectedBox={selectedBox}
-        setSelectedBox={setSelectedBox}
-        description={description}
-        setDescription={setDescription}
-        images={images}
-        setImages={setImages}
-        handleSubmit={handleSubmit}
-        loading={loading}
-        error={error}
-      />
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto">
+        {/* Description Field */}
+        <div>
+          <label htmlFor="description" className="block text-gray-300 mb-2">
+            Description
+          </label>
+          <textarea
+            id="description"
+            rows={5}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full p-4 rounded-lg bg-gray-800 text-white"
+            placeholder="Write your post description here..."
+            required
+          />
+        </div>
+
+        {/* Box Selection */}
+        <div>
+          <label htmlFor="box" className="block text-gray-300 mb-2">
+            Select Box
+          </label>
+          <select
+            id="box"
+            value={selectedBox}
+            onChange={(e) => setSelectedBox(e.target.value || "")}
+            className="w-full p-4 rounded-lg bg-gray-800 text-white"
+            required
+          >
+            <option value="">Select a box</option>
+            {boxes.map((box) => (
+              <option key={box.id} value={box.id}>
+                {box.title}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Image Upload */}
+        <FileUpload images={images} onFileChange={setImages} />
+
+        {/* Submit Button */}
+        <div className="flex justify-between items-center">
+          {loading ? (
+            <p className="text-blue-500">Submitting...</p>
+          ) : (
+            <button
+              type="submit"
+              className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500"
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Add Post"}
+            </button>
+          )}
+          {error && <p className="text-red-500">{error}</p>}
+        </div>
+      </form>
     </Layout>
   );
 }
