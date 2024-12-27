@@ -39,16 +39,16 @@ const FileUpload = ({
       accept="image/*"
       multiple
       onChange={(e) => onFileChange(Array.from(e.target.files || []))}
-      className="text-white"
+      className="text-white w-full"
     />
     {images.length > 0 && (
-      <div className="flex space-x-4 mb-4">
+      <div className="flex space-x-4 mt-4 mb-4 overflow-x-auto">
         {images.map((image, index) => (
           <img
             key={index}
             src={URL.createObjectURL(image)}
             alt={`Preview ${index}`}
-            className="w-16 h-16 object-cover rounded-lg"
+            className="w-20 h-20 object-cover rounded-lg border border-gray-600"
           />
         ))}
       </div>
@@ -103,7 +103,6 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
       try {
         const skip = page * take;
         const storedLocation = debouncedSearchTerm === "" ? localStorage.getItem(displayLocationLocalStorage) : debouncedSearchTerm;
-        debugger
         const postData = await fetchData(
           `/location?searchTerm=${storedLocation}&skip=${skip}&top=${take}`
         );
@@ -149,7 +148,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
       formData.append("description", description);
       formData.append("groupId", selectedGroupId);
       formData.append("locationString", userLocation ?? "");
-      formData.append("postArea", debouncedSearchTerm);
+      formData.append("postLocation", debouncedSearchTerm);
       images.forEach((file) => formData.append("images", file));
 
       await postFileData("/post", formData);
@@ -179,7 +178,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
       </Link>
 
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-semibold">Create Post</h1>
+        <h1 className="text-3xl md:text-4xl font-semibold">Create Post</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto">
@@ -265,7 +264,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
               {loading ? "Submitting..." : "Add Post"}
             </button>
           )}
-          {error && <p className="text-red-500">{error}</p>}
+          {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
       </form>
     </Layout>

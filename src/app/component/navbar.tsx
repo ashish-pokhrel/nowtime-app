@@ -110,6 +110,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
     setSelectedAddress(displayLocation);
     setIsAddressDropdownOpen(false);
     localStorage.setItem(displayLocationLocalStorage, displayLocation);
+    window.location.reload();
   };
 
   const handleLogout = () => {

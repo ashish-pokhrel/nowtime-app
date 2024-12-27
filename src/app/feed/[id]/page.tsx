@@ -4,6 +4,7 @@ import Link from "next/link";
 import { fetchData } from "../../../utils/axios"; 
 import PostCard from "../../component/postCard";
 import Layout from "../../component/navbar";
+import { displayLocationLocalStorage } from "../../../constant/constants";
 
 type Post = {
   id: number;
@@ -62,8 +63,9 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     setLoadingMore(true);
 
     try {
+      const postLocation = localStorage.getItem(displayLocationLocalStorage);
       const postData = await fetchData(
-        `/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}`
+        `/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}&postLocation=${postLocation}`
       );
       if (!postData || !postData.data.posts.length) {
         setHasMore(false);
