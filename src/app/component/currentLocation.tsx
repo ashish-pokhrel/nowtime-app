@@ -20,7 +20,7 @@ const CurrentLocation = () => {
         {
             const response = await fetch(IP_LOCATION_URL);
             const data = await response.json();
-            const displayLocation = data.city + "," + data.region;
+            const displayLocation = data.city + ", " + data.region;
             const stringfiedData = JSON.stringify(data);
             localStorage.setItem(userLocationLocalStorage, stringfiedData);
             localStorage.setItem(displayLocationLocalStorage, displayLocation);

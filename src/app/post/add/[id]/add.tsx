@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchData, refreshTokenAndRetry, postFileData } from "../../../../utils/axios";
+import { fetchData, postFileData } from "../../../../utils/axios";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import Layout from "../../../component/navbar";
-import { userLocationLocalStorage } from "../../../../constant/constants";
+import { userLocationLocalStorage, displayLocationLocalStorage } from "../../../../constant/constants";
 
 type Box = {
   id: number;
@@ -14,6 +14,14 @@ type Box = {
   icon: string;
   description: string;
   color: string;
+};
+
+type Location = {
+  id: number;
+  city: string;
+  region: string;
+  country: string;
+  postalCode: string;
 };
 
 const FileUpload = ({
@@ -56,6 +64,12 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [filteredLocations, setFilteredLocations] = useState<Location[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
+  const take = 10; // Number of items per page
   const router = useRouter();
 
   useEffect(() => {
@@ -77,6 +91,45 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
     fetchGroups();
   }, []);
 
+  useEffect(() => {
+    const storedLocation = localStorage.getItem(displayLocationLocalStorage);
+    if (storedLocation) {
+      setDebouncedSearchTerm(storedLocation);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const skip = page * take;
+        const storedLocation = debouncedSearchTerm === "" ? localStorage.getItem(displayLocationLocalStorage) : debouncedSearchTerm;
+        debugger
+        const postData = await fetchData(
+          `/location?searchTerm=${storedLocation}&skip=${skip}&top=${take}`
+        );
+        setLocations(postData?.data.locations);
+        setFilteredLocations(postData?.data.locations);
+        if (postData?.data?.locations?.length) {
+          setHasMore(postData.data.count > skip + postData.data.locations.length);
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+
+    fetchLocation();
+  }, [debouncedSearchTerm, page]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearchTerm(debouncedSearchTerm);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [debouncedSearchTerm]);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
@@ -96,6 +149,7 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
       formData.append("description", description);
       formData.append("groupId", selectedGroupId);
       formData.append("locationString", userLocation ?? "");
+      formData.append("postArea", debouncedSearchTerm);
       images.forEach((file) => formData.append("images", file));
 
       await postFileData("/post", formData);
@@ -105,6 +159,14 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDebouncedSearchTerm(event.target.value);
+  };
+
+  const handleLocationSelect = (location: Location) => {
+    setDebouncedSearchTerm(`${location.city}, ${location.region}`);
   };
 
   return (
@@ -156,6 +218,35 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Post Area (Autocomplete) */}
+        <div>
+          <label htmlFor="postArea" className="block text-gray-300 mb-2">
+            Location
+          </label>
+          <input
+            id="postArea"
+            type="text"
+            className="w-full p-4 rounded-lg bg-gray-800 text-white"
+            placeholder="Search location..."
+            onChange={handleSearchChange}
+            value={debouncedSearchTerm} // This binds the value to the input field
+          />
+
+          {debouncedSearchTerm && filteredLocations.length > 0 && (
+            <ul className="mt-2 bg-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+              {filteredLocations.map((location) => (
+                <li
+                  key={location.id}
+                  className="p-4 cursor-pointer hover:bg-gray-600"
+                  onClick={() => handleLocationSelect(location)}
+                >
+                  {location.city}, {location.region}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Image Upload */}

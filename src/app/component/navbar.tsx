@@ -29,7 +29,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState(localStorage.getItem(displayLocationLocalStorage));
+  const [selectedAddress, setSelectedAddress] = useState();
   const [addressSearchTerm, setAddressSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
   const [availableAddresses, setAvailableAddresses] = useState<Location[]>([]);
@@ -40,6 +40,13 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const addressDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const storedLocation = localStorage.getItem(displayLocationLocalStorage);
+    if (storedLocation) {
+      setSelectedAddress(storedLocation); 
+    }
+  }, []);
 
   useEffect(() => {
     const handler = setTimeout(() => {
