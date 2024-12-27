@@ -1,6 +1,15 @@
 "use client";
 import { useEffect } from "react";
 import {IP_LOCATION_URL, userLocationLocalStorage, displayLocationLocalStorage} from "../../constant/constants";
+import { fetchData} from "../../utils/axios";
+
+const fetchGroups = async (locationString : string) => {
+  console.log(1);
+  try {
+    const response = await fetchData(`/location/setlocation?locationString=${locationString}`);
+  } catch (err: any) {
+  }
+};
 
 const CurrentLocation = () => {
   useEffect(() => {
@@ -11,11 +20,11 @@ const CurrentLocation = () => {
         {
             const response = await fetch(IP_LOCATION_URL);
             const data = await response.json();
-            // const [latitude, longitude] = data.loc.split(",");
-            // const location = { latitude: parseFloat(latitude), longitude: parseFloat(longitude) };
             const displayLocation = data.city + "," + data.region;
-            localStorage.setItem(userLocationLocalStorage, JSON.stringify(data));
+            const stringfiedData = JSON.stringify(data);
+            localStorage.setItem(userLocationLocalStorage, stringfiedData);
             localStorage.setItem(displayLocationLocalStorage, displayLocation);
+            fetchGroups(stringfiedData);
           }
       } catch (error) {
       }

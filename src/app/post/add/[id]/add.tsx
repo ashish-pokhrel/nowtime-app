@@ -6,7 +6,7 @@ import { fetchData, refreshTokenAndRetry, postFileData } from "../../../../utils
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import Layout from "../../../component/navbar";
-import {tokenExpiresInLocalStorage} from "../../../../constant/constants";
+import {userLocationLocalStorage} from "../../../../constant/constants";
 
 
 type Box = {
@@ -171,9 +171,10 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
     try {
       const formData = new FormData();
       var selectedGroupId = selectedBox.toString().toLowerCase() == "other" ? "All" : selectedBox.toString();
+      var userLocation = localStorage.getItem(userLocationLocalStorage);
       formData.append("description", description);
       formData.append("groupId", selectedGroupId);
-      formData.append("locationString", localStorage.getItem("userLocation"));
+      formData.append("locationString", userLocation ?? "");
       images.forEach((file) => formData.append("images", file));
 
       await postFileData("/post", formData);
