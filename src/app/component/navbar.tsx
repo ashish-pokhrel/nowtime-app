@@ -29,7 +29,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState();
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [addressSearchTerm, setAddressSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
   const [availableAddresses, setAvailableAddresses] = useState<Location[]>([]);
@@ -50,8 +50,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      if(addressSearchTerm.length > 2)
-      {
+      if (addressSearchTerm.length > 2) {
         setDebouncedSearchTerm(addressSearchTerm);
       }
     }, 300);
@@ -66,7 +65,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         const postData = await fetchData(
           `/location?searchTerm=${debouncedSearchTerm}&skip=${skip}&top=${take}`
         );
-        setAvailableAddresses(postData?.data.locations);
+        setAvailableAddresses(postData?.data.locations || []);
         if (postData?.data?.locations?.length) {
           setHasMore(postData.data.count > skip + postData.data.locations.length);
         } else {
@@ -126,7 +125,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
       <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-800 shadow-lg">
         <div className="flex items-center space-x-4">
           <Logo />
-          <Link href={backHref} className="text-xl text-white hover:text-gray-400 flex items-center space-x-2">
+          <Link href={backHref} className="text-xl text-white hover:text-gray-400 flex items-center space-x-2 cursor-pointer">
             <FaArrowLeft className="text-xl" />
             <span>Back</span>
           </Link>
@@ -135,10 +134,10 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         <div className="flex items-center space-x-6">
           <div className="relative" ref={addressDropdownRef}>
             <button
-              className="flex items-center justify-center text-sm text-gray-400 hover:text-white focus:outline-none md:block cursor-pointer"
+              className="flex items-center justify-center text-sm text-blue-500 font-semibold hover:text-white focus:outline-none cursor-pointer"
               onClick={toggleAddressDropdown}
             >
-              <FaMapMarkerAlt className="mr-2" /> {selectedAddress}
+              <FaMapMarkerAlt className="mr-2" /> {selectedAddress || "Select Location"}
             </button>
             {isAddressDropdownOpen && (
               <div className="absolute right-0 mt-2 w-64 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
@@ -149,7 +148,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                     className="w-full px-3 py-2 bg-gray-600 text-white rounded-t-lg focus:outline-none"
                     value={addressSearchTerm}
                     onChange={(e) => setAddressSearchTerm(e.target.value)}
-                    autoComplete="off" 
+                    autoComplete="off"
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                     <FaSearch className="text-gray-400" />
@@ -159,7 +158,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                   {availableAddresses.length > 0 ? (
                     availableAddresses.map((address) => (
                       <button
-                        key={`${address.id}-${address.city}-${Math.random()}`}
+                        key={address.id}
                         className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
                         onClick={() => handleAddressSelect(address)}
                       >

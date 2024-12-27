@@ -34,7 +34,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
-
+  const [postLocat, setPostLocation] = useState<string>("");
   // Debounce search term
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -64,6 +64,8 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
     try {
       const postLocation = localStorage.getItem(displayLocationLocalStorage);
+      debugger
+      setPostLocation(postLocation);
       const postData = await fetchData(
         `/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}&postLocation=${postLocation}`
       );
@@ -184,8 +186,21 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
         {/* Error handling for no posts */}
         {!hasMore && !loadingMore && (
-          <div className="text-center text-gray-400 py-4">No more posts to load.</div>
-        )}
+        <div className="text-center py-4">
+          <p className="text-gray-400">
+            {resolvedParams && resolvedParams.id !== "All" && (
+              <>
+                <span className="font-bold text-gray-500">No more posts to load</span>{' '}
+                for the location{' '}
+                <span className="text-blue-500 font-semibold">{postLocat}</span>
+              </>
+            )}
+            {(!resolvedParams || resolvedParams.id === "All") && (
+              <span className="font-bold text-gray-500">No more posts to load</span>
+            )}
+          </p>
+        </div>
+      )}
       </div>
     </Layout>
   );
