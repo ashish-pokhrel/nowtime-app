@@ -40,16 +40,17 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const addressDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Debounce effect for search term
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedSearchTerm(addressSearchTerm);
+      if(addressSearchTerm.length > 2)
+      {
+        setDebouncedSearchTerm(addressSearchTerm);
+      }
     }, 300);
 
     return () => clearTimeout(handler);
   }, [addressSearchTerm]);
 
-  // Fetch locations based on the search term
   useEffect(() => {
     const fetchLocation = async () => {
       try {
@@ -57,10 +58,8 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         const postData = await fetchData(
           `/location?searchTerm=${debouncedSearchTerm}&skip=${skip}&top=${take}`
         );
-
+        setAvailableAddresses(postData?.data.locations);
         if (postData?.data?.locations?.length) {
-          // setAvailableAddresses((prev) => [...prev, ...postData.data.locations]);
-          setAvailableAddresses(postData.data.locations);
           setHasMore(postData.data.count > skip + postData.data.locations.length);
         } else {
           setHasMore(false);
@@ -95,7 +94,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
 
   const toggleAddressDropdown = () => {
     setIsAddressDropdownOpen(!isAddressDropdownOpen);
-    if (!isAddressDropdownOpen) setAddressSearchTerm(""); // Clear input when reopening
+    if (!isAddressDropdownOpen) setAddressSearchTerm("");
   };
 
   const handleAddressSelect = (address: Location) => {
@@ -116,10 +115,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
       <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-800 shadow-lg">
         <div className="flex items-center space-x-4">
           <Logo />
-          <Link
-            href={backHref}
-            className="text-xl text-white hover:text-gray-400 flex items-center space-x-2"
-          >
+          <Link href={backHref} className="text-xl text-white hover:text-gray-400 flex items-center space-x-2">
             <FaArrowLeft className="text-xl" />
             <span>Back</span>
           </Link>
@@ -128,7 +124,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         <div className="flex items-center space-x-6">
           <div className="relative" ref={addressDropdownRef}>
             <button
-              className="flex items-center justify-center text-sm text-gray-400 hover:text-white focus:outline-none md:block"
+              className="flex items-center justify-center text-sm text-gray-400 hover:text-white focus:outline-none md:block cursor-pointer"
               onClick={toggleAddressDropdown}
             >
               <FaMapMarkerAlt className="mr-2" /> {selectedAddress}
@@ -142,6 +138,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                     className="w-full px-3 py-2 bg-gray-600 text-white rounded-t-lg focus:outline-none"
                     value={addressSearchTerm}
                     onChange={(e) => setAddressSearchTerm(e.target.value)}
+                    autoComplete="off" 
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                     <FaSearch className="text-gray-400" />
@@ -151,8 +148,8 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                   {availableAddresses.length > 0 ? (
                     availableAddresses.map((address) => (
                       <button
-                        key={address.id}
-                        className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
+                        key={`${address.id}-${address.city}`}
+                        className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
                         onClick={() => handleAddressSelect(address)}
                       >
                         {address.city}, {address.region}
@@ -169,7 +166,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
           {isSignedIn ? (
             <div className="relative" ref={dropdownRef}>
               <button
-                className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none"
+                className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none cursor-pointer"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <FaUserCircle className="text-2xl" />
@@ -177,11 +174,11 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
 
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
-                  <Link href="/user/profile" className="block px-4 py-2 text-white hover:bg-gray-600">
+                  <Link href="/user/profile" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
                     View Profile
                   </Link>
                   <button
-                    className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600"
+                    className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
                     onClick={handleLogout}
                   >
                     Logout
@@ -190,7 +187,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
               )}
             </div>
           ) : (
-            <Link href="/user/signIn" className="block px-4 py-2 text-white hover:bg-gray-600">
+            <Link href="/user/signIn" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
               Sign In
             </Link>
           )}
