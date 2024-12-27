@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaHome, FaComment, FaUsers, FaPlane, FaShoppingCart, FaBriefcase } from "react-icons/fa"; 
-import { fetchData } from "../utils/axios"; 
+import { FaHome, FaComment, FaUsers, FaPlane, FaShoppingCart, FaBriefcase } from "react-icons/fa";
+import { fetchData } from "../utils/axios";
 import Logo from "../app/component/logo";
 
 type Box = {
   id: string;
   title: string;
-  icon: string;  // Icon will be a string like 'fa-home', 'fa-taxi', etc.
+  icon: string;
   description: string;
   color: string;
 };
@@ -20,36 +20,41 @@ const iconMap: { [key: string]: React.ReactNode } = {
   "fa-users": <FaUsers />,
   "fa-plane": <FaPlane />,
   "fa-shopping-cart": <FaShoppingCart />,
-  "fa-briefcase": <FaBriefcase/>
+  "fa-briefcase": <FaBriefcase />,
 };
 
 export default function Home() {
-  const [boxes, setBoxes] = useState<Box[]>([]); // State to store the fetched data
-  const [loading, setLoading] = useState<boolean>(true); // State to handle loading state
-  const [error, setError] = useState<string>(""); // State to handle any error during fetch
+  const [boxes, setBoxes] = useState<Box[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   // Fetch groups from the API on component mount
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const data = await fetchData("/group"); // Fetch the data from the API
-        setBoxes(data.data); // Set the fetched data into state
-        setLoading(false); // Update loading state
+        const data = await fetchData("/group");
+        setBoxes(data.data);
+        setLoading(false);
       } catch (err: any) {
-        setError(err.message || "Failed to fetch groups"); // Update error state
-        setLoading(false); // Update loading state
+        setError(err.message || "Failed to fetch groups");
+        setLoading(false);
       }
     };
 
-    fetchGroups(); // Call the function to fetch groups
-  }, []); // Run once when the component mounts
+    fetchGroups();
+  }, []);
 
   // Show skeleton loader while data is being fetched
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {[...Array(6)].map((_, index) => (
-          <div key={index} className="bg-gray-300 dark:bg-gray-700 shadow-lg rounded-lg p-6 animate-pulse"></div>
+          <div key={index} className="bg-gray-300 dark:bg-gray-700 shadow-lg rounded-lg p-6 animate-pulse">
+            {/* Skeleton Loader Content */}
+            <div className="h-20 w-20 bg-gray-400 rounded-full mb-4"></div>
+            <div className="h-4 bg-gray-400 mb-2"></div>
+            <div className="h-4 bg-gray-400"></div>
+          </div>
         ))}
       </div>
     );
@@ -57,7 +62,7 @@ export default function Home() {
 
   // Show error message if there was an issue fetching the data
   if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
+    return <div className="text-center text-red-500 mt-4">{error}</div>;
   }
 
   return (
@@ -74,12 +79,12 @@ export default function Home() {
           <Link
             key={box.id}
             href={{
-              pathname: `/feed/${box.id}`
+              pathname: `/feed/${box.id}`,
             }}
             aria-label={`View details of ${box.title}`}
             className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 hover:shadow-xl transition cursor-pointer border-t-4"
             style={{
-              borderTopColor: box.color, // Use the color from the API for the border top
+              borderTopColor: box.color,
             }}
           >
             <div className="flex flex-col items-center">
@@ -87,18 +92,15 @@ export default function Home() {
               <div className="text-4xl" style={{ color: box.color }}>
                 {iconMap[box.icon] || <FaHome />} {/* Fallback to FaHome if icon not found */}
               </div>
-              <h2 className="text-2xl font-semibold mt-4 text-gray-900 dark:text-white">
-                {box.title}
-              </h2>
-              <p className="text-gray-700 dark:text-gray-300 mt-2 text-center">
-                {box.description}
-              </p>
+              <h2 className="text-2xl font-semibold mt-4 text-gray-900 dark:text-white">{box.title}</h2>
+              <p className="text-gray-700 dark:text-gray-300 mt-2 text-center">{box.description}</p>
             </div>
           </Link>
         ))}
       </div>
-       {/* Footer */}
-       <div className="absolute bottom-4 text-center text-gray-400">
+
+      {/* Footer */}
+      <div className="absolute bottom-4 text-center text-gray-400">
         <p>&copy; {new Date().getFullYear()} Your Company</p>
       </div>
     </div>

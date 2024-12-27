@@ -6,3 +6,5 @@ export const accessTokenLocalStorage = "accessToken";
 export const userGuidLocalStorage = "userGuid";
 export const profileImageLocalStorage = "profileImage";
 export const tokenExpiresInLocalStorage = "tokenExpiresIn";
+export const userLocationLocalStorage = "userLocation";
+export const displayLocationLocalStorage = " displayLocation"

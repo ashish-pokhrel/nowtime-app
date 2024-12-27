@@ -8,6 +8,7 @@ import {
   userGuidLocalStorage,
   profileImageLocalStorage,
   tokenExpiresInLocalStorage,
+  displayLocationLocalStorage,
 } from "../../constant/constants";
 import { fetchData } from "../../utils/axios";
 
@@ -28,7 +29,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState("Dallas, Texas");
+  const [selectedAddress, setSelectedAddress] = useState(localStorage.getItem(displayLocationLocalStorage));
   const [addressSearchTerm, setAddressSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
   const [availableAddresses, setAvailableAddresses] = useState<Location[]>([]);
@@ -98,8 +99,10 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   };
 
   const handleAddressSelect = (address: Location) => {
-    setSelectedAddress(`${address.city}, ${address.region}`);
+    const displayLocation = `${address.city}, ${address.region}`;
+    setSelectedAddress(displayLocation);
     setIsAddressDropdownOpen(false);
+    localStorage.setItem(displayLocationLocalStorage, displayLocation);
   };
 
   const handleLogout = () => {
@@ -148,7 +151,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                   {availableAddresses.length > 0 ? (
                     availableAddresses.map((address) => (
                       <button
-                        key={`${address.id}-${address.city}`}
+                        key={`${address.id}-${address.city}-${Math.random()}`}
                         className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
                         onClick={() => handleAddressSelect(address)}
                       >
