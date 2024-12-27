@@ -64,7 +64,6 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
     try {
       const postLocation = localStorage.getItem(displayLocationLocalStorage);
-      debugger
       setPostLocation(postLocation);
       const postData = await fetchData(
         `/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}&postLocation=${postLocation}`
