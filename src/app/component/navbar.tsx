@@ -36,7 +36,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [hasMore, setHasMore] = useState(true);
   const [take] = useState(10);
   const [page, setPage] = useState(0);
-  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0); // State for unread messages count
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const addressDropdownRef = useRef<HTMLDivElement>(null);

@@ -1,162 +1,146 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { FaSearch, FaUserCircle, FaPaperPlane } from "react-icons/fa";
-import { fetchData } from "../../utils/axios"; // Adjust to your fetch logic
+import { useState, useRef, useEffect } from "react";
+import { FaUserCircle } from "react-icons/fa";
 import Layout from "../component/navbar";
+import { fetchData } from "../../utils/axios";
+import { accessTokenLocalStorage } from "../../constant/constants";
 
-interface User {
+interface ChatUser {
   id: number;
-  name: string;
+  fullName: string;
   profileImage: string;
 }
 
-interface Message {
-  user: string;
-  text: string;
-  timestamp: string;
-}
-
 const ChatPage = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [newMessage, setNewMessage] = useState("");
+  const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
+  const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
-    // Fetch the list of recent chat users (Replace with actual API call)
-    const fetchUsers = async () => {
-      const data = await fetchData("/chat/recent-users");
-      setUsers(data); // Assuming `data` is an array of users
-    };
-
-    fetchUsers();
+    if (sessionStorage.getItem(accessTokenLocalStorage)) {
+      setIsSignedIn(true);
+    }
   }, []);
 
   useEffect(() => {
-    if (selectedUser) {
-      // Fetch messages for the selected user (Replace with actual API call)
-      const fetchMessages = async () => {
-        const data = await fetchData(`/chat/messages/${selectedUser.id}`);
-        setMessages(data); // Assuming `data` is an array of messages
-      };
+    const fetchUserList = async () => {
+      try {
+        const response = await fetchData("/message/getRecentChats");
+        setChatUsers(response?.data.users);
+      } catch (error) {
+        console.error("Error fetching unread messages count:", error);
+      }
+    };
 
-      fetchMessages();
+    if (isSignedIn) {
+      fetchUserList();
     }
-  }, [selectedUser]);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleUserClick = (user: User) => {
-    setSelectedUser(user);
-  };
-
-  const handleSendMessage = () => {
-    if (newMessage && selectedUser) {
-      const newMessageData = {
-        user: selectedUser.name,
-        text: newMessage,
-        timestamp: new Date().toISOString(),
-      };
-      setMessages([...messages, newMessageData]);
-      setNewMessage("");
-    }
-  };
-
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  }, [isSignedIn]);
 
   return (
-    <Layout>
-    <div className="min-h-screen flex bg-gray-900 text-white">
-      {/* Left Panel: Recent Chats and Search */}
-      <div className="w-1/3 bg-gray-800 p-4 overflow-y-auto">
-        <div className="flex items-center mb-4">
-          <input
-            type="text"
-            className="w-full p-2 bg-gray-700 text-white rounded-lg focus:outline-none"
-            placeholder="Search users..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <FaSearch className="text-gray-400 ml-2" />
-        </div>
+    <Layout backHref={`/feed/All`}>
+      <div className="min-h-screen bg-gray-900 text-white flex">
+        {/* Chat Section */}
+        <div className="w-full md:w-2/3 lg:w-3/4 flex flex-col">
+          {/* Chat Users List */}
+          <div className="w-full bg-gray-800 p-4 space-y-4">
+            <h2 className="text-xl font-bold mb-4">Recent Chats</h2>
 
-        <div>
-          {filteredUsers.length > 0 ? (
-            filteredUsers.map(user => (
-              <div
-                key={user.id}
-                className="flex items-center p-2 cursor-pointer hover:bg-gray-700 rounded-lg"
-                onClick={() => handleUserClick(user)}
-              >
-                <img
-                  src={user.profileImage}
-                  alt={user.name}
-                  className="w-10 h-10 rounded-full mr-3"
-                />
-                <span>{user.name}</span>
-              </div>
-            ))
-          ) : (
-            <div className="text-gray-400">No users found.</div>
-          )}
-        </div>
-      </div>
+            {/* Search Bar */}
+            <input
+              type="text"
+              placeholder="Search user..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none mb-4"
+            />
 
-      {/* Right Panel: Chat with Selected User */}
-      <div className="flex-1 bg-gray-800 p-4 flex flex-col">
-        {selectedUser ? (
-          <>
-            <div className="flex items-center mb-4">
-              <img
-                src={selectedUser.profileImage}
-                alt={selectedUser.name}
-                className="w-12 h-12 rounded-full mr-4"
-              />
-              <span className="text-xl font-semibold">{selectedUser.name}</span>
-            </div>
-
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto mb-4">
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex items-start ${message.user === selectedUser.name ? 'justify-end' : 'justify-start'}`}
+            <div className="space-y-2">
+              {chatUsers?.map((user, index) => (
+                <button
+                  key={user.id + index}
+                  className={`flex items-center p-3 rounded-lg w-full bg-gray-700 hover:bg-gray-600 transition ${
+                    selectedUser?.id === user.id && "bg-gray-600"
+                  }`}
+                  onClick={() => setSelectedUser(user)}
                 >
-                  <div className={`max-w-xs p-2 rounded-lg ${message.user === selectedUser.name ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}>
-                    <p>{message.text}</p>
-                    <span className="text-xs text-gray-400">{message.timestamp}</span>
+                  <img src={user.profileImage}  alt="profileImg" className="h-5 w-5 mr-2 rounded-full object-cover"/>
+                  <div className="text-left">
+                    <p className="text-lg font-semibold">{user.fullName}</p>
+                  </div>
+                </button>
+              ))}
+
+              {chatUsers?.length === 0 && (
+                <p className="text-gray-400">No users found.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Chat Terminal */}
+          <div className="w-full bg-gray-700 p-4 flex flex-col flex-grow">
+            {selectedUser ? (
+              <>
+                {/* Chat Header */}
+                <div className="flex items-center justify-between bg-gray-600 p-3 rounded-t-lg">
+                  <div className="flex items-center">
+                    <FaUserCircle className="text-3xl text-gray-400 mr-3" />
+                    <h3 className="text-lg font-bold">{selectedUser.fullName}</h3>
                   </div>
                 </div>
-              ))}
-            </div>
 
-            {/* Message Input */}
-            <div className="flex items-center space-x-2">
-              <input
-                type="text"
-                className="w-full p-2 bg-gray-700 text-white rounded-lg focus:outline-none"
-                placeholder="Type a message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-              />
-              <button
-                className="p-2 bg-blue-600 text-white rounded-full"
-                onClick={handleSendMessage}
-              >
-                <FaPaperPlane />
-              </button>
+                {/* Chat Messages */}
+                <div className="flex-grow bg-gray-800 p-4 overflow-y-auto space-y-3">
+                  <div className="flex items-start space-x-2">
+                    <FaUserCircle className="text-2xl text-gray-400" />
+                    <div className="bg-gray-600 p-3 rounded-lg max-w-xs">
+                      <p>Hello! How can I help you?</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-end space-x-2">
+                    <div className="bg-blue-600 p-3 rounded-lg max-w-xs text-right">
+                      <p>Hi! I'm looking for some details.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Input */}
+                <div className="flex items-center bg-gray-600 p-3 rounded-b-lg">
+                  <input
+                    type="text"
+                    placeholder="Type a message..."
+                    className="flex-grow bg-gray-700 text-white p-3 rounded-lg focus:outline-none mr-3"
+                  />
+                  <button className="bg-blue-600 px-4 py-2 rounded-lg text-white hover:bg-blue-500 transition">
+                    Send
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-center flex-grow">
+                <p className="text-gray-400">Select a chat to start messaging.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Ad Section */}
+        <div className="hidden md:block md:w-1/3 lg:w-1/4 bg-gray-800 p-4">
+          <h2 className="text-lg font-bold mb-4 text-center">Sponsored Ads</h2>
+          <div className="space-y-4">
+            <div className="h-40 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
+              Ad Space 1
             </div>
-          </>
-        ) : (
-          <div className="text-gray-400">Select a user to start chatting.</div>
-        )}
+            <div className="h-40 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
+              Ad Space 2
+            </div>
+            <div className="h-40 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
+              Ad Space 3
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
     </Layout>
   );
 };
