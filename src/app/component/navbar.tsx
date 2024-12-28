@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { FaArrowLeft, FaUserCircle, FaMapMarkerAlt, FaSearch } from "react-icons/fa";
+import { FaArrowLeft, FaUserCircle, FaMapMarkerAlt, FaSearch, FaCommentDots } from "react-icons/fa";
 import Logo from "../../app/component/logo";
 import { useRouter } from "next/navigation";
 import {
@@ -36,6 +36,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [hasMore, setHasMore] = useState(true);
   const [take] = useState(10);
   const [page, setPage] = useState(0);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0); // State for unread messages count
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const addressDropdownRef = useRef<HTMLDivElement>(null);
@@ -120,6 +121,22 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
     router.push("/user/signIn");
   };
 
+  useEffect(() => {
+    // Example API call to fetch unread message count
+    const fetchUnreadMessagesCount = async () => {
+      try {
+        const response = await fetchData("/message/getunreadchats");
+        setUnreadMessagesCount(response?.data.count);
+      } catch (error) {
+        console.error("Error fetching unread messages count:", error);
+      }
+    };
+
+    if (isSignedIn) {
+      fetchUnreadMessagesCount();
+    }
+  }, [isSignedIn]);
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-800 shadow-lg">
@@ -174,28 +191,49 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
           </div>
 
           {isSignedIn ? (
-            <div className="relative" ref={dropdownRef}>
-              <button
-                className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none cursor-pointer"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                <FaUserCircle className="text-2xl" />
-              </button>
-
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
-                  <Link href="/user/profile" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
-                    View Profile
-                  </Link>
+            <>
+              {/* Profile Icon with Unread Messages Count */}
+              <div className="relative flex items-center space-x-2" ref={dropdownRef}>
+                <div className="relative">
                   <button
-                    className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
-                    onClick={handleLogout}
+                    className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none cursor-pointer"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   >
-                    Logout
+                    <FaUserCircle className="text-2xl" />
                   </button>
+                  {unreadMessagesCount > 0 && (
+                  <span className="absolute top-0 right-0 rounded-full bg-pink-500 text-xs text-white px-1 py-0.5 leading-tight">
+                    {unreadMessagesCount}
+                  </span>
+                )}
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
+                      <Link href="/user/profile" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
+                        View Profile
+                      </Link>
+                      <button
+                        className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
+                      {/* Chat Icon inside Profile Dropdown */}
+                      <Link href="/chat" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
+                        <div className="flex items-center space-x-2">
+                          <FaCommentDots />
+                          <span>Chats</span>
+                          {unreadMessagesCount > 0 && (
+                            <span className="top-0 right-0 rounded-full bg-pink-500 text-xs text-white px-1 py-0.5 leading-tight">
+                              {unreadMessagesCount}
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            </>
           ) : (
             <Link href="/user/signIn" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
               Sign In
