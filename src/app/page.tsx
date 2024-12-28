@@ -67,12 +67,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen p-8 bg-gray-100 dark:bg-gray-900">
-      <div className="absolute top-4 left-4">
-        <Logo />
+     
+      <div className="text-3xl font-semibold text-center text-indigo-400 mb-8 typing-effect">
+      <Logo />
       </div>
-      <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-blue-500 via-green-400 to-pink-500 text-transparent bg-clip-text">
-        GO FOR IT
-      </h1>
       {/* Display the list of groups */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {boxes.map((box) => (
