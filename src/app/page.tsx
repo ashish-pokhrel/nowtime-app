@@ -98,9 +98,18 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-4 text-center text-gray-400">
-        <p>&copy; {new Date().getFullYear()} Your Company</p>
-      </div>
+      <footer className="mt-12 text-center text-gray-600 dark:text-gray-400">
+        <div className="text-sm">
+          <Link href="policy/terms" className="hover:underline underline">
+            Terms of Use
+          </Link>
+          {" | "}
+          <Link href="policy/privacypolicy" className="hover:underline underline">
+            Privacy Policy
+          </Link>
+        </div>
+        <p>&copy; {new Date().getFullYear()} mangopuff.com</p>
+      </footer>
     </div>
   );
 }

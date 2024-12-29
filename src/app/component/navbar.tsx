@@ -139,11 +139,11 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-800 shadow-lg">
+      <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-900 shadow-lg border-b border-blue-400">
         <div className="flex items-center space-x-4">
           <Logo />
-          <Link href={backHref} className="text-xl text-white hover:text-gray-400 flex items-center space-x-2 cursor-pointer">
-            <FaArrowLeft className="text-xl" />
+          <Link href={backHref} className="text-xs text-white hover:text-gray-400 flex items-center space-x-2 cursor-pointer">
+            <FaArrowLeft className="text-xs" />
             <span>Back</span>
           </Link>
         </div>
@@ -202,7 +202,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                     <FaUserCircle className="text-2xl" />
                   </button>
                   {unreadMessagesCount > 0 && (
-                  <span className="absolute top-0 right-0 rounded-full bg-pink-500 text-xs text-white px-1 py-0.5 leading-tight">
+                  <span className="absolute top-0 right-0 rounded-full bg-blue-500 text-xs text-white px-1 py-0.5 leading-tight">
                     {unreadMessagesCount}
                   </span>
                 )}

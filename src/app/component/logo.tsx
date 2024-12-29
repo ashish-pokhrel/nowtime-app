@@ -12,9 +12,9 @@ export default function Logo() {
   return (
     <div className="cursor-pointer" onClick={handleLogoClick}>
       <img
-        src="/sample1.jpg" 
+        src="/logo.png" 
         alt="Logo"
-        className="h-10 w-10 rounded-full object-cover"
+        className="h-10 object-cover"
       />
     </div>
   );
