@@ -77,7 +77,7 @@ export default function Home() {
           <Link
             key={box.id}
             href={{
-              pathname: `/feed/${box.id}`,
+              pathname: `/feed/${box.id}`
             }}
             aria-label={`View details of ${box.title}`}
             className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 hover:shadow-xl transition cursor-pointer border-t-4"
@@ -108,7 +108,7 @@ export default function Home() {
             Privacy Policy
           </Link>
         </div>
-        <p>&copy; {new Date().getFullYear()} mangopuff.com</p>
+        <p>&copy; {new Date().getFullYear()}  <Link href="/"  className="hover:underline"> mangopuff.com </Link></p>
       </footer>
     </div>
   );

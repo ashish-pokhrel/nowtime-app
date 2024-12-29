@@ -19,8 +19,11 @@ type Post = {
 };
 
 type Box = {
+  id: string;
   title: string;
+  icon: string;
   description: string;
+  color: string;
 };
 
 export default function DetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -35,6 +38,8 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
   const [postLocat, setPostLocation] = useState<string>("");
+  const [box, setBox] = useState<Box>();
+
   // Debounce search term
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -51,6 +56,16 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     const fetchParams = async () => {
       const paramsData = await params;
       setResolvedParams(paramsData);
+      const fetchGroups = async () => {
+        try {
+          const data = await fetchData(`/group/${paramsData.id}`);
+          setBox(data.data);
+          setLoading(false);
+        } catch (err: any) {
+          setLoading(false);
+        }
+      };
+      fetchGroups();
     };
     fetchParams();
   }, [params]);
@@ -111,8 +126,8 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     setSearchTerm(value);
     if (value.length > 2 || value.length === 0) {
       setHasMore(true);
-      setPage(0); // Reset to first page
-      setPostList([]); // Clear previous posts
+      setPage(0); 
+      setPostList([]);
     }
   };
 
@@ -138,7 +153,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
         {/* Box Title & Description */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-semibold text-white">
-            {resolvedParams?.id}
+            {box?.title}
           </h1>
         </div>
 

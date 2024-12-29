@@ -13,7 +13,7 @@ export default function Logo() {
     <div className="cursor-pointer" onClick={handleLogoClick}>
       <img
         src="/logo.png" 
-        alt="Logo"
+        alt="mangopuff.com"
         className="h-10 object-cover"
       />
     </div>
