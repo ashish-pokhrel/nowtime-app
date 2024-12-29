@@ -8,3 +8,5 @@ export const profileImageLocalStorage = "profileImage";
 export const tokenExpiresInLocalStorage = "tokenExpiresIn";
 export const userLocationLocalStorage = "userLocation";
 export const displayLocationLocalStorage = " displayLocation"
+
+export const SignalR_URL = "https://localhost:7288/chatHub";

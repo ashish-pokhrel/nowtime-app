@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaUserCircle } from "react-icons/fa";
+import { HubConnectionBuilder, HubConnection } from "@microsoft/signalr";
 import Layout from "../component/navbar";
 import { fetchData, postData } from "../../utils/axios";
-import { accessTokenLocalStorage } from "../../constant/constants";
+import { accessTokenLocalStorage, SignalR_URL } from "../../constant/constants";
 
 interface ChatUser {
   id: number;
@@ -17,6 +17,7 @@ interface ChatMessage {
   content: string;
   fromUserId: number;
   timestamp: string;
+  isReceiver: boolean;
 }
 
 const useDebounce = (value: string, delay: number) => {
@@ -45,6 +46,7 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
+  const [connection, setConnection] = useState<HubConnection | null>(null);
   const [formData, setFormData] = useState({
     fromUserId: fromUser?.id,
     toUserId: toUser?.id,
@@ -56,6 +58,54 @@ const ChatPage = () => {
       setIsSignedIn(true);
     }
   }, []);
+
+  useEffect(() => {
+    const createConnection = async () => {
+      const token = sessionStorage.getItem(accessTokenLocalStorage);
+
+      if (!token) {
+        console.error("No access token found");
+        return;
+      }
+      const conn = new HubConnectionBuilder()
+        .withUrl(SignalR_URL, {
+          accessTokenFactory: () => token, // Pass the token to the connection
+        })
+        .build();
+
+      try {
+        await conn.start();
+        setConnection(conn);
+        console.log("SignalR connection established");
+
+        // Listen for new messages
+        conn.on("ReceiveMessage", (message: ChatMessage) => {
+          setChatMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              id: Date.now(), 
+              content: message,
+              fromUserId: toUser?.id || 0,
+              timestamp: new Date().toISOString(),
+              isReceiver: true
+            },
+          ]);
+        });
+      } catch (error) {
+        console.error("SignalR connection failed: ", error);
+      }
+    };
+
+    if (isSignedIn) {
+      createConnection();
+    }
+
+    return () => {
+      if (connection) {
+        connection.stop();
+      }
+    };
+  }, [isSignedIn]);
 
   const fetchUserList = async (reset: boolean = false, skip: integer = 0) => {
     try {
@@ -133,9 +183,16 @@ const ChatPage = () => {
           content: formData.content,
           fromUserId: fromUser?.id || 0,
           timestamp: new Date().toISOString(),
+          isReceiver: false
         },
       ]);
-  
+      if (connection) {
+        try {
+          const response = await connection.send("SendMessageToUser", selectedUser?.id.toString(), formData.content);
+        } catch (error) {
+        }
+        
+      }
       setFormData((prev) => ({ ...prev, content: "" }));
     } catch (error) {
       console.error("Error sending message:", error);
