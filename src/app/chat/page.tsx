@@ -7,7 +7,7 @@ import { fetchData, postData } from "../../utils/axios";
 import { accessTokenLocalStorage, SignalR_URL } from "../../constant/constants";
 
 interface ChatUser {
-  id: number;
+  id: string;
   fullName: string;
   profileImage: string;
 }
@@ -15,8 +15,9 @@ interface ChatUser {
 interface ChatMessage {
   id: number;
   content: string;
-  fromUserId: number;
+  fromUserId: string;
   timestamp: string;
+  toUserId: string;
 }
 
 const useDebounce = (value: string, delay: number) => {
@@ -72,7 +73,6 @@ const ChatPage = () => {
       const token = sessionStorage.getItem(accessTokenLocalStorage);
 
       if (!token) {
-        console.error("No access token found");
         return;
       }
       const conn = new HubConnectionBuilder()
@@ -89,7 +89,7 @@ const ChatPage = () => {
         
         // Listen for new messages
         conn.on("ReceiveMessage", (message: ChatMessage) => {
-          if(message.content != undefined)
+          if(message.content != undefined && chatMessages)
           {
             setChatMessages((prevMessages) => [
               ...prevMessages,
@@ -351,13 +351,10 @@ const ChatPage = () => {
           <h2 className="text-lg font-bold mb-4 text-center">Sponsored Ads</h2>
           <div className="space-y-4">
             <div className="h-40 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
-              Ad Space 1
             </div>
             <div className="h-40 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
-              Ad Space 2
             </div>
             <div className="h-40 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
-              Ad Space 3
             </div>
           </div>
         </div>
