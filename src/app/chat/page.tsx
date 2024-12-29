@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { HubConnectionBuilder, HubConnection } from "@microsoft/signalr";
 import Layout from "../component/navbar";
 import { fetchData, postData } from "../../utils/axios";
@@ -46,11 +46,20 @@ const ChatPage = () => {
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
   const [connection, setConnection] = useState<HubConnection | null>(null);
+  const[historyTop, setHistoryTop] = useState(10);
   const [formData, setFormData] = useState({
     fromUserId: fromUser?.id,
     toUserId: toUser?.id,
     content: "", 
   });
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatMessages]); 
 
   useEffect(() => {
     if (sessionStorage.getItem(accessTokenLocalStorage)) {
@@ -128,7 +137,7 @@ const ChatPage = () => {
     try {
       setIsMessagesLoading(true);
       const response = await fetchData(
-        `/message/getChatHistory?userId=${userId}&skip=0&top=50`
+        `/message/getChatHistory?userId=${userId}&skip=0&top=${historyTop}`
       );
       setChatMessages(response?.data.messageModels || []);
       setFromUser(response?.data.fromUser);
@@ -266,13 +275,13 @@ const ChatPage = () => {
               </div>
 
               {/* Chat Messages */}
-              <div className="flex-grow bg-gray-800 p-4 overflow-y-auto space-y-3">
+              <div className="flex-grow bg-gray-800 p-4 overflow-y-auto space-y-3 max-h-[500px]">
                 {isMessagesLoading ? (
                   <p className="text-gray-400">Loading messages...</p>
                 ) : (
                   chatMessages.map((message, index) => (
                     <div
-                      key={message.id + index}
+                      key={message.id + Math.random()}
                       className={`flex ${
                         message.fromUserId === selectedUser.id
                           ? "items-start"
@@ -281,17 +290,17 @@ const ChatPage = () => {
                     >
                       {message.fromUserId === selectedUser.id && (
                         <img
-                        src={selectedUser.profileImage}
-                        alt="profileImg"
-                        className="h-5 w-5 mr-2 rounded-full object-cover"
+                          src={selectedUser.profileImage}
+                          alt="profileImg"
+                          className="h-5 w-5 mr-2 rounded-full object-cover"
                         />
                       )}
-                       
-                       {message.fromUserId != selectedUser.id && (
+
+                      {message.fromUserId !== selectedUser.id && (
                         <img
-                        src={selectedUser.profileImage}
-                        alt="profileImg"
-                        className="h-5 w-5 mr-2 rounded-full object-cover"
+                          src={selectedUser.profileImage}
+                          alt="profileImg"
+                          className="h-5 w-5 mr-2 rounded-full object-cover"
                         />
                       )}
 
@@ -307,6 +316,7 @@ const ChatPage = () => {
                     </div>
                   ))
                 )}
+                 <div ref={messagesEndRef} /> 
               </div>
 
               {/* Message Input */}
