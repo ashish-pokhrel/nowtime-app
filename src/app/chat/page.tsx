@@ -17,7 +17,6 @@ interface ChatMessage {
   content: string;
   fromUserId: number;
   timestamp: string;
-  isReceiver: boolean;
 }
 
 const useDebounce = (value: string, delay: number) => {
@@ -78,16 +77,16 @@ const ChatPage = () => {
         setConnection(conn);
         console.log("SignalR connection established");
 
+        
         // Listen for new messages
         conn.on("ReceiveMessage", (message: ChatMessage) => {
           setChatMessages((prevMessages) => [
             ...prevMessages,
             {
-              id: Date.now(), 
-              content: message,
-              fromUserId: toUser?.id || 0,
-              timestamp: new Date().toISOString(),
-              isReceiver: true
+              id: message.id, 
+              content: message.content,
+              fromUserId: message.fromUserId,
+              timestamp: message.timestamp,
             },
           ]);
         });
@@ -183,12 +182,11 @@ const ChatPage = () => {
           content: formData.content,
           fromUserId: fromUser?.id || 0,
           timestamp: new Date().toISOString(),
-          isReceiver: false
         },
       ]);
       if (connection) {
         try {
-          const response = await connection.send("SendMessageToUser", selectedUser?.id.toString(), formData.content);
+          await connection.send("SendMessageToUser", selectedUser?.id.toString(), payload);
         } catch (error) {
         }
         
@@ -272,9 +270,9 @@ const ChatPage = () => {
                 {isMessagesLoading ? (
                   <p className="text-gray-400">Loading messages...</p>
                 ) : (
-                  chatMessages.map((message) => (
+                  chatMessages.map((message, index) => (
                     <div
-                      key={message.id}
+                      key={message.id + index}
                       className={`flex ${
                         message.fromUserId === selectedUser.id
                           ? "items-start"
