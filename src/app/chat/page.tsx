@@ -89,15 +89,18 @@ const ChatPage = () => {
         
         // Listen for new messages
         conn.on("ReceiveMessage", (message: ChatMessage) => {
-          setChatMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              id: message.id, 
-              content: message.content,
-              fromUserId: message.fromUserId,
-              timestamp: message.timestamp,
-            },
-          ]);
+          if(message.content != undefined)
+          {
+            setChatMessages((prevMessages) => [
+              ...prevMessages,
+              {
+                id: message.id, 
+                content: message.content,
+                fromUserId: message.fromUserId,
+                timestamp: message.timestamp,
+              },
+            ]);
+          }
         });
       } catch (error) {
         console.error("SignalR connection failed: ", error);
@@ -183,7 +186,6 @@ const ChatPage = () => {
       };
   
       await postData("/message", payload); 
-  
       setChatMessages((prevMessages) => [
         ...prevMessages,
         {
