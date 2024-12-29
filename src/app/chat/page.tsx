@@ -263,6 +263,7 @@ const ChatPage = () => {
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, content: e.target.value }))
                   }
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   className="flex-grow bg-gray-700 text-white p-3 rounded-lg focus:outline-none mr-3"
                 />
 
