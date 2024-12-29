@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import Layout from "../component/navbar";
-import { fetchData } from "../../utils/axios";
+import { fetchData, postData } from "../../utils/axios";
 import { accessTokenLocalStorage } from "../../constant/constants";
 
 interface ChatUser {
@@ -45,6 +45,11 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
+  const [formData, setFormData] = useState({
+    fromUserId: fromUser?.id,
+    toUserId: toUser?.id,
+    content: "", 
+  });
 
   useEffect(() => {
     if (sessionStorage.getItem(accessTokenLocalStorage)) {
@@ -105,6 +110,36 @@ const ChatPage = () => {
   const handleUserSelect = (user: ChatUser) => {
     setSelectedUser(user);
     fetchChatMessages(user.id);
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.content.trim()) {
+      return;
+    }
+  
+    try {
+      const payload = {
+        fromUserId: fromUser?.id,
+        toUserId: selectedUser?.id,
+        content: formData.content,
+      };
+  
+      await postData("/message", payload); 
+  
+      setChatMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: Date.now(), 
+          content: formData.content,
+          fromUserId: fromUser?.id || 0,
+          timestamp: new Date().toISOString(),
+        },
+      ]);
+  
+      setFormData((prev) => ({ ...prev, content: "" }));
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
   return (
@@ -221,12 +256,17 @@ const ChatPage = () => {
 
               {/* Message Input */}
               <div className="flex items-center bg-gray-600 p-3 rounded-b-lg">
-                <input
+              <input
                   type="text"
                   placeholder="Type a message..."
+                  value={formData.content}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, content: e.target.value }))
+                  }
                   className="flex-grow bg-gray-700 text-white p-3 rounded-lg focus:outline-none mr-3"
                 />
-                <button className="bg-blue-600 px-4 py-2 rounded-lg text-white hover:bg-blue-500 transition">
+
+                <button onClick={handleSubmit} className="bg-blue-600 px-4 py-2 rounded-lg text-white hover:bg-blue-500 transition">
                   Send
                 </button>
               </div>
