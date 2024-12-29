@@ -124,21 +124,15 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   // Share functionality
   const handleShareClick = async () => {
     const postDetails = {
-      title: `Check out this post by ${post.fullName}`,
-      text: `${post.description} \n\nImages: ${post.images.join(", ")}`,
-      url: `${window.location.origin}/post/comment/${groupId}/${post.id}`,  // Fixed concatenation
+      url: `${window.location.origin}/post/comment/${groupId}/${post.id}`, 
     };
 
     try {
       if (navigator.share) {
-        // Web Share API (supported by most modern browsers)
         await navigator.share({
-          title: postDetails.title,
-          text: postDetails.text,
           url: postDetails.url,
         });
       } else {
-        // Fallback: Open a custom share dialog or redirect to a share URL
         const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postDetails.url)}`;
         window.open(shareUrl, "_blank");
       }
