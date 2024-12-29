@@ -71,7 +71,7 @@ const ChatPage = () => {
   useEffect(() => {
     const createConnection = async () => {
       const token = sessionStorage.getItem(accessTokenLocalStorage);
-
+  
       if (!token) {
         return;
       }
@@ -80,24 +80,23 @@ const ChatPage = () => {
           accessTokenFactory: () => token, // Pass the token to the connection
         })
         .build();
-
+  
       try {
         await conn.start();
         setConnection(conn);
         console.log("SignalR connection established");
-
-        
+  
         // Listen for new messages
         conn.on("ReceiveMessage", (message: ChatMessage) => {
-          if(message.content != undefined && chatMessages)
-          {
+          if (message.content && selectedUser && (message.fromUserId === selectedUser.id || message.toUserId === selectedUser.id)) {
             setChatMessages((prevMessages) => [
               ...prevMessages,
               {
-                id: message.id, 
+                id: message.id,
                 content: message.content,
                 fromUserId: message.fromUserId,
                 timestamp: message.timestamp,
+                toUserId: message.toUserId,  // Ensure to add toUserId to keep track
               },
             ]);
           }
@@ -106,17 +105,18 @@ const ChatPage = () => {
         console.error("SignalR connection failed: ", error);
       }
     };
-
+  
     if (isSignedIn) {
       createConnection();
     }
-
+  
     return () => {
       if (connection) {
         connection.stop();
       }
     };
-  }, [isSignedIn]);
+  }, [isSignedIn, selectedUser]); // Include selectedUser in dependency array to ensure messages are filtered properly
+  
 
   const fetchUserList = async (reset: boolean = false, skip: integer = 0) => {
     try {
