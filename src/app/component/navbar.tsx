@@ -208,7 +208,11 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                 )}
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
-                      <Link href="/user/profile" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
+                      <Link 
+                       href={{
+                        pathname: `/user/profile`
+                      }}
+                      className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
                         View Profile
                       </Link>
                       <button
