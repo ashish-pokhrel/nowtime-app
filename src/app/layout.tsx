@@ -17,7 +17,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "mangopuff",
+  title: "mangopuff.com",
   description: "Platform for sharing embracing thoughts.",
 };
 

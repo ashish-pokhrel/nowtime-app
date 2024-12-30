@@ -107,6 +107,10 @@ export default function Home() {
           <Link href="policy/privacypolicy" className="hover:underline underline">
             Privacy Policy
           </Link>
+          {" | "}
+          <Link href="user/signIn" className="hover:underline underline">
+            Sign In
+          </Link>
         </div>
         <p>&copy; {new Date().getFullYear()}  <Link href="/"  className="hover:underline"> mangopuff.com </Link></p>
       </footer>

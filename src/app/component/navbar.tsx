@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { FaArrowLeft, FaUserCircle, FaMapMarkerAlt, FaSearch, FaCommentDots } from "react-icons/fa";
+import { FaArrowLeft, FaUserCircle, FaMapMarkerAlt, FaSearch, FaCommentDots, FaSignOutAlt } from "react-icons/fa";
 import Logo from "../../app/component/logo";
 import { useRouter } from "next/navigation";
 import {
@@ -213,14 +213,11 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                         pathname: `/user/profile`
                       }}
                       className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
-                        View Profile
+                         <div className="flex items-center space-x-2">
+                         <FaUserCircle /> 
+                         <span>View Profile</span>
+                         </div>
                       </Link>
-                      <button
-                        className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
-                        onClick={handleLogout}
-                      >
-                        Logout
-                      </button>
                       {/* Chat Icon inside Profile Dropdown */}
                       <Link href="/chat" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
                         <div className="flex items-center space-x-2">
@@ -233,6 +230,15 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                           )}
                         </div>
                       </Link>
+                      <button
+                        className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
+                        onClick={handleLogout}
+                      >
+                         <div className="flex items-center space-x-2">
+                         <FaSignOutAlt /> 
+                         <span>Log Out</span>
+                         </div>
+                      </button>
                     </div>
                   )}
                 </div>

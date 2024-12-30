@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { postData } from "../../../utils/axios";
 import Logo from "../../../app/component/logo";
 import {EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage} from "../../../constant/constants";
+import Link from "next/link";
 
 export default function SignIn() {
   const router = useRouter();
@@ -131,7 +132,7 @@ export default function SignIn() {
           <span className="text-gray-300">Don't have an account?</span>
           <button
             onClick={handleRegisterRedirect}
-            className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-6 rounded-full transition duration-300"
+            className="w-full bg-green-700 hover:bg-green-200 text-white font-semibold py-2 px-6 rounded-full transition duration-300"
           >
             Register
           </button>
@@ -139,9 +140,9 @@ export default function SignIn() {
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-4 text-center text-gray-400">
-        <p>&copy; {new Date().getFullYear()} Your Company</p>
-      </div>
+      <footer className="mt-12 text-center text-gray-600 dark:text-gray-400">
+        <p>&copy; {new Date().getFullYear()} <Link href="/"  className="hover:underline"> mangopuff.com </Link></p>
+      </footer>
     </div>
   );
 }

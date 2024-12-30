@@ -15,6 +15,7 @@ type User = {
 const Profile = (params: { userId?: string }) => {
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isLoggedUser, setIsLoggedUser] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -22,6 +23,7 @@ const Profile = (params: { userId?: string }) => {
         const userId = params.userId ?? "";
         const data = await fetchData(`/user/${userId}`);
         setUserData(data.data.user);
+        setIsLoggedUser(data?.data.isLoggedUser);
       } catch (err: any) {
         console.error("Error fetching user data:", err);
       } finally {
@@ -72,13 +74,13 @@ const Profile = (params: { userId?: string }) => {
                 </div>
 
                 {/* Chat Link */}
-                <div className="text-center">
+                {!isLoggedUser &&(<div className="text-center">
                   <Link href={`/chat/${userData.fullName}`}>
                     <button className="mt-4 px-6 py-2 text-lg bg-blue-600 hover:bg-blue-500 rounded-full transition-all cursor-pointer">
                       Chat with {userData.fullName}
                     </button>
                   </Link>
-                </div>
+                </div>)}
               </div>
             </div>
           </div>
