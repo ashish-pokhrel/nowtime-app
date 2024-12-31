@@ -8,6 +8,7 @@ import { displayLocationLocalStorage } from "../../../constant/constants";
 
 type Post = {
   id: number;
+  userId: string;
   userFullName: string;
   profileImage: string;
   timePosted: string;

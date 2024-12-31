@@ -84,7 +84,6 @@ const ChatPage = () => {
       try {
         await conn.start();
         setConnection(conn);
-        console.log("SignalR connection established");
   
         // Listen for new messages
         conn.on("ReceiveMessage", (message: ChatMessage) => {
@@ -102,7 +101,6 @@ const ChatPage = () => {
           }
         });
       } catch (error) {
-        console.error("SignalR connection failed: ", error);
       }
     };
   
@@ -130,7 +128,6 @@ const ChatPage = () => {
       const pgNumber = page === 0 ? 1 : page;
       setLoadMore((take * pgNumber) <= response?.data?.count);
     } catch (error) {
-      console.error("Error fetching chat users:", error);
     } finally {
       setIsLoading(false);
     }
@@ -146,7 +143,6 @@ const ChatPage = () => {
       setFromUser(response?.data.fromUser);
       setToUser(response?.data.toUser);
     } catch (error) {
-      console.error("Error fetching chat messages:", error);
     } finally {
       setIsMessagesLoading(false);
     }
@@ -204,7 +200,6 @@ const ChatPage = () => {
       }
       setFormData((prev) => ({ ...prev, content: "" }));
     } catch (error) {
-      console.error("Error sending message:", error);
     }
   };
 

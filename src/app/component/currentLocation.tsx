@@ -4,7 +4,6 @@ import {IP_LOCATION_URL, userLocationLocalStorage, displayLocationLocalStorage} 
 import { fetchData} from "../../utils/axios";
 
 const fetchGroups = async (locationString : string) => {
-  console.log(1);
   try {
     const response = await fetchData(`/location/setlocation?locationString=${locationString}`);
   } catch (err: any) {

@@ -7,6 +7,7 @@ import Slider from "react-slick";
 type Post = {
   id: string;
   groupId: string;
+  userId: string;
   userFullName: string;
   profileImage: string;
   description: string;
@@ -150,13 +151,19 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   return (
     <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">
       <div className="flex items-center mb-4">
+      <Link 
+        href={`/user/profile/${post?.userId}`}>
         <img
           src={post?.profileImage}
           alt={`${post?.userFullName}'s profile`}
           className="w-12 h-12 rounded-full mr-4"
         />
+        </Link>
         <div>
+          <Link 
+          href={`/user/profile/${post?.userId}`}>
           <h2 className="font-semibold text-white">{post?.userFullName}</h2>
+          </Link>
           <p className="text-gray-500 text-sm">{post.timeElapsed}</p>
           <p className="text-gray-500 text-sm">{post.postLocation}</p>
         </div>

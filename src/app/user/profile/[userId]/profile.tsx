@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { FaEdit, FaEnvelope, FaEye, FaEyeSlash, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
-import Layout from "../../component/navbar";
-import { fetchData } from "../../../utils/axios";
+import Layout from "../../../component/navbar";
+import { fetchData } from "../../../../utils/axios";
 import Link from "next/link";
 
 type User = {
@@ -12,20 +12,22 @@ type User = {
   phoneNumber: string;
 };
 
-const Profile = (params: { userId?: string }) => {
+export default function Profile({ params }: { params: { userId: string } }) {
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoggedUser, setIsLoggedUser] = useState<boolean>(true);
+  const [parsedParams, setParsedParams] =  useState<{userId: string } | null>(null);
 
   useEffect(() => {
+    const parsedParams = JSON.parse(params.value);
+    setParsedParams(parsedParams);
     const fetchGroups = async () => {
       try {
-        const userId = params.userId ?? "";
-        const data = await fetchData(`/user/${userId}`);
+        const userId = parsedParams.userId ?? "";
+        const data = await fetchData(`/user?id=${userId}`);
         setUserData(data.data.user);
         setIsLoggedUser(data?.data.isLoggedUser);
       } catch (err: any) {
-        console.error("Error fetching user data:", err);
       } finally {
         setLoading(false);
       }
@@ -94,5 +96,3 @@ const Profile = (params: { userId?: string }) => {
     </Layout>
   );
 };
-
-export default Profile;

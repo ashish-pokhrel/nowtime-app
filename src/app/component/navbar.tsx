@@ -73,7 +73,6 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
           setHasMore(false);
         }
       } catch (error) {
-        console.error("Error fetching locations:", error);
       }
     };
 
@@ -128,7 +127,6 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         const response = await fetchData("/message/getunreadchats");
         setUnreadMessagesCount(response?.data.count);
       } catch (error) {
-        console.error("Error fetching unread messages count:", error);
       }
     };
 
@@ -209,9 +207,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
                       <Link 
-                       href={{
-                        pathname: `/user/profile`
-                      }}
+                        href={`/user/profile/00000000-0000-0000-0000-000000000000`}
                       className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
                          <div className="flex items-center space-x-2">
                          <FaUserCircle /> 

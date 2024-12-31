@@ -114,7 +114,6 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
           setHasMore(false);
         }
       } catch (error) {
-        console.error("Error fetching locations:", error);
       }
     };
 
