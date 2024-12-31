@@ -79,7 +79,7 @@ export default function SignIn() {
 
       {/* Sign-In Form */}
       <div className="w-full max-w-md bg-gray-900 text-white rounded-lg shadow-lg p-8 z-10">
-        <h1 className="text-3xl font-bold text-center text-gray-200 mb-8">Sign In</h1>
+        {/* <h1 className="text-3xl font-bold text-center text-gray-200 mb-8">Sign In</h1> */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email */}
           <div>
@@ -132,7 +132,7 @@ export default function SignIn() {
           <span className="text-gray-300">Don't have an account?</span>
           <button
             onClick={handleRegisterRedirect}
-            className="w-full bg-green-700 hover:bg-green-200 text-white font-semibold py-2 px-6 rounded-full transition duration-300"
+            className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-6 rounded-full transition duration-300"
           >
             Register
           </button>
