@@ -40,7 +40,9 @@ type Comment = {
   replies?: Comment[];
 };
 
-export default function CommentsPage({ params }: { params: { groupId: string; postId: string } }) {
+type Params = Promise<{ groupId: string; postId: string  }>
+
+export default function CommentsPage({ params }: { params: Params}) {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>("");

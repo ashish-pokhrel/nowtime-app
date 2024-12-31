@@ -5,20 +5,31 @@ import { postFileData } from "../../../utils/axios";
 import Logo from "../../../app/component/logo";
 import { EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage } from "../../../constant/constants";
 
+type requestData = 
+{
+  firstName: string,
+  middleName: string,
+  lastName: string,
+  profileImage: File | null,
+  email: string,
+  phoneNumber: string,
+  password: string,
+  confirmPassword: string,
+};
+
 export default function UserRegister() {
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    profileImage: null,
-    email: "",
-    phoneNumber: "",
-    password: "",
-    confirmPassword: "",
-  });
-
+  const [formData, setFormData] = useState<requestData>({
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        profileImage: null,
+        email: '',
+        phoneNumber: '',
+        password: '',
+        confirmPassword: '',
+      });
   const [errors, setErrors] = useState({
     password: "",
     confirmPassword: "",
@@ -29,10 +40,14 @@ export default function UserRegister() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, files } = e.target;
+    const { name, value, files } = e.target as HTMLInputElement;
+    
     if (name === "profileImage") {
       const file = files ? files[0] : null;
-      setFormData((prev) => ({ ...prev, profileImage: file }));
+      if(file != null)
+      {
+        setFormData((prev) => ({ ...prev, profileImage: file }));
+      }
       // Generate image preview
       if (file) {
         const previewUrl = URL.createObjectURL(file);
@@ -47,7 +62,7 @@ export default function UserRegister() {
         validatePassword(value);
       }
       if (name === "confirmPassword") {
-        validateConfirmPassword(value, formData.password);
+        validateConfirmPassword(value, formData?.password || "");
       }
     }
   };
@@ -87,16 +102,16 @@ export default function UserRegister() {
 
     try {
       const data = new FormData();
-      data.append("firstName", formData.firstName);
-      data.append("middleName", formData.middleName || "");
-      data.append("lastName", formData.lastName);
-      if (formData.profileImage) {
-        data.append("profileImage", formData.profileImage);
+      data.append("firstName", formData?.firstName || "");
+      data.append("middleName", formData?.middleName || "");
+      data.append("lastName", formData?.lastName || "");
+      if (formData?.profileImage) {
+        data.append("profileImage", formData?.profileImage || "");
       }
-      data.append("email", formData.email);
-      data.append("phoneNumber", formData.phoneNumber || "");
-      data.append("password", formData.password);
-      data.append("confirmPassword", formData.confirmPassword);
+      data.append("email", formData?.email || "");
+      data.append("phoneNumber", formData?.phoneNumber || "");
+      data.append("password", formData?.password || "");
+      data.append("confirmPassword", formData?.confirmPassword || "");
 
       const response = await postFileData("/user/register", data);
 
@@ -131,7 +146,7 @@ export default function UserRegister() {
               <input
                 type="text"
                 name="firstName"
-                value={formData.firstName}
+                value={formData?.firstName}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
                 placeholder="Enter your first name"
@@ -145,7 +160,7 @@ export default function UserRegister() {
               <input
                 type="text"
                 name="middleName"
-                value={formData.middleName}
+                value={formData?.middleName}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
                 placeholder="Enter your middle name"
@@ -158,7 +173,7 @@ export default function UserRegister() {
               <input
                 type="text"
                 name="lastName"
-                value={formData.lastName}
+                value={formData?.lastName}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
                 placeholder="Enter your last name"
@@ -175,7 +190,7 @@ export default function UserRegister() {
             <input
               type="email"
               name="email"
-              value={formData.email}
+              value={formData?.email}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
               placeholder="Enter your email"
@@ -195,7 +210,7 @@ export default function UserRegister() {
               <input
                 type="password"
                 name={field.name}
-                value={formData[field.name]}
+                value={formData?[field.name] : ""}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
                 placeholder={`Enter your ${field.label.toLowerCase()}`}

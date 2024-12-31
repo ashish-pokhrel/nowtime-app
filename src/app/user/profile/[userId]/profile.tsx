@@ -12,7 +12,9 @@ type User = {
   phoneNumber: string;
 };
 
-export default function Profile({ params }: { params: { userId: string } }) {
+type Params = Promise<{ userId: string  }>
+
+export default function Profile({ params }: { params: Params}) {
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoggedUser, setIsLoggedUser] = useState<boolean>(true);

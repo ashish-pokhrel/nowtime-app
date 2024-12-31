@@ -32,13 +32,9 @@ const useDebounce = (value: string, delay: number) => {
   return debouncedValue;
 };
 
-interface PageProps {
-  params: {
-    userName: string;
-  };
-}
+type Params = Promise<{ userName: string; }>
 
-export default function ChatPage({ params }: { params: { userName: string } }) {
+export default function ChatPage({ params }: { params: Params}) {
   const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
   const [fromUser, setFromUser] = useState<ChatUser | null>(null);

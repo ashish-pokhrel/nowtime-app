@@ -1,5 +1,7 @@
 import ProfilePage from "../[userId]/profile";
 
-export default function Profile({ params }:  { params: { userId: string } }) {
+type Params = Promise<{ userId: string  }>
+
+export default function Profile({ params }:  { params: Params}) {
   return <ProfilePage params={params} />;
 }

@@ -33,7 +33,7 @@ export default function Home() {
     const fetchGroups = async () => {
       try {
         const data = await fetchData("/group");
-        setBoxes(data.data);
+        setBoxes(data?.data);
         setLoading(false);
       } catch (err: any) {
         setError(err.message || "Failed to fetch groups");

@@ -1,5 +1,7 @@
 import CommentsPage from "../[postId]/comment";
 
-export default function Comment({ params }:  { params: { groupId: string; postId: string } }) {
+type Params = Promise<{ groupId: string; postId: string  }>
+
+export default function Comment({ params }:  { params: Params }) {
   return <CommentsPage params={params} />;
 }
