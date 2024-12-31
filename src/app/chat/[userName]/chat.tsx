@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { HubConnectionBuilder, HubConnection } from "@microsoft/signalr";
-import Layout from "../component/navbar";
-import { fetchData, postData } from "../../utils/axios";
-import { accessTokenLocalStorage, SignalR_URL } from "../../constant/constants";
+import Layout from "../../component/navbar";
+import { fetchData, postData } from "../../../utils/axios";
+import { accessTokenLocalStorage, SignalR_URL } from "../../../constant/constants";
 
 interface ChatUser {
   id: string;
@@ -32,7 +32,7 @@ const useDebounce = (value: string, delay: number) => {
   return debouncedValue;
 };
 
-const ChatPage = () => {
+export default function ChatPage({ params }: { params: { userName: string } }) {
   const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
   const [fromUser, setFromUser] = useState<ChatUser | null>(null);
@@ -53,6 +53,7 @@ const ChatPage = () => {
     toUserId: toUser?.id,
     content: "", 
   });
+  const [parsedParams, setParsedParams] =  useState<{ userName: string } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,6 +64,13 @@ const ChatPage = () => {
   }, [chatMessages]); 
 
   useEffect(() => {
+    const parsedParams = JSON.parse(params.value);
+    if(parsedParams.userName != "'%20'")
+    {
+      const decodedString = decodeURIComponent(parsedParams.userName);
+      setParsedParams(decodedString);
+      setSearchTerm(decodedString);
+    }
     if (sessionStorage.getItem(accessTokenLocalStorage)) {
       setIsSignedIn(true);
     }
@@ -116,7 +124,7 @@ const ChatPage = () => {
   }, [isSignedIn, selectedUser]); // Include selectedUser in dependency array to ensure messages are filtered properly
   
 
-  const fetchUserList = async (reset: boolean = false, skip: integer = 0) => {
+  const fetchUserList = async (reset: boolean = false, skip: number = 0) => {
     try {
       setIsLoading(true);
       const pageSize = skip == 0 ? page : skip;
@@ -133,7 +141,7 @@ const ChatPage = () => {
     }
   };
 
-  const fetchChatMessages = async (userId: number) => {
+  const fetchChatMessages = async (userId: string) => {
     try {
       setIsMessagesLoading(true);
       const response = await fetchData(
@@ -185,9 +193,10 @@ const ChatPage = () => {
       setChatMessages((prevMessages) => [
         ...prevMessages,
         {
-          id: Date.now(), 
+          id: Math.random(), 
           content: formData.content,
-          fromUserId: fromUser?.id || 0,
+          fromUserId: fromUser?.id || "",
+          toUserId: toUser?.id || "",
           timestamp: new Date().toISOString(),
         },
       ]);
@@ -357,5 +366,3 @@ const ChatPage = () => {
     </Layout>
   );
 };
-
-export default ChatPage;

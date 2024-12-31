@@ -215,7 +215,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                          </div>
                       </Link>
                       {/* Chat Icon inside Profile Dropdown */}
-                      <Link href="/chat" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
+                      <Link href="/chat/' '" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
                         <div className="flex items-center space-x-2">
                           <FaCommentDots />
                           <span>Chats</span>
