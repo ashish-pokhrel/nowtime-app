@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - mangopuff
+name: Build and deploy Node.js app to Azure Web App - grouphopper
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -26,12 +26,15 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-      
+
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,19 +50,22 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
       
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_777F31B64510409294FC9109DE953F46 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F8C7D85FC64D49DEB8CC7A1F01928137 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E2E42B524CD84FD48326732646B817A7 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7D6923A8D6EE4127971336F6758FC4F4 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0AF6B0C0C9B849F094C96EBC86A3D7B6 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C1AD950E7C5445368F72B086E655616B }}
 
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
         with:
-          app-name: 'mangopuff'
+          app-name: 'grouphopper'
           slot-name: 'Production'
           package: .
           
