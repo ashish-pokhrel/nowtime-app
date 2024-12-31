@@ -33,7 +33,7 @@ export default function Profile({ params }: { params: Params}) {
       }
     };
     fetchGroups();
-  }, [params.userId]);
+  }, [params]);
 
   return (
     <Layout backHref="/feed/All">
