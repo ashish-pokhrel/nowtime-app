@@ -98,7 +98,7 @@ export default function UserRegister() {
       data.append("password", formData.password);
       data.append("confirmPassword", formData.confirmPassword);
 
-      var response = await postFileData("/user/register", data);
+      const response = await postFileData("/user/register", data);
 
       const currentDateTime = new Date();
       currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
@@ -109,7 +109,7 @@ export default function UserRegister() {
       sessionStorage.setItem(profileImageLocalStorage, profileImage);
 
       router.push("/feed/All");
-    } catch (error) {}
+    } catch {}
   };
 
   return (

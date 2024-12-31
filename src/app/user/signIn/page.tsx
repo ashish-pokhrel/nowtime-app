@@ -52,7 +52,7 @@ export default function SignIn() {
       sessionStorage.setItem(profileImageLocalStorage, profileImage);
 
       router.push("/");
-    } catch (error) {
+    } catch {
       setError("Invalid email or password");
     } finally {
       setLoading(false); 

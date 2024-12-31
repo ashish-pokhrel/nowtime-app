@@ -56,7 +56,9 @@ const FileUpload = ({
   </div>
 );
 
-export default function AddPostPage({ params }: { params: { id: string } }) {
+type Params = Promise<{ id: string }>
+
+export default function AddPostPage({ params }: { params: Params}) {
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [selectedBox, setSelectedBox] = useState<string | "">("");
   const [description, setDescription] = useState("");
@@ -66,16 +68,15 @@ export default function AddPostPage({ params }: { params: { id: string } }) {
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [filteredLocations, setFilteredLocations] = useState<Location[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
-  const take = 10; // Number of items per page
+  const [page] = useState(0);
+  const take = 10;
   const router = useRouter();
 
   useEffect(() => {
     const getParams = async () => {
-      const parsedParamsId = (await params).id
-      setSelectedBox(parsedParamsId);
-      setResolvedParams((await params));
+      const parsedParams = (await params)
+      setSelectedBox(parsedParams.id);
+      setResolvedParams((parsedParams));
     }
     getParams();
     const fetchGroups = async () => {
@@ -106,12 +107,7 @@ export default function AddPostPage({ params }: { params: { id: string } }) {
           `/location?searchTerm=${storedLocation}&skip=${skip}&top=${take}`
         );
         setFilteredLocations(postData?.data.locations);
-        if (postData?.data?.locations?.length) {
-          setHasMore(postData.data.count > skip + postData.data.locations.length);
-        } else {
-          setHasMore(false);
-        }
-      } catch (error) {
+      } catch {
       }
     };
 

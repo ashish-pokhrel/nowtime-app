@@ -49,7 +49,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
         setLikes(likes + 1);
       }
       setIsLiked(!isLiked);
-    } catch (error) {
+    } catch {
     }
   };
 
@@ -137,7 +137,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
         const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postDetails.url)}`;
         window.open(shareUrl, "_blank");
       }
-    } catch (error) {
+    } catch {
     }
   };
 

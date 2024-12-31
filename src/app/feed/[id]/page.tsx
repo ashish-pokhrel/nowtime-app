@@ -41,7 +41,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
-  const [take, setTake] = useState(10);
+  const [take] = useState(10);
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -70,7 +70,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
           const data = await fetchData(`/group/${paramsData.id}`);
           setBox(data?.data);
           setLoading(false);
-        } catch (err: any) {
+        } catch{
           setLoading(false);
         }
       };
@@ -98,7 +98,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
         setPostList((prevPosts) => [...prevPosts, ...postData.data.posts]);
         setHasMore(postData.data.count > take);
       }
-    } catch (error) {
+    } catch {
       setError("Failed to load data");
     } finally {
       setLoadingMore(false);

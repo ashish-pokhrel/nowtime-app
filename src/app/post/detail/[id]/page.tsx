@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { FaThumbsUp, FaComment, FaShare, FaArrowLeft } from "react-icons/fa";
@@ -30,7 +31,7 @@ export default function PostDetailsPage() {
       try {
         const response = await fetchData(`/post/${postId}`);
         setPost(response?.data);
-      } catch (error) {
+      } catch {
       } finally {
         setLoading(false);
       }

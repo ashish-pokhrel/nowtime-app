@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FaEdit, FaEnvelope, FaEye, FaEyeSlash, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
+import { FaEnvelope, FaPhone } from "react-icons/fa";
 import Layout from "../../../component/navbar";
 import { fetchData } from "../../../../utils/axios";
 import Link from "next/link";
@@ -17,12 +17,7 @@ export default function Profile({ params }: { params: { userId: string } }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoggedUser, setIsLoggedUser] = useState<boolean>(true);
 
-  const getParams = async () => {
-    const parsedParams = (await params)
-  }
-
   useEffect(() => {
-   
     const fetchGroups = async () => {
       try {
         const parsedParams = (await params);

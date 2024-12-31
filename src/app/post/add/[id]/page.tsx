@@ -1,5 +1,7 @@
 import AddPostPage from "../../add/[id]/add";
 
-export default function AddPost({ params }:  { params: { id: string } }) {
+type Params = Promise<{ id: string }>
+
+export default function AddPost({ params }:  { params: Params }) {
   return <AddPostPage params={params} />;
 }

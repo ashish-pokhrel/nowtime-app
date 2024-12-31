@@ -66,7 +66,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
           `/location?searchTerm=${debouncedSearchTerm}&skip=${skip}&top=${take}`
         );
         setAvailableAddresses(postData?.data.locations || []);
-      } catch (error) {
+      } catch {
       }
     };
 
@@ -120,7 +120,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
       try {
         const response = await fetchData("/message/getunreadchats");
         setUnreadMessagesCount(response?.data.count);
-      } catch (error) {
+      } catch {
       }
     };
 

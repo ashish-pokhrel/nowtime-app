@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaArrowLeft, FaPaperPlane } from "react-icons/fa";
-import Link from "next/link";
+import { FaPaperPlane } from "react-icons/fa";
 import { fetchData, postData } from "../../../../../utils/axios";
 import PostCard from "../../../../component/postCard";
 import CommentCard from "../../../../component/commentCard";
@@ -66,7 +65,7 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       setLoadingPost(true);
       const postResponse = await fetchData(`/post/GetPostById?postId=${parsedParams?.postId}`);
       setPost(postResponse?.data);
-    } catch (err) {
+    } catch {
       setError("Failed to load post.");
     } finally {
       setLoadingPost(false);
@@ -84,7 +83,7 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       setComments((prev) => (pageNumber === 0 ? newComments : [...prev, ...newComments]));
       const pgNumber = pageNumber === 0 ? 1 : pageNumber;
       setHasMore(pgNumber*COMMENTS_PER_PAGE < commentResponse?.data?.count);
-    } catch (err) {
+    } catch {
       setError("Failed to load comments.");
     } finally {
       setLoadingComments(false);
@@ -102,7 +101,7 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       // Refresh comments after adding reply
       setPage(0);
       fetchComments(0);
-    } catch (err) {
+    } catch {
       setError("Failed to add reply.");
     }
   };
@@ -121,7 +120,7 @@ export default function CommentsPage({ params }: { params: { groupId: string; po
       setNewComment("");
       setPage(0); 
       fetchComments(0);
-    } catch (err) {
+    } catch {
       setError("Failed to add comment.");
     } finally {
       setAddingComment(false);

@@ -5,8 +5,8 @@ import { fetchData} from "../../utils/axios";
 
 const fetchGroups = async (locationString : string) => {
   try {
-    const response = await fetchData(`/location/setlocation?locationString=${locationString}`);
-  } catch (err: any) {
+    await fetchData(`/location/setlocation?locationString=${locationString}`);
+  } catch {
   }
 };
 
@@ -14,7 +14,7 @@ const CurrentLocation = () => {
   useEffect(() => {
     const fetchIPBasedLocation = async () => {
       try {
-        var userLocation = localStorage.getItem(userLocationLocalStorage);
+        const userLocation = localStorage.getItem(userLocationLocalStorage);
         if(!userLocation)
         {
             const response = await fetch(IP_LOCATION_URL);
@@ -25,7 +25,7 @@ const CurrentLocation = () => {
             localStorage.setItem(displayLocationLocalStorage, displayLocation);
             fetchGroups(stringfiedData);
           }
-      } catch (error) {
+      } catch {
       }
     };
 
