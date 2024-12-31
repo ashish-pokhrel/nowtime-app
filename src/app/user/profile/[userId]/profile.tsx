@@ -16,16 +16,19 @@ export default function Profile({ params }: { params: { userId: string } }) {
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoggedUser, setIsLoggedUser] = useState<boolean>(true);
-  const [parsedParams, setParsedParams] =  useState<{userId: string } | null>(null);
+
+  const getParams = async () => {
+    const parsedParams = (await params)
+  }
 
   useEffect(() => {
-    const parsedParams = JSON.parse(params.value);
-    setParsedParams(parsedParams);
+   
     const fetchGroups = async () => {
       try {
+        const parsedParams = (await params);
         const userId = parsedParams.userId ?? "";
         const data = await fetchData(`/user?id=${userId}`);
-        setUserData(data.data.user);
+        setUserData(data?.data.user);
         setIsLoggedUser(data?.data.isLoggedUser);
       } catch (err: any) {
       } finally {

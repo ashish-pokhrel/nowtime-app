@@ -33,9 +33,8 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [addressSearchTerm, setAddressSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
   const [availableAddresses, setAvailableAddresses] = useState<Location[]>([]);
-  const [hasMore, setHasMore] = useState(true);
   const [take] = useState(10);
-  const [page, setPage] = useState(0);
+  const [page] = useState(0);
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -67,11 +66,6 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
           `/location?searchTerm=${debouncedSearchTerm}&skip=${skip}&top=${take}`
         );
         setAvailableAddresses(postData?.data.locations || []);
-        if (postData?.data?.locations?.length) {
-          setHasMore(postData.data.count > skip + postData.data.locations.length);
-        } else {
-          setHasMore(false);
-        }
       } catch (error) {
       }
     };

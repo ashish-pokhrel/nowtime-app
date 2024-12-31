@@ -56,15 +56,14 @@ const FileUpload = ({
   </div>
 );
 
-export default function AddPostPage({ params }: { params: Promise<{ id: string }> }) {
+export default function AddPostPage({ params }: { params: { id: string } }) {
   const [boxes, setBoxes] = useState<Box[]>([]);
-  const [selectedBox, setSelectedBox] = useState<number | "">("");
+  const [selectedBox, setSelectedBox] = useState<string | "">("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
-  const [locations, setLocations] = useState<Location[]>([]);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [filteredLocations, setFilteredLocations] = useState<Location[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -73,12 +72,12 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
   const router = useRouter();
 
   useEffect(() => {
-    if (params.value) {
-      const parsedParams = JSON.parse(params.value);
-      setSelectedBox(parsedParams.id);
-      setResolvedParams(parsedParams);
+    const getParams = async () => {
+      const parsedParamsId = (await params).id
+      setSelectedBox(parsedParamsId);
+      setResolvedParams((await params));
     }
-
+    getParams();
     const fetchGroups = async () => {
       try {
         const response = await fetchData("/group/GetAllDropDown");
@@ -106,7 +105,6 @@ export default function AddPostPage({ params }: { params: Promise<{ id: string }
         const postData = await fetchData(
           `/location?searchTerm=${storedLocation}&skip=${skip}&top=${take}`
         );
-        setLocations(postData?.data.locations);
         setFilteredLocations(postData?.data.locations);
         if (postData?.data?.locations?.length) {
           setHasMore(postData.data.count > skip + postData.data.locations.length);

@@ -33,7 +33,7 @@ export default function SignIn() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when submitting
+    setLoading(true); 
 
     const updatedFormData = {
       ...formData,

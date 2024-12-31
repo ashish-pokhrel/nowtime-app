@@ -40,20 +40,19 @@ export default function ChatPage({ params }: { params: { userName: string } }) {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [page, setPage] = useState(0);
-  const [take, setTake] = useState(8);
+  const [take,] = useState(8);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const [isLoading, setIsLoading] = useState(false);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
   const [connection, setConnection] = useState<HubConnection | null>(null);
-  const[historyTop, setHistoryTop] = useState(10);
+  const[historyTop] = useState(10);
   const [formData, setFormData] = useState({
     fromUserId: fromUser?.id,
     toUserId: toUser?.id,
     content: "", 
   });
-  const [parsedParams, setParsedParams] =  useState<{ userName: string } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -64,16 +63,18 @@ export default function ChatPage({ params }: { params: { userName: string } }) {
   }, [chatMessages]); 
 
   useEffect(() => {
-    const parsedParams = JSON.parse(params.value);
-    if(parsedParams.userName != "'%20'")
-    {
-      const decodedString = decodeURIComponent(parsedParams.userName);
-      setParsedParams(decodedString);
-      setSearchTerm(decodedString);
+    const getParams = async () => {
+      const userName = (await params).userName
+      if(userName != "'%20'")
+      {
+        const decodedString = decodeURIComponent(userName);
+        setSearchTerm(decodedString);
+      }
+      if (sessionStorage.getItem(accessTokenLocalStorage)) {
+        setIsSignedIn(true);
+      }
     }
-    if (sessionStorage.getItem(accessTokenLocalStorage)) {
-      setIsSignedIn(true);
-    }
+    getParams();
   }, []);
 
   useEffect(() => {

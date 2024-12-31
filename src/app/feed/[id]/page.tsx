@@ -7,16 +7,24 @@ import Layout from "../../component/navbar";
 import { displayLocationLocalStorage } from "../../../constant/constants";
 
 type Post = {
-  id: number;
+  id: string;
+  groupId: string;
   userId: string;
   userFullName: string;
   profileImage: string;
-  timePosted: string;
   description: string;
-  postImages: string[];
-  likes: number;
+  images: {
+    id: number;
+    postId: string;
+    imageUrl: string;
+  }[];
+  totalLikes: number;
   totalComments: number;
-  shares: number;
+  totalShares: number;
+  timePosted: string;
+  timeElapsed: string,
+  isLikedByCurrentUser: boolean;
+  postLocation: string
 };
 
 type Box = {
@@ -60,7 +68,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       const fetchGroups = async () => {
         try {
           const data = await fetchData(`/group/${paramsData.id}`);
-          setBox(data.data);
+          setBox(data?.data);
           setLoading(false);
         } catch (err: any) {
           setLoading(false);
@@ -80,7 +88,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
     try {
       const postLocation = localStorage.getItem(displayLocationLocalStorage);
-      setPostLocation(postLocation);
+      setPostLocation(postLocation ?? "");
       const postData = await fetchData(
         `/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}&postLocation=${postLocation}`
       );
