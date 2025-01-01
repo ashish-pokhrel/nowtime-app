@@ -45,7 +45,7 @@ const FileUpload = ({
       <div className="flex space-x-4 mt-4 mb-4 overflow-x-auto">
         {images.map((image, index) => (
           <img
-            key={index}
+            key={index + Math.random()}
             src={URL.createObjectURL(image)}
             alt={`Preview ${index}`}
             className="w-20 h-20 object-cover rounded-lg border border-gray-600"
@@ -213,7 +213,7 @@ export default function AddPostPage({ params }: { params: Params}) {
           >
             <option value="">Select a box</option>
             {boxes.map((box) => (
-              <option key={box.id} value={box.id}>
+              <option key={box.id + Math.random()} value={box.id}>
                 {box.title}
               </option>
             ))}
@@ -238,7 +238,7 @@ export default function AddPostPage({ params }: { params: Params}) {
             <ul className="mt-2 bg-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
               {filteredLocations.map((location) => (
                 <li
-                  key={location.id}
+                  key={location.id + Math.random()}
                   className="p-4 cursor-pointer hover:bg-gray-600"
                   onClick={() => handleLocationSelect(location)}
                 >

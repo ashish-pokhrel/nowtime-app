@@ -156,7 +156,7 @@ export default function CommentsPage({ params }: { params: Params}) {
       ) : (
         <div className="space-y-6">
           {comments.map((comment) => (
-            <CommentCard key={comment.id} comment={comment} onReply={handleReply} />
+            <CommentCard key={comment.id + Math.random()} comment={comment} onReply={handleReply} />
           ))}
         </div>
       )}

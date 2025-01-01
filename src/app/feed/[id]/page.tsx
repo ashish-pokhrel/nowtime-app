@@ -201,7 +201,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
         {/* Post List */}
         <div className="space-y-8">
           {postList.map((post) => (
-            <PostCard key={post.id} post={post} groupId={resolvedParams?.id || ""} />
+            <PostCard key={post.id  + Math.random()} post={post} groupId={resolvedParams?.id || ""} />
           ))}
         </div>
 

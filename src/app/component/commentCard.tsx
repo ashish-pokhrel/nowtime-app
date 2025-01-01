@@ -104,7 +104,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment, onReply, isReply = f
         <div className="mt-4 space-y-4">
           {comment.replies.map((reply) => (
             <CommentCard
-              key={`${comment.id}-${reply.id}`}
+              key={`${comment.id}-${Math.random()}`}
               comment={reply}
               onReply={onReply}
               isReply={true}

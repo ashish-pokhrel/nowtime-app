@@ -176,7 +176,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                   {availableAddresses.length > 0 ? (
                     availableAddresses.map((address) => (
                       <button
-                        key={address.id}
+                        key={address.id + Math.random()}
                         className="block w-full text-left px-4 py-2 text-xs md:text-sm text-white hover:bg-gray-600 cursor-pointer"
                         onClick={() => handleAddressSelect(address)}
                       >

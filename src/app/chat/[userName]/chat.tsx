@@ -235,7 +235,7 @@ export default function ChatPage({ params }: { params: Params}) {
           <div className="space-y-2">
             {chatUsers?.map((user) => (
               <button
-                key={user.id}
+                key={user.id  + Math.random()}
                 className={`flex items-center p-3 rounded-lg w-full bg-gray-700 hover:bg-gray-600 transition ${
                   selectedUser?.id === user.id && "bg-gray-600"
                 }`}
@@ -289,7 +289,7 @@ export default function ChatPage({ params }: { params: Params}) {
                 {isMessagesLoading ? (
                   <p className="text-gray-400">Loading messages...</p>
                 ) : (
-                  chatMessages.map((message, index) => (
+                  chatMessages.map((message) => (
                     <div
                       key={message.id + Math.random()}
                       className={`flex ${

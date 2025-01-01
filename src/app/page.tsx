@@ -49,7 +49,7 @@ export default function Home() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {[...Array(6)].map((_, index) => (
-          <div key={index} className="bg-gray-300 dark:bg-gray-700 shadow-lg rounded-lg p-6 animate-pulse">
+          <div key={index + Math.random()} className="bg-gray-300 dark:bg-gray-700 shadow-lg rounded-lg p-6 animate-pulse">
             {/* Skeleton Loader Content */}
             <div className="h-20 w-20 bg-gray-400 rounded-full mb-4"></div>
             <div className="h-4 bg-gray-400 mb-2"></div>
@@ -75,7 +75,7 @@ export default function Home() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {boxes.map((box) => (
           <Link
-            key={box.id}
+            key={box.id  + Math.random()}
             href={{
               pathname: `/feed/${box.id}`
             }}

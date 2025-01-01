@@ -73,7 +73,7 @@ export default function PostDetailsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           {post.postImages.map((image : any, index : any) => (
             <img
-              key={index}
+              key={index + Math.random()}
               src={image}
               alt={`Post image ${index + 1}`}
               className="w-full h-64 object-cover rounded-lg"

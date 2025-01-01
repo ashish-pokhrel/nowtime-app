@@ -201,7 +201,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           {imagesToShow.map((image, index) => (
             <img
-              key={index}
+              key={index + Math.random()}
               src={image.imageUrl}
               alt={`Post image ${index + 1}`}
               className="w-full h-64 object-cover rounded-lg cursor-pointer"
@@ -269,7 +269,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
                 className="custom-slider"
               >
                 {post.images.map((image, index)  => (
-                  <div key={index} className="px-4 py-2">
+                  <div key={index + Math.random()} className="px-4 py-2">
                     <img
                       src={image.imageUrl}
                       alt={`Post image ${index + 1}`}
