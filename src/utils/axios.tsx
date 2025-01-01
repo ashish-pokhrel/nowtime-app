@@ -35,6 +35,10 @@ const handleError = (error: any) => {
     window.location.href = "/user/signIn";
   }
   if (axios.isAxiosError(error)) {
+    if(error.status == 400)
+    {
+      return error.response?.data;
+    }
     const message = error.response?.data?.message || "Something went wrong";
     throw new Error(message);
   } else {
@@ -128,9 +132,12 @@ export const postFileData = async (url: string, data: FormData) => {
       },
     });
     if (response.status === 200 || response.status === 201) {
-      return response.data;
+      return response;
     }
   } catch (error){
+    if (axios.isAxiosError(error)) {
+      return error.response?.data;
+    }
     handleError(error);
   }
 };

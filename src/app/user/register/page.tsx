@@ -5,47 +5,44 @@ import { postFileData } from "../../../utils/axios";
 import Logo from "../../../app/component/logo";
 import { EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage } from "../../../constant/constants";
 
-type requestData = 
-{
-  firstName: string,
-  middleName: string,
-  lastName: string,
-  profileImage: File | null,
-  email: string,
-  phoneNumber: string,
-  password: string,
-  confirmPassword: string,
+type requestData = {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  profileImage: File | null;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  confirmPassword: string;
 };
 
 export default function UserRegister() {
   const router = useRouter();
 
   const [formData, setFormData] = useState<requestData>({
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        profileImage: null,
-        email: '',
-        phoneNumber: '',
-        password: '',
-        confirmPassword: '',
-      });
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    profileImage: null,
+    email: '',
+    phoneNumber: '',
+    password: '',
+    confirmPassword: '',
+  });
+
   const [errors, setErrors] = useState({
     password: "",
     confirmPassword: "",
+    validation: "",
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, files } = e.target as HTMLInputElement;
-    
     if (name === "profileImage") {
       const file = files ? files[0] : null;
-      if(file != null)
-      {
+      if (file != null) {
         setFormData((prev) => ({ ...prev, profileImage: file }));
       }
       // Generate image preview
@@ -68,13 +65,11 @@ export default function UserRegister() {
   };
 
   const validatePassword = (password: string) => {
-    const criteria =
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const criteria = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!criteria.test(password)) {
       setErrors((prev) => ({
         ...prev,
-        password:
-          "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
+        password: "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.",
       }));
     } else {
       setErrors((prev) => ({ ...prev, password: "" }));
@@ -101,6 +96,7 @@ export default function UserRegister() {
     }
 
     try {
+      setErrors((prev) => ({ ...prev, validation: "" }));
       const data = new FormData();
       data.append("firstName", formData?.firstName || "");
       data.append("middleName", formData?.middleName || "");
@@ -114,16 +110,21 @@ export default function UserRegister() {
       data.append("confirmPassword", formData?.confirmPassword || "");
 
       const response = await postFileData("/user/register", data);
-
-      const currentDateTime = new Date();
-      currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
-      sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
-      const { jwtToken, refreshToken, profileImage } = response.user;
-      sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
-      sessionStorage.setItem(userGuidLocalStorage, refreshToken);
-      sessionStorage.setItem(profileImageLocalStorage, profileImage);
-
-      router.push("/feed/All");
+      if(response.status == 200)
+      {
+        const currentDateTime = new Date();
+        currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
+        sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
+        const { jwtToken, refreshToken, profileImage } = response.data.user;
+        sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
+        sessionStorage.setItem(userGuidLocalStorage, refreshToken);
+        sessionStorage.setItem(profileImageLocalStorage, profileImage);
+        router.push("/feed/All");
+      }
+      else
+      {
+        setErrors((prev) => ({ ...prev, validation: response.detail || response.Detail }));
+      }
     } catch {}
   };
 
@@ -146,7 +147,7 @@ export default function UserRegister() {
               <input
                 type="text"
                 name="firstName"
-                value={formData?.firstName}
+                value={formData.firstName}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
                 placeholder="Enter your first name"
@@ -160,7 +161,7 @@ export default function UserRegister() {
               <input
                 type="text"
                 name="middleName"
-                value={formData?.middleName}
+                value={formData.middleName}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
                 placeholder="Enter your middle name"
@@ -173,7 +174,7 @@ export default function UserRegister() {
               <input
                 type="text"
                 name="lastName"
-                value={formData?.lastName}
+                value={formData.lastName}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
                 placeholder="Enter your last name"
@@ -190,7 +191,7 @@ export default function UserRegister() {
             <input
               type="email"
               name="email"
-              value={formData?.email}
+              value={formData.email}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
               placeholder="Enter your email"
@@ -198,31 +199,47 @@ export default function UserRegister() {
             />
           </div>
 
-          {/* Password Fields */}
-          {[
-            { label: "Password", name: "password" },
-            { label: "Confirm Password", name: "confirmPassword" },
-          ].map((field, index) => (
-            <div key={index}>
-              <label className="block text-gray-300 font-medium mb-2">
-                {field.label} *
-              </label>
-              <input
-                type="password"
-                name={field.name}
-                value={formData?[field.name] : ""}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
-                placeholder={`Enter your ${field.label.toLowerCase()}`}
-                required
-              />
-              {errors[field.name as keyof typeof errors] && (
-                <p className="text-red-500 text-sm mt-2">
-                  {errors[field.name as keyof typeof errors]}
-                </p>
-              )}
-            </div>
-          ))}
+          {/* Password Field */}
+          <div>
+            <label className="block text-gray-300 font-medium mb-2">
+              Password *
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
+              placeholder="Enter your password"
+              required
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.password}
+              </p>
+            )}
+          </div>
+
+          {/* Confirm Password Field */}
+          <div>
+            <label className="block text-gray-300 font-medium mb-2">
+              Confirm Password *
+            </label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
+              placeholder="Enter your confirm password"
+              required
+            />
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.confirmPassword}
+              </p>
+            )}
+          </div>
 
           {/* Profile Image Field */}
           <div>
@@ -237,21 +254,23 @@ export default function UserRegister() {
               className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
             />
             {imagePreview && (
-              <div className="mt-4">
-                <img
-                  src={imagePreview}
-                  alt="Profile Preview"
-                  className="w-32 h-32 object-cover rounded-full border-4 border-indigo-600"
-                />
-              </div>
+              <img
+                src={imagePreview}
+                alt="Profile Preview"
+                className="mt-4 max-w-full h-48 object-cover rounded-lg"
+              />
             )}
           </div>
-
+          {errors.validation && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.validation}
+              </p>
+            )}
           {/* Submit Button */}
-          <div className="text-center">
+          <div>
             <button
               type="submit"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-semibold py-2 px-8 rounded-lg transition duration-300"
+              className="w-full px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               Register
             </button>
