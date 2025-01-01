@@ -12,12 +12,13 @@ type User = {
   phoneNumber: string;
 };
 
-type Params = Promise<{ userId: string  }>
+type Params = Promise<{ userId: string }>;
 
-export default function Profile({ params }: { params: Params}) {
+export default function Profile({ params }: { params: Params }) {
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoggedUser, setIsLoggedUser] = useState<boolean>(true);
+  const [loggedUserId, setUserId] = useState<string>("");
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -26,14 +27,16 @@ export default function Profile({ params }: { params: Params}) {
         const userId = parsedParams.userId ?? "";
         const data = await fetchData(`/user?id=${userId}`);
         setUserData(data?.data.user);
+        setUserId(userId);
         setIsLoggedUser(data?.data.isLoggedUser);
       } catch (err: any) {
+        // Handle error (e.g., log or show notification)
       } finally {
         setLoading(false);
       }
     };
     fetchGroups();
-  }, [params]);
+  }, []);
 
   return (
     <Layout backHref="/feed/All">
@@ -76,18 +79,32 @@ export default function Profile({ params }: { params: Params}) {
                 </div>
 
                 {/* Chat Link */}
-                {!isLoggedUser &&(<div className="text-center">
-                  <Link href={`/chat/${userData.fullName}`}>
-                    <button className="mt-4 px-6 py-2 text-lg bg-blue-600 hover:bg-blue-500 rounded-full transition-all cursor-pointer">
-                      Chat with {userData.fullName}
-                    </button>
-                  </Link>
-                </div>)}
+                {!isLoggedUser && (
+                  <div className="text-center">
+                    <Link href={`/chat/${userData.fullName}`}>
+                      <button className="mt-4 px-6 py-2 text-lg bg-blue-600 hover:bg-blue-500 rounded-full transition-all cursor-pointer">
+                        Chat with {userData.fullName}
+                      </button>
+                    </Link>
+                  </div>
+                )}
+
+                {/* Edit Profile Button for Logged In User */}
+                {isLoggedUser && (
+                  <div className="text-center">
+                    <Link href={`/user/profile/edit/${loggedUserId}`}>
+                      <button className="mt-4 px-6 py-2 text-lg bg-green-600 hover:bg-green-500 rounded-full transition-all cursor-pointer">
+                        Edit Profile
+                      </button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         )
       )}
+
       {!userData && !loading && (
         <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
           <span>Error loading profile, please try again later.</span>
@@ -95,4 +112,4 @@ export default function Profile({ params }: { params: Params}) {
       )}
     </Layout>
   );
-};
+}

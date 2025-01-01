@@ -67,13 +67,17 @@ export default function ChatPage({ params }: { params: Params}) {
   useEffect(() => {
     const getParams = async () => {
       const userName = (await params).userName
-      if(userName != "'%20'")
+      if(userName != "'%20'" && userName != "''")
       {
         const decodedString = decodeURIComponent(userName);
         setSearchTerm(decodedString);
       }
       if (sessionStorage.getItem(accessTokenLocalStorage)) {
         setIsSignedIn(true);
+      }
+      else
+      {
+        window.location.href = "/user/signIn";
       }
     }
     getParams();

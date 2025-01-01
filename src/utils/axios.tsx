@@ -26,14 +26,14 @@ const setAuthHeader = (newToken? : any) => {
 };
 
 const handleError = (error: any) => {
-  if(error.status == 401)
-  {
-    sessionStorage.removeItem(accessTokenLocalStorage);
-    sessionStorage.removeItem(userGuidLocalStorage);
-    sessionStorage.removeItem(profileImageLocalStorage);
-    sessionStorage.removeItem(tokenExpiresInLocalStorage);
-    window.location.href = "/user/signIn";
-  }
+  // if(error.status == 401)
+  // {
+  //   sessionStorage.removeItem(accessTokenLocalStorage);
+  //   sessionStorage.removeItem(userGuidLocalStorage);
+  //   sessionStorage.removeItem(profileImageLocalStorage);
+  //   sessionStorage.removeItem(tokenExpiresInLocalStorage);
+  //   window.location.href = "/user/signIn";
+  // }
   if (axios.isAxiosError(error)) {
     if(error.status == 400)
     {
@@ -130,6 +130,28 @@ export const postFileData = async (url: string, data: FormData) => {
       throw new Error("Provided data is not a FormData instance.");
     }
     const response = await apiClient.post(url, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    if (response.status === 200 || response.status === 201) {
+      return response;
+    }
+  } catch (error){
+    if (axios.isAxiosError(error)) {
+      return error.response?.data;
+    }
+    handleError(error);
+  }
+};
+
+export const putFileData = async (url: string, data: FormData) => {
+  try {
+    setAuthHeader();
+    if (!(data instanceof FormData)) {
+      throw new Error("Provided data is not a FormData instance.");
+    }
+    const response = await apiClient.put(url, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
