@@ -38,6 +38,7 @@ export default function Edit({ params }:  { params: Params}) {
   });
   const [loggedUserId, setUserId] = useState<string>("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [showPasswordFields, setShowPasswordFields] = useState<boolean>(false); // Toggle state
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -213,35 +214,53 @@ export default function Edit({ params }:  { params: Params}) {
             />
           </div>
 
+          {/* Toggle for Password Fields */}
+          <div className="flex items-center mb-4">
+            <input
+              type="checkbox"
+              id="togglePasswordFields"
+              checked={showPasswordFields}
+              onChange={() => setShowPasswordFields(!showPasswordFields)}
+              className="mr-2"
+            />
+            <label htmlFor="togglePasswordFields" className="text-gray-300">
+              Change Password
+            </label>
+          </div>
+
           {/* Password Fields */}
-          <div>
-            <label className="block text-gray-300 font-medium mb-2">Password *</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
-              placeholder="Enter your password"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-2">{errors.password}</p>
-            )}
-          </div>
-          <div>
-            <label className="block text-gray-300 font-medium mb-2">Confirm Password *</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
-              placeholder="Confirm your password"
-            />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-2">{errors.confirmPassword}</p>
-            )}
-          </div>
+          {showPasswordFields && (
+            <>
+              <div>
+                <label className="block text-gray-300 font-medium mb-2">Password *</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
+                  placeholder="Enter your password"
+                />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-2">{errors.password}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-gray-300 font-medium mb-2">Confirm Password *</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
+                  placeholder="Confirm your password"
+                />
+                {errors.confirmPassword && (
+                  <p className="text-red-500 text-sm mt-2">{errors.confirmPassword}</p>
+                )}
+              </div>
+            </>
+          )}
 
           {/* Profile Image */}
           <div>
