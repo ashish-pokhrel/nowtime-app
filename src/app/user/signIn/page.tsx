@@ -15,6 +15,10 @@ export default function SignIn() {
     deviceInfo: "", 
   });
 
+  const [errors, setErrors] = useState({
+    validation: "",
+  });
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // Add a loading state
 
@@ -29,6 +33,7 @@ export default function SignIn() {
       ...prev,
       [name]: value,
     }));
+    setErrors((prev) => ({ ...prev, validation: "" }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,16 +47,21 @@ export default function SignIn() {
 
     try {
       const response = await postData("/user/signin", updatedFormData);
-
-      const currentDateTime = new Date();
-      currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
-      sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
-      const { jwtToken, refreshToken, profileImage } = response.user;
-      sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
-      sessionStorage.setItem(userGuidLocalStorage, refreshToken);
-      sessionStorage.setItem(profileImageLocalStorage, profileImage);
-
-      router.push("/");
+      if(response.status == 200)
+      {
+        const currentDateTime = new Date();
+        currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
+        sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
+        const { jwtToken, refreshToken, profileImage } = response.user;
+        sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
+        sessionStorage.setItem(userGuidLocalStorage, refreshToken);
+        sessionStorage.setItem(profileImageLocalStorage, profileImage);
+        router.push("/");
+      }
+      else
+      {
+        setErrors((prev) => ({ ...prev, validation: response.detail || response.Detail }));
+      }
     } catch {
       setError("Invalid email or password");
     } finally {
@@ -110,6 +120,12 @@ export default function SignIn() {
           </div>
 
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
+          {errors.validation && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.validation}
+              </p>
+            )}
 
           {/* Submit Button */}
           <div className="text-center">

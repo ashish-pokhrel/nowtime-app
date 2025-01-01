@@ -40,6 +40,7 @@ export default function UserRegister() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, files } = e.target as HTMLInputElement;
+    setErrors((prev) => ({ ...prev, validation: "" }));
     if (name === "profileImage") {
       const file = files ? files[0] : null;
       if (file != null) {
@@ -96,7 +97,6 @@ export default function UserRegister() {
     }
 
     try {
-      setErrors((prev) => ({ ...prev, validation: "" }));
       const data = new FormData();
       data.append("firstName", formData?.firstName || "");
       data.append("middleName", formData?.middleName || "");
