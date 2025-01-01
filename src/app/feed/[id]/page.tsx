@@ -170,9 +170,12 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
         <div className="text-center my-8">
           <Link
             href={`/post/add/${resolvedParams?.id}`}
-            className="bg-blue-600 hover:bg-blue-500 text-white text-lg font-semibold py-3 px-6 rounded-full shadow-lg transition duration-300"
+            className="group inline-block relative text-blue-600 text-lg font-semibold py-3 px-6 rounded-lg border-2 border-blue-600 overflow-hidden"
           >
-            What's on your mind :)
+            <span className="absolute inset-0 bg-blue-600 transform group-hover:scale-x-100 group-hover:scale-y-100 transition-all duration-300 scale-x-0 scale-y-0 origin-top-left z-0"></span>
+            <span className="relative z-10 group-hover:text-white group-hover:font-bold">
+              What's on your mind? <span className="text-sm">Add Here</span>
+            </span>
           </Link>
         </div>
 

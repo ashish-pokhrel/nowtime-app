@@ -144,8 +144,16 @@ export default function AddPostPage({ params }: { params: Params}) {
       formData.append("postLocation", debouncedSearchTerm);
       images.forEach((file) => formData.append("images", file));
 
-      await postFileData("/post", formData);
-      router.push(`/feed/${selectedGroupId}`);
+      var response = await postFileData("/post", formData);
+      if(response.status == 401 || response.Status == 401)
+      {
+        sessionStorage.clear();
+        router.push("/user/signIn");
+      }
+      else if(response.status == 200 || response.Status == 200)
+      {
+        router.push(`/feed/${selectedGroupId}`);
+      }
     } catch (err) {
       setError("Failed to add post. Please try again.");
     } finally {
