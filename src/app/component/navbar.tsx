@@ -177,7 +177,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                     availableAddresses.map((address) => (
                       <button
                         key={address.id + Math.random()}
-                        className="block w-full text-left px-4 py-2 text-xs md:text-sm text-white hover:bg-gray-600 cursor-pointer"
+                        className="block w-full text-left px-4 py-2 text-xxs md:text-xs md:text-sm text-white hover:bg-gray-600 cursor-pointer"
                         onClick={() => handleAddressSelect(address)}
                       >
                         {address.city}, {address.region}
@@ -246,7 +246,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
               </div>
             </>
           ) : (
-            <Link href="/user/signIn" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
+            <Link href="/user/signIn" className="block px-4 py-2 text-sm text-white hover:bg-gray-600 cursor-pointer">
               Sign In
             </Link>
           )}

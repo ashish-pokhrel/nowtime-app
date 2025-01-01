@@ -149,20 +149,18 @@ export default function PostCard({ post, groupId }: PostCardProps) {
     : truncatedDescription;
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+    <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-full sm:max-w-4xl mx-auto w-full">
       <div className="flex items-center mb-4">
-      <Link 
-        href={`/user/profile/${post?.userId}`}>
-        <img
-          src={post?.profileImage}
-          alt={`${post?.userFullName}'s profile`}
-          className="w-12 h-12 rounded-full mr-4"
-        />
+        <Link href={`/user/profile/${post?.userId}`}>
+          <img
+            src={post?.profileImage}
+            alt={`${post?.userFullName}'s profile`}
+            className="w-12 h-12 rounded-full mr-4"
+          />
         </Link>
         <div>
-          <Link 
-          href={`/user/profile/${post?.userId}`}>
-          <h2 className="font-semibold text-white">{post?.userFullName}</h2>
+          <Link href={`/user/profile/${post?.userId}`}>
+            <h2 className="font-semibold text-white">{post?.userFullName}</h2>
           </Link>
           <p className="text-gray-500 text-sm">{post.timeElapsed}</p>
           <p className="text-gray-500 text-sm">{post.postLocation}</p>
@@ -247,7 +245,6 @@ export default function PostCard({ post, groupId }: PostCardProps) {
           >
             <FaShare className="text-lg" />
             <span>Share</span>
-            {/* <span>{post.totalShares}</span> */}
           </button>
         </div>
       </div>
@@ -263,21 +260,21 @@ export default function PostCard({ post, groupId }: PostCardProps) {
             >
               &times;
             </button>
-              <Slider
-                ref={sliderRef}
-                {...sliderSettings}
-                className="custom-slider"
-              >
-                {post.images.map((image, index)  => (
-                  <div key={index + Math.random()} className="px-4 py-2">
-                    <img
-                      src={image.imageUrl}
-                      alt={`Post image ${index + 1}`}
-                      className="w-full h-auto object-cover rounded-lg border-2 border-gray-600"
-                    />
-                  </div>
-                ))}
-              </Slider>
+            <Slider
+              ref={sliderRef}
+              {...sliderSettings}
+              className="custom-slider"
+            >
+              {post.images.map((image, index) => (
+                <div key={index + Math.random()} className="px-4 py-2">
+                  <img
+                    src={image.imageUrl}
+                    alt={`Post image ${index + 1}`}
+                    className="w-full h-auto object-cover rounded-lg border-2 border-gray-600"
+                  />
+                </div>
+              ))}
+            </Slider>
             <button
               onClick={handlePrevClick}
               className="absolute top-1/2 left-4 text-white text-3xl bg-black bg-opacity-50 rounded-full p-2"

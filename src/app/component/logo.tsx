@@ -13,7 +13,7 @@ export default function Logo() {
       <img
         src="/logo.png" 
         alt="mangopuff.com"
-        className="h-6 sm:h-8 md:h-10 lg:h-10 xl:h-12 object-cover"
+        className="h-6 sm:h-6 md:h-6 lg:h-10 xl:h-10 object-cover"
       />
     </div>
   );

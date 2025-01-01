@@ -155,17 +155,16 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       </div>
     );
   }
-
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full"> {/* Use full width */}
         {/* Box Title & Description */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-semibold text-white">
             {box?.title}
           </h1>
         </div>
-
+  
         {/* Add New Post Button */}
         <div className="text-center my-8">
           <Link
@@ -178,9 +177,9 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
             </span>
           </Link>
         </div>
-
+  
         {/* Search and Location */}
-        <section className="my-8 px-4 max-w-7xl mx-auto">
+        <section className="my-8 px-4 w-full"> {/* Remove max width */}
           {/* Flex Container for Centered Location and Search */}
           <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-6">
           
@@ -197,37 +196,38 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
             </div>
           </div>
         </section>
-
+  
         {/* Post List */}
         <div className="space-y-8">
           {postList.map((post) => (
-            <PostCard key={post.id  + Math.random()} post={post} groupId={resolvedParams?.id || ""} />
+            <PostCard key={post.id + Math.random()} post={post} groupId={resolvedParams?.id || ""} />
           ))}
         </div>
-
+  
         {/* Scroll-to-load Indicator */}
         {loadingMore && (
           <div className="text-center text-white py-4">Loading more posts...</div>
         )}
-
+  
         {/* Error handling for no posts */}
         {!hasMore && !loadingMore && (
-        <div className="text-center py-4">
-          <p className="text-gray-400">
-            {resolvedParams && resolvedParams.id !== "All" && (
-              <>
-                <span className="font-bold text-gray-500">No more posts to load</span>{' '}
-                for the location{' '}
-                <span className="text-blue-500 font-semibold">{postLocat}</span>
-              </>
-            )}
-            {(!resolvedParams || resolvedParams.id === "All") && (
-              <span className="font-bold text-gray-500">No more posts to load</span>
-            )}
-          </p>
-        </div>
-      )}
+          <div className="text-center py-4">
+            <p className="text-gray-400">
+              {resolvedParams && resolvedParams.id !== "All" && (
+                <>
+                  <span className="font-bold text-gray-500">No more posts to load</span>{' '}
+                  for the location{' '}
+                  <span className="text-blue-500 font-semibold">{postLocat}</span>
+                </>
+              )}
+              {(!resolvedParams || resolvedParams.id === "All") && (
+                <span className="font-bold text-gray-500">No more posts to load</span>
+              )}
+            </p>
+          </div>
+        )}
       </div>
     </Layout>
   );
+  
 }
