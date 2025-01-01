@@ -129,15 +129,15 @@ export default function UserRegister() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
       <div className="absolute top-4 left-4">
         <Logo />
       </div>
-      <div className="w-full max-w-4xl bg-gray-800 rounded-lg shadow-2xl p-8">
-        <h1 className="text-3xl font-semibold text-center text-indigo-400 mb-8">
+      <div className="w-full max-w-4xl bg-gray-800 rounded-lg shadow-2xl p-4 sm:p-8">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-center text-indigo-400 mb-6 sm:mb-8">
           Create Your Account
         </h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Name Fields in a Row */}
           <div className="flex flex-wrap -mx-2">
             <div className="w-full sm:w-1/3 px-2 mb-4">
@@ -149,7 +149,7 @@ export default function UserRegister() {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
+                className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
                 placeholder="Enter your first name"
                 required
               />
@@ -163,7 +163,7 @@ export default function UserRegister() {
                 name="middleName"
                 value={formData.middleName}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
+                className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
                 placeholder="Enter your middle name"
               />
             </div>
@@ -176,7 +176,7 @@ export default function UserRegister() {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
+                className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
                 placeholder="Enter your last name"
                 required
               />
@@ -193,13 +193,13 @@ export default function UserRegister() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
               placeholder="Enter your email"
               required
             />
           </div>
 
-          {/* Password Field */}
+          {/* Password Fields */}
           <div>
             <label className="block text-gray-300 font-medium mb-2">
               Password *
@@ -209,7 +209,7 @@ export default function UserRegister() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
               placeholder="Enter your password"
               required
             />
@@ -219,8 +219,6 @@ export default function UserRegister() {
               </p>
             )}
           </div>
-
-          {/* Confirm Password Field */}
           <div>
             <label className="block text-gray-300 font-medium mb-2">
               Confirm Password *
@@ -230,8 +228,8 @@ export default function UserRegister() {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
-              placeholder="Enter your confirm password"
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
+              placeholder="Confirm your password"
               required
             />
             {errors.confirmPassword && (
@@ -241,7 +239,7 @@ export default function UserRegister() {
             )}
           </div>
 
-          {/* Profile Image Field */}
+          {/* Profile Image */}
           <div>
             <label className="block text-gray-300 font-medium mb-2">
               Profile Image
@@ -251,7 +249,7 @@ export default function UserRegister() {
               name="profileImage"
               accept="image/*"
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700"
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-300 bg-gray-700 text-sm"
             />
             {imagePreview && (
               <img
@@ -261,16 +259,19 @@ export default function UserRegister() {
               />
             )}
           </div>
+
+          {/* Validation Errors */}
           {errors.validation && (
-              <p className="text-red-500 text-sm mt-2">
-                {errors.validation}
-              </p>
-            )}
+            <p className="text-red-500 text-sm mt-2">
+              {errors.validation}
+            </p>
+          )}
+
           {/* Submit Button */}
           <div>
             <button
               type="submit"
-              className="w-full px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
             >
               Register
             </button>

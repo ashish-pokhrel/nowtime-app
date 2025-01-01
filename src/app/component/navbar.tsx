@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { FaArrowLeft, FaUserCircle, FaMapMarkerAlt, FaSearch, FaCommentDots, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaUserCircle,
+  FaMapMarkerAlt,
+  FaSearch,
+  FaCommentDots,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import Logo from "../../app/component/logo";
 import { useRouter } from "next/navigation";
 import {
@@ -44,7 +51,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   useEffect(() => {
     const storedLocation = localStorage.getItem(displayLocationLocalStorage);
     if (storedLocation) {
-      setSelectedAddress(storedLocation); 
+      setSelectedAddress(storedLocation);
     }
   }, []);
 
@@ -67,6 +74,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         );
         setAvailableAddresses(postData?.data.locations || []);
       } catch {
+        // Handle error (if necessary)
       }
     };
 
@@ -78,7 +86,10 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
-      if (addressDropdownRef.current && !addressDropdownRef.current.contains(event.target as Node)) {
+      if (
+        addressDropdownRef.current &&
+        !addressDropdownRef.current.contains(event.target as Node)
+      ) {
         setIsAddressDropdownOpen(false);
       }
     };
@@ -115,12 +126,12 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   };
 
   useEffect(() => {
-    // Example API call to fetch unread message count
     const fetchUnreadMessagesCount = async () => {
       try {
         const response = await fetchData("/message/getunreadchats");
         setUnreadMessagesCount(response?.data.count);
       } catch {
+        // Handle error (if necessary)
       }
     };
 
@@ -134,7 +145,10 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
       <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-900 shadow-lg border-b border-blue-400">
         <div className="flex items-center space-x-4">
           <Logo />
-          <Link href={backHref} className="text-xs text-white hover:text-gray-400 flex items-center space-x-2 cursor-pointer">
+          <Link
+            href={backHref}
+            className="text-xs md:text-sm text-white hover:text-gray-400 flex items-center space-x-2 cursor-pointer"
+          >
             <FaArrowLeft className="text-xs" />
             <span>Back</span>
           </Link>
@@ -143,39 +157,36 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         <div className="flex items-center space-x-6">
           <div className="relative" ref={addressDropdownRef}>
             <button
-              className="flex items-center justify-center text-sm text-blue-500 font-semibold hover:text-white focus:outline-none cursor-pointer"
+              className="flex items-center justify-center text-xs md:text-sm text-blue-500 font-semibold hover:text-white focus:outline-none cursor-pointer"
               onClick={toggleAddressDropdown}
             >
               <FaMapMarkerAlt className="mr-2" /> {selectedAddress || "Select Location"}
             </button>
             {isAddressDropdownOpen && (
               <div className="absolute right-0 mt-2 w-64 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search address..."
-                    className="w-full px-3 py-2 bg-gray-600 text-white rounded-t-lg focus:outline-none"
-                    value={addressSearchTerm}
-                    onChange={(e) => setAddressSearchTerm(e.target.value)}
-                    autoComplete="off"
-                  />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <FaSearch className="text-gray-400" />
-                  </div>
-                </div>
+                <input
+                  type="text"
+                  placeholder="Search address..."
+                  className="w-full px-3 py-2 bg-gray-600 text-xs md:text-sm text-white rounded-t-lg focus:outline-none"
+                  value={addressSearchTerm}
+                  onChange={(e) => setAddressSearchTerm(e.target.value)}
+                  autoComplete="off"
+                />
                 <div className="max-h-48 overflow-y-auto">
                   {availableAddresses.length > 0 ? (
                     availableAddresses.map((address) => (
                       <button
                         key={address.id}
-                        className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
+                        className="block w-full text-left px-4 py-2 text-xs md:text-sm text-white hover:bg-gray-600 cursor-pointer"
                         onClick={() => handleAddressSelect(address)}
                       >
                         {address.city}, {address.region}
                       </button>
                     ))
                   ) : (
-                    <div className="px-4 py-2 text-gray-400">No addresses found.</div>
+                    <div className="px-4 py-2 text-gray-400 text-xs md:text-sm">
+                      No addresses found.
+                    </div>
                   )}
                 </div>
               </div>
@@ -226,7 +237,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                       >
                          <div className="flex items-center space-x-2">
                          <FaSignOutAlt /> 
-                         <span>Log Out</span>
+                         <span className="text-xs">Log Out</span>
                          </div>
                       </button>
                     </div>

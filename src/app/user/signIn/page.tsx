@@ -52,7 +52,7 @@ export default function SignIn() {
         const currentDateTime = new Date();
         currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
         sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
-        const { jwtToken, refreshToken, profileImage } = response.user;
+        const { jwtToken, refreshToken, profileImage } = response.data.user;
         sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
         sessionStorage.setItem(userGuidLocalStorage, refreshToken);
         sessionStorage.setItem(profileImageLocalStorage, profileImage);

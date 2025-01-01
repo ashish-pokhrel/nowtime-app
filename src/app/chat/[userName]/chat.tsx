@@ -88,7 +88,8 @@ export default function ChatPage({ params }: { params: Params}) {
       }
       const conn = new HubConnectionBuilder()
         .withUrl(SignalR_URL, {
-          accessTokenFactory: () => token, // Pass the token to the connection
+          accessTokenFactory: () => token,
+          withCredentials: true 
         })
         .build();
   
