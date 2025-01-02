@@ -4,6 +4,7 @@ import { FaEnvelope, FaPhone } from "react-icons/fa";
 import Layout from "../../../component/navbar";
 import { fetchData } from "../../../../utils/axios";
 import Link from "next/link";
+import BackButton from "../../../component/backButton";
 
 type User = {
   fullName: string;
@@ -40,6 +41,7 @@ export default function Profile({ params }: { params: Params }) {
 
   return (
     <Layout backHref="/feed/All">
+            <BackButton />
       {loading ? (
         <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
           <span>Loading...</span>

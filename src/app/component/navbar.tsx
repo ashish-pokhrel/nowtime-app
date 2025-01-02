@@ -160,13 +160,6 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
       <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-900 shadow-lg border-b border-blue-400">
         <div className="flex items-center space-x-4">
           <Logo />
-          <Link
-            href={backHref}
-            className="text-xs md:text-sm text-white hover:text-gray-400 flex items-center space-x-2 cursor-pointer"
-          >
-            <FaArrowLeft className="text-xs" />
-            <span>Back</span>
-          </Link>
         </div>
 
         <div className="flex items-center space-x-6">
@@ -249,7 +242,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                         onClick={handleLogout}>
                          <div className="flex items-center space-x-2">
                          <FaSignOutAlt /> 
-                         <span className="text-xs">Log Out</span>
+                         <span className="">Log Out</span>
                          </div>
                       </button>
                     </div>

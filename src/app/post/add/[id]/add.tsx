@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchData, postFileData } from "../../../../utils/axios";
-import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa";
+import BackButton from "../../../component/backButton";
 import Layout from "../../../component/navbar";
 import { userLocationLocalStorage, displayLocationLocalStorage } from "../../../../constant/constants";
 
@@ -171,13 +170,7 @@ export default function AddPostPage({ params }: { params: Params}) {
 
   return (
     <Layout backHref={`/feed/${resolvedParams?.id}`}>
-      <Link
-        href={`/post/feed/${resolvedParams?.id}`}
-        className="absolute top-8 left-8 text-xl text-white hover:text-gray-400"
-      >
-        <FaArrowLeft />
-      </Link>
-
+      <BackButton />
       <div className="text-center mb-12">
         <h1 className="text-3xl md:text-4xl font-semibold">Create Post</h1>
       </div>
