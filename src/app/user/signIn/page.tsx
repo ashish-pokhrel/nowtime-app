@@ -33,6 +33,13 @@ export default function SignIn() {
       ...prev,
       [name]: value,
     }));
+    if(formData.deviceInfo == "" || formData.deviceInfo == null)
+    {
+      setFormData((prev) => ({
+        ...prev,
+        deviceInfo: getDeviceInfo(),
+      }));
+    }
     setErrors((prev) => ({ ...prev, validation: "" }));
   };
 

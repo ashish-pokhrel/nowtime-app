@@ -4,7 +4,6 @@ import {
   FaArrowLeft,
   FaUserCircle,
   FaMapMarkerAlt,
-  FaSearch,
   FaCommentDots,
   FaSignOutAlt,
 } from "react-icons/fa";
@@ -17,7 +16,7 @@ import {
   tokenExpiresInLocalStorage,
   displayLocationLocalStorage,
 } from "../../constant/constants";
-import { fetchData } from "../../utils/axios";
+import { fetchData, postData } from "../../utils/axios";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -104,6 +103,10 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
     };
   }, []);
 
+  const getDeviceInfo = () => {
+    return `${navigator.userAgent}, ${navigator.platform}`;
+  };
+
   const toggleAddressDropdown = () => {
     setIsAddressDropdownOpen(!isAddressDropdownOpen);
     if (!isAddressDropdownOpen) setAddressSearchTerm("");
@@ -118,11 +121,23 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem(accessTokenLocalStorage);
-    sessionStorage.removeItem(userGuidLocalStorage);
-    sessionStorage.removeItem(profileImageLocalStorage);
-    sessionStorage.removeItem(tokenExpiresInLocalStorage);
-    router.push("/user/signIn");
+   const formData = 
+    {
+      userId:  "00000000-0000-0000-0000-000000000000", 
+      deviceInfo: getDeviceInfo()
+    }
+    const logout = async () => {
+      const response = await postData("/User/signOut", formData);
+        if(response.status == 200)
+        {
+          sessionStorage.removeItem(accessTokenLocalStorage);
+          sessionStorage.removeItem(userGuidLocalStorage);
+          sessionStorage.removeItem(profileImageLocalStorage);
+          sessionStorage.removeItem(tokenExpiresInLocalStorage);
+          router.push("/user/signIn");
+        }
+    }
+    logout();
   };
 
   useEffect(() => {
@@ -170,16 +185,14 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                   className="w-full px-3 py-2 bg-gray-600 text-xs md:text-sm text-white rounded-t-lg focus:outline-none"
                   value={addressSearchTerm}
                   onChange={(e) => setAddressSearchTerm(e.target.value)}
-                  autoComplete="off"
-                />
+                  autoComplete="off"/>
                 <div className="max-h-48 overflow-y-auto">
                   {availableAddresses.length > 0 ? (
                     availableAddresses.map((address) => (
                       <button
                         key={address.id + Math.random()}
                         className="block w-full text-left px-4 py-2 text-xxs md:text-xs md:text-sm text-white hover:bg-gray-600 cursor-pointer"
-                        onClick={() => handleAddressSelect(address)}
-                      >
+                        onClick={() => handleAddressSelect(address)}>
                         {address.city}, {address.region}
                       </button>
                     ))
@@ -233,8 +246,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                       </Link>
                       <button
                         className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
-                        onClick={handleLogout}
-                      >
+                        onClick={handleLogout}>
                          <div className="flex items-center space-x-2">
                          <FaSignOutAlt /> 
                          <span className="text-xs">Log Out</span>

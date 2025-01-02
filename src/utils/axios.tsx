@@ -26,14 +26,14 @@ const setAuthHeader = (newToken? : any) => {
 };
 
 const handleError = (error: any) => {
-  // if(error.status == 401)
-  // {
-  //   sessionStorage.removeItem(accessTokenLocalStorage);
-  //   sessionStorage.removeItem(userGuidLocalStorage);
-  //   sessionStorage.removeItem(profileImageLocalStorage);
-  //   sessionStorage.removeItem(tokenExpiresInLocalStorage);
-  //   window.location.href = "/user/signIn";
-  // }
+  if(error.status == 401 || error.status == 403)
+  {
+    sessionStorage.removeItem(accessTokenLocalStorage);
+    sessionStorage.removeItem(userGuidLocalStorage);
+    sessionStorage.removeItem(profileImageLocalStorage);
+    sessionStorage.removeItem(tokenExpiresInLocalStorage);
+    window.location.href = "/user/signIn";
+  }
   if (axios.isAxiosError(error)) {
     if(error.status == 400)
     {
