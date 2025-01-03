@@ -54,7 +54,7 @@ export default function SignIn() {
 
     try {
       const response = await postData("/user/signin", updatedFormData);
-      if(response.status == 200)
+      if(response?.status == 200)
       {
         const currentDateTime = new Date();
         currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
@@ -67,7 +67,7 @@ export default function SignIn() {
       }
       else
       {
-        setErrors((prev) => ({ ...prev, validation: response.detail || response.Detail }));
+        setErrors((prev) => ({ ...prev, validation: response?.data.detail || response?.data.Detail }));
       }
     } catch {
       setError("Invalid email or password");

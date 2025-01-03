@@ -128,7 +128,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
     }
     const logout = async () => {
       const response = await postData("/User/signOut", formData);
-        if(response.status == 200)
+        if(response?.status == 200)
         {
           sessionStorage.removeItem(accessTokenLocalStorage);
           sessionStorage.removeItem(userGuidLocalStorage);
