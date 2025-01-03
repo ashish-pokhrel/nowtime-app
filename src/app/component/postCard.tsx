@@ -42,7 +42,8 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   const handleLikeToggle = async () => {
     try {
       if (isLiked) {
-        await postData(`post/unlike/${post.id}`, { groupId });
+        var respone = await postData(`post/unlike/${post.id}`, { groupId });
+        debugger
         setLikes(likes - 1);
       } else {
         await postData(`post/like/${post.id}`, { groupId });
@@ -149,7 +150,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
     : truncatedDescription;
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md max-w-full sm:max-w-4xl mx-auto w-full">
+    <div className="bg-gray-c-800 p-6 rounded-lg shadow-md max-w-full sm:max-w-4xl mx-auto w-full">
       <div className="flex items-center mb-4">
         <Link href={`/user/profile/${post?.userId}`}>
           <img
@@ -217,10 +218,10 @@ export default function PostCard({ post, groupId }: PostCardProps) {
             className={`flex items-center gap-2 ${
               isLiked ? "text-blue-500" : "hover:text-blue-500"
             }`}
-            aria-label={isLiked ? "Unlike" : "Like"}
+            aria-label={isLiked ? "UnPuff" : "Puff"}
           >
             <FaThumbsUp className="text-lg" />
-            <span>{isLiked ? "Unlike" : "Like"}</span>
+            <span>{isLiked ? "UnPuff" : "Puff"}</span>
             <span>{likes}</span>
           </button>
 

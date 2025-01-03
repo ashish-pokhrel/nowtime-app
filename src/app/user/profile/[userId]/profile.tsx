@@ -43,13 +43,13 @@ export default function Profile({ params }: { params: Params }) {
     <Layout backHref="/feed/All">
             <BackButton />
       {loading ? (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        <div className="min-h-screen flex items-center justify-center bg-black text-white">
           <span>Loading...</span>
         </div>
       ) : (
         userData && (
-          <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-            <div className="w-full max-w-2xl bg-gray-800 rounded-lg shadow-2xl p-8 space-y-8">
+          <div className="min-h-screen flex items-center justify-center bg-black text-white">
+            <div className="w-full max-w-2xl bg-gray-c-800 rounded-lg shadow-2xl p-8 space-y-8">
               {/* Profile Image */}
               <div className="flex justify-center">
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-700">
@@ -95,7 +95,7 @@ export default function Profile({ params }: { params: Params }) {
                 {isLoggedUser && (
                   <div className="text-center">
                     <Link href={`/user/profile/edit/${loggedUserId}`}>
-                      <button className="mt-4 px-6 py-2 text-lg bg-green-600 hover:bg-green-500 rounded-full transition-all cursor-pointer">
+                      <button className="mt-4 px-6 py-2 text-lg bg-blue-600 hover:bg-blue-500 rounded-full transition-all cursor-pointer">
                         Edit Profile
                       </button>
                     </Link>
@@ -108,7 +108,7 @@ export default function Profile({ params }: { params: Params }) {
       )}
 
       {!userData && !loading && (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        <div className="min-h-screen flex items-center justify-center bg-black text-white">
           <span>Error loading profile, please try again later.</span>
         </div>
       )}

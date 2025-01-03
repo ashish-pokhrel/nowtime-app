@@ -129,11 +129,11 @@ export default function UserRegister() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
+    <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
       <div className="absolute top-4 left-4">
         <Logo />
       </div>
-      <div className="w-full max-w-4xl bg-gray-800 rounded-lg shadow-2xl p-4 sm:p-8">
+      <div className="w-full max-w-4xl bg-gray-c-800 rounded-lg shadow-2xl p-4 sm:p-8">
         <h1 className="text-2xl sm:text-3xl font-semibold text-center text-indigo-400 mb-6 sm:mb-8">
           Create Your Account
         </h1>

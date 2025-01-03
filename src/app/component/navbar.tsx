@@ -156,26 +156,26 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   }, [isSignedIn]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-900 shadow-lg border-b border-blue-400">
-        <div className="flex items-center space-x-4">
+    <div className="min-h-screen bg-black text-white">
+      <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-gray-c-800 dark:bg-gray-c-800 shadow-lg border-b border-white">
+        <div className="flex items-center">
           <Logo />
         </div>
 
         <div className="flex items-center space-x-6">
           <div className="relative" ref={addressDropdownRef}>
             <button
-              className="flex items-center justify-center text-xs md:text-sm text-blue-500 font-semibold hover:text-white focus:outline-none cursor-pointer"
+              className="flex items-center justify-center text-xs md:text-xs hover:text-white focus:outline-none cursor-pointer"
               onClick={toggleAddressDropdown}
             >
-              <FaMapMarkerAlt className="mr-2" /> {selectedAddress || "Select Location"}
+              <FaMapMarkerAlt className="mr-1" /> {selectedAddress || "Select Location"}
             </button>
             {isAddressDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
+              <div className="absolute right-0 mt-2 w-64 bg-gray-c-800 rounded-lg shadow-lg overflow-hidden z-10">
                 <input
                   type="text"
                   placeholder="Search address..."
-                  className="w-full px-3 py-2 bg-gray-600 text-xs md:text-sm text-white rounded-t-lg focus:outline-none"
+                  className="w-full px-3 py-2 bg-gray-c-800 text-xs md:text-sm text-white rounded-t-lg focus:outline-none"
                   value={addressSearchTerm}
                   onChange={(e) => setAddressSearchTerm(e.target.value)}
                   autoComplete="off"/>
@@ -190,7 +190,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                       </button>
                     ))
                   ) : (
-                    <div className="px-4 py-2 text-gray-400 text-xs md:text-sm">
+                    <div className="px-4 py-2 text-gray-c-800 text-xs md:text-sm">
                       No addresses found.
                     </div>
                   )}
@@ -205,7 +205,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
               <div className="relative flex items-center space-x-2" ref={dropdownRef}>
                 <div className="relative">
                   <button
-                    className="flex items-center justify-center w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none cursor-pointer"
+                    className="flex items-center justify-center w-10 h-10 bg-gray-c-800 hover:bg-gray-600 rounded-full text-white shadow-md focus:outline-none cursor-pointer"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   >
                     <FaUserCircle className="text-2xl" />
@@ -216,7 +216,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                   </span>
                 )}
                   {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
+                    <div className="absolute right-0 mt-2 w-48 bg-gray-c-800 rounded-lg shadow-lg overflow-hidden z-10">
                       <Link 
                         href={`/user/profile/00000000-0000-0000-0000-000000000000`}
                       className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">

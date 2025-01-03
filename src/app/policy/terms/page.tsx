@@ -156,8 +156,7 @@ export default function TermsOfUse() {
 
                     <p style={{ marginBottom: '20px' }}>
                         mangopuff.com<br />
-                        Email: <a href="mailto:[Your Support Email]" style={{ color: '#d3d3d3' }}>mangopuff@gmail.com</a><br />
-                        Address: address...
+                        Email: <a href="mailto:[Your Support Email]" style={{ color: '#d3d3d3' }}>mangopuff.help@gmail.com</a><br />
                     </p>
                 </div>
             </div>

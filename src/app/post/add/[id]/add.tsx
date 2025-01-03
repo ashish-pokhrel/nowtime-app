@@ -175,7 +175,7 @@ export default function AddPostPage({ params }: { params: Params}) {
         <h1 className="text-3xl md:text-4xl font-semibold">Create Post</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto bg-gray-c-800">
         {/* Description Field */}
         <div>
           <label htmlFor="description" className="block text-gray-300 mb-2">

@@ -102,9 +102,6 @@ export const postData = async (endpoint: string, data: any) => {
       return response;
     }
   } catch (error){
-    if (axios.isAxiosError(error)) {
-      return error.response?.data;
-    }
     handleError(error);
   }
 };

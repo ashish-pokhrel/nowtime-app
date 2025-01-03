@@ -142,7 +142,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+      <div className="flex justify-center items-center min-h-screen bg-black text-white">
         <div className="text-2xl">Loading...</div>
       </div>
     );
@@ -150,7 +150,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+      <div className="flex justify-center items-center min-h-screen bg-black text-white">
         <div className="text-xl text-red-500">{error}</div>
       </div>
     );
@@ -160,7 +160,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       <div className="w-full"> {/* Use full width */}
         {/* Box Title & Description */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-semibold text-white">
+          <h1 className="text-2xl font-semibold text-white">
             {box?.title}
           </h1>
         </div>
@@ -171,7 +171,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
             href={`/post/add/${resolvedParams?.id}`}
             className="group inline-block relative text-blue-600 text-lg font-semibold py-3 px-6 rounded-lg border-2 border-blue-600 overflow-hidden"
           >
-            <span className="absolute inset-0 bg-blue-600 transform group-hover:scale-x-100 group-hover:scale-y-100 transition-all duration-300 scale-x-0 scale-y-0 origin-top-left z-0"></span>
+            <span className="absolute inset-0 bg-blue-900 transform group-hover:scale-x-100 group-hover:scale-y-100 transition-all duration-300 scale-x-0 scale-y-0 origin-top-left z-0"></span>
             <span className="relative z-10 group-hover:text-white group-hover:font-bold text-sm">
               What's on your mind? <span className="text-xs">Add Here</span>
             </span>

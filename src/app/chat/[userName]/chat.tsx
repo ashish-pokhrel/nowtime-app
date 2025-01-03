@@ -5,6 +5,7 @@ import { HubConnectionBuilder, HubConnection } from "@microsoft/signalr";
 import Layout from "../../component/navbar";
 import { fetchData, postData } from "../../../utils/axios";
 import { accessTokenLocalStorage, SignalR_URL } from "../../../constant/constants";
+import BackButton from "../../component/backButton";
 
 interface ChatUser {
   id: string;
@@ -222,9 +223,10 @@ export default function ChatPage({ params }: { params: Params}) {
 
   return (
     <Layout backHref={`/feed/All`}>
-      <div className="min-h-screen bg-gray-900 text-white flex">
+                  <BackButton />
+      <div className="min-h-screen bg-black text-white flex mt-2">
         {/* Chat Users List */}
-        <div className="w-full md:w-1/4 lg:w-1/4 bg-gray-800 p-4">
+        <div className="w-full md:w-1/4 lg:w-1/4 bg-gray-c-800 p-4">
           <h2 className="text-xl font-bold mb-4">Recent Chats</h2>
 
           {/* Search Bar */}
@@ -289,7 +291,7 @@ export default function ChatPage({ params }: { params: Params}) {
               </div>
 
               {/* Chat Messages */}
-              <div className="flex-grow bg-gray-800 p-4 overflow-y-auto space-y-3 max-h-[500px]">
+              <div className="flex-grow bg-gray-c-800 p-4 overflow-y-auto space-y-3 max-h-[500px]">
                 {isMessagesLoading ? (
                   <p className="text-gray-400">Loading messages...</p>
                 ) : (
@@ -359,7 +361,7 @@ export default function ChatPage({ params }: { params: Params}) {
         </div>
 
         {/* Ad Section */}
-        <div className="hidden md:block md:w-1/4 lg:w-1/4 bg-gray-800 p-4">
+        <div className="hidden md:block md:w-1/4 lg:w-1/4 bg-gray-c-800 p-4">
           <h2 className="text-lg font-bold mb-4 text-center">Sponsored Ads</h2>
           <div className="space-y-4">
             <div className="h-40 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">

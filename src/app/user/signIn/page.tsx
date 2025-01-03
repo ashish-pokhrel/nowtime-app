@@ -81,7 +81,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-800 to-black relative">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r bg-black to-black relative">
       {/* Centered Spinner */}
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -95,7 +95,7 @@ export default function SignIn() {
       </div>
 
       {/* Sign-In Form */}
-      <div className="w-full max-w-md bg-gray-900 text-white rounded-lg shadow-lg p-8 z-10">
+      <div className="w-full max-w-md bg-gray-c-800 text-white rounded-lg shadow-lg p-8 z-10">
         {/* <h1 className="text-3xl font-bold text-center text-gray-200 mb-8">Sign In</h1> */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email */}

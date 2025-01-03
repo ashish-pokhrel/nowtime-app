@@ -100,7 +100,7 @@ export default function PrivacyPolicy() {
                         marginBottom: '10px',
                         color: '#fff',
                     }}>6. Children's Privacy</h2>
-                    <p style={{ marginBottom: '20px' }}>Our Platform is not intended for children under the age of 13, and we do not knowingly collect personal information from children. If we become aware that we have collected information from a child under 13, we will take steps to delete that information.</p>
+                    <p style={{ marginBottom: '20px' }}>Our Platform is not intended for children under the age of 18, and we do not knowingly collect personal information from children. If we become aware that we have collected information from a child under 13, we will take steps to delete that information.</p>
 
                     <h2 style={{
                         marginBottom: '10px',
@@ -113,9 +113,7 @@ export default function PrivacyPolicy() {
                         color: '#fff',
                     }}>8. Contact Us</h2>
                     <p style={{ marginBottom: '20px' }}>If you have any questions or concerns about this Privacy Policy or our practices, please contact us at:</p>
-                    <p style={{ marginBottom: '20px' }}><strong>Email:</strong> support@mangopuff.com</p>
-                    <p style={{ marginBottom: '20px' }}><strong>Phone:</strong> +1 (800) 123-4567</p>
-                    <p style={{ marginBottom: '20px' }}><strong>Address:</strong> 123 Mango Street, Suite 100, City, State, ZIP Code</p>
+                    <p style={{ marginBottom: '20px' }}><strong>Email:</strong> mangopuff.help@gmail.com</p>
                 </div>
             </div>
         </div>

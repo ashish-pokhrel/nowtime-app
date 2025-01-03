@@ -49,11 +49,10 @@ export default function Home() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {[...Array(6)].map((_, index) => (
-          <div key={index + Math.random()} className="bg-gray-300 dark:bg-gray-700 shadow-lg rounded-lg p-6 animate-pulse">
-            {/* Skeleton Loader Content */}
-            <div className="h-20 w-20 bg-gray-400 rounded-full mb-4"></div>
-            <div className="h-4 bg-gray-400 mb-2"></div>
-            <div className="h-4 bg-gray-400"></div>
+          <div key={index + Math.random()} className="bg-gray-700 shadow-lg rounded-lg p-6 animate-pulse">
+            <div className="h-20 w-20 bg-gray-500 rounded-full mb-4"></div>
+            <div className="h-4 bg-gray-500 mb-2"></div>
+            <div className="h-4 bg-gray-500"></div>
           </div>
         ))}
       </div>
@@ -66,39 +65,34 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gray-100 dark:bg-gray-900">
-     
-      <div className="text-3xl font-semibold text-center text-indigo-400 mb-8 typing-effect">
-      <Logo />
+    <div className="min-h-screen p-8 bg-black text-white">
+      <div className="mb-8">
+        <Logo />
       </div>
-      {/* Display the list of groups */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {boxes.map((box) => (
           <Link
-            key={box.id  + Math.random()}
+            key={box.id + Math.random()}
             href={{
               pathname: `/feed/${box.id}`
             }}
             aria-label={`View details of ${box.title}`}
-            className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 hover:shadow-xl transition cursor-pointer border-t-4"
+            className="bg-gray-c-800 shadow-lg rounded-lg p-6 hover:shadow-xl transition cursor-pointer border-t-4"
             style={{
               borderTopColor: box.color,
             }}
           >
             <div className="flex flex-col items-center">
-              {/* Render the icon dynamically based on the icon string */}
-              <div className="text-4xl" style={{ color: box.color }}>
-                {iconMap[box.icon] || <FaHome />} {/* Fallback to FaHome if icon not found */}
+              <div className="text-4xl">
+                {iconMap[box.icon] || <FaHome />}
               </div>
-              <h2 className="text-2xl font-semibold mt-4 text-gray-900 dark:text-white">{box.title}</h2>
-              <p className="text-gray-700 dark:text-gray-300 mt-2 text-center">{box.description}</p>
+              <h2 className="text-2xl font-semibold mt-4">{box.title}</h2>
+              <p className="text-gray-300 mt-2 text-center">{box.description}</p>
             </div>
           </Link>
         ))}
       </div>
-
-      {/* Footer */}
-      <footer className="mt-12 text-center text-gray-600 dark:text-gray-400">
+      <footer className="mt-12 text-center text-gray-400">
         <div className="text-sm">
           <Link href="policy/terms" className="hover:underline underline">
             Terms of Use
@@ -112,7 +106,12 @@ export default function Home() {
             Sign In
           </Link>
         </div>
-        <p>&copy; {new Date().getFullYear()}  <Link href="/"  className="hover:underline"> mangopuff.com </Link></p>
+        <p className="">
+          &copy; {new Date().getFullYear()}{" "}
+          <Link href="/" className="hover:underline">
+            mangopuff.com
+          </Link>
+        </p>
       </footer>
     </div>
   );

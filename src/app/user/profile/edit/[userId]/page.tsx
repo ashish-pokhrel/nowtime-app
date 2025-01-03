@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { putFileData, fetchData } from "../../../../../utils/axios";
 import Logo from "../../../../component/logo";
-import { EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage } from "../../../../../constant/constants";
+import BackButton from "../../../../component/backButton";
+import Layout from "../../../../component/navbar";
 
 type requestData = {
   firstName: string;
@@ -152,13 +153,15 @@ export default function Edit({ params }:  { params: Params}) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
+    <Layout backHref="/feed/All">
+      <BackButton />
+    <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
       <div className="absolute top-4 left-4">
         <Logo />
       </div>
-      <div className="w-full max-w-4xl bg-gray-800 rounded-lg shadow-2xl p-4 sm:p-8">
+      <div className="w-full max-w-4xl bg-gray-c-800 rounded-lg shadow-2xl p-4 sm:p-8">
         <h1 className="text-2xl sm:text-3xl font-semibold text-center text-indigo-400 mb-6 sm:mb-8">
-          Edit Your Profile
+          Update Profile
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Name Fields */}
@@ -298,5 +301,6 @@ export default function Edit({ params }:  { params: Params}) {
         </form>
       </div>
     </div>
+    </Layout>
   );
 }
