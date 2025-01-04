@@ -37,7 +37,7 @@ const handleError = (error: any) => {
   if (axios.isAxiosError(error)) {
     if(error.status == 400)
     {
-      return error.response?.data;
+      return error.response;
     }
     const message = error.response?.data?.message || "Something went wrong";
     throw new Error(message);
@@ -102,7 +102,7 @@ export const postData = async (endpoint: string, data: any) => {
       return response;
     }
   } catch (error){
-    handleError(error);
+    return handleError(error);
   }
 };
 

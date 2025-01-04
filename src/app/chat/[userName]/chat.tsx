@@ -11,6 +11,7 @@ interface ChatUser {
   id: string;
   fullName: string;
   profileImage: string;
+  hasReaded: boolean;
 }
 
 interface ChatMessage {
@@ -116,6 +117,11 @@ export default function ChatPage({ params }: { params: Params}) {
               },
             ]);
           }
+          setChatUsers((prevUsers) =>
+          prevUsers.map((u) =>
+            u.id === message.fromUserId ? { ...u, hasReaded: false } : u
+          )
+        );
         });
       } catch (error) {
       }
@@ -130,7 +136,7 @@ export default function ChatPage({ params }: { params: Params}) {
         connection.stop();
       }
     };
-  }, [isSignedIn, selectedUser]); // Include selectedUser in dependency array to ensure messages are filtered properly
+  }, [isSignedIn, selectedUser]); 
   
 
   const fetchUserList = async (reset: boolean = false, skip: number = 0) => {
@@ -182,9 +188,20 @@ export default function ChatPage({ params }: { params: Params}) {
   };
 
   const handleUserSelect = (user: ChatUser) => {
+    // Update selected user state
     setSelectedUser(user);
+  
+    // Fetch chat messages for the selected user
     fetchChatMessages(user.id);
+  
+    // Mark the selected user as read by updating the 'hasReaded' property
+    setChatUsers((prevUsers) =>
+      prevUsers.map((u) =>
+        u.id === user.id ? { ...u, hasReaded: true } : u
+      )
+    );
   };
+  
 
   const handleSubmit = async () => {
     if (!formData.content.trim()) {
@@ -255,6 +272,9 @@ export default function ChatPage({ params }: { params: Params}) {
                 <div className="text-left">
                   <p className="text-lg font-semibold">{user.fullName}</p>
                 </div>
+                {selectedUser?.id != user.id && !user.hasReaded && (
+            <div className="w-2.5 h-2.5 bg-blue-600 rounded-full ml-2"></div> 
+          )}
               </button>
             ))}
 
