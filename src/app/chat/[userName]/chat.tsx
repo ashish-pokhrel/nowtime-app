@@ -224,7 +224,7 @@ export default function ChatPage({ params }: { params: Params}) {
   return (
     <Layout backHref={`/feed/All`}>
                   <BackButton />
-      <div className="min-h-screen bg-black text-white flex mt-2">
+                  <div className="min-h-screen bg-black text-white flex flex-col lg:flex-row mt-2">
         {/* Chat Users List */}
         <div className="w-full md:w-1/4 lg:w-1/4 bg-gray-c-800 p-4">
           <h2 className="text-xl font-bold mb-4">Recent Chats</h2>

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import {IP_LOCATION_URL, userLocationLocalStorage, displayLocationLocalStorage} from "../../constant/constants";
 import { fetchData} from "../../utils/axios";
 
-const fetchGroups = async (locationString : string) => {
+const setLocationToDb = async (locationString : string) => {
   try {
     await fetchData(`/location/setlocation?locationString=${locationString}`);
   } catch {
@@ -23,7 +23,7 @@ const CurrentLocation = () => {
             const stringfiedData = JSON.stringify(data);
             localStorage.setItem(userLocationLocalStorage, stringfiedData);
             localStorage.setItem(displayLocationLocalStorage, displayLocation);
-            fetchGroups(stringfiedData);
+            setLocationToDb(stringfiedData);
           }
       } catch {
       }

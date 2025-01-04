@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
-  FaArrowLeft,
   FaUserCircle,
   FaMapMarkerAlt,
   FaCommentDots,
@@ -29,6 +28,7 @@ type Location = {
   region: string;
   country: string;
   postalCode: string;
+  cityRegion: string;
 };
 
 const Layout = ({ children, backHref = "/" }: LayoutProps) => {
@@ -67,11 +67,14 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   useEffect(() => {
     const fetchLocation = async () => {
       try {
-        const skip = page * take;
-        const postData = await fetchData(
-          `/location?searchTerm=${debouncedSearchTerm}&skip=${skip}&top=${take}`
-        );
-        setAvailableAddresses(postData?.data.locations || []);
+        if(!availableAddresses || (debouncedSearchTerm || debouncedSearchTerm != ""))
+        {
+          const skip = page * take;
+          const postData = await fetchData(
+            `/location?searchTerm=${debouncedSearchTerm}&skip=${skip}&top=${take}`
+          );
+          setAvailableAddresses(postData?.data.locations || []);
+        }
       } catch {
         // Handle error (if necessary)
       }
@@ -113,7 +116,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   };
 
   const handleAddressSelect = (address: Location) => {
-    const displayLocation = `${address.city}, ${address.region}`;
+    const displayLocation = `${address.cityRegion}`;
     setSelectedAddress(displayLocation);
     setIsAddressDropdownOpen(false);
     localStorage.setItem(displayLocationLocalStorage, displayLocation);
@@ -186,7 +189,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                         key={address.id + Math.random()}
                         className="block w-full text-left px-4 py-2 text-xxs md:text-xs md:text-sm text-white hover:bg-gray-600 cursor-pointer"
                         onClick={() => handleAddressSelect(address)}>
-                        {address.city}, {address.region}
+                        {address.cityRegion}
                       </button>
                     ))
                   ) : (
@@ -211,7 +214,7 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                     <FaUserCircle className="text-2xl" />
                   </button>
                   {unreadMessagesCount > 0 && (
-                  <span className="absolute top-0 right-0 rounded-full bg-blue-500 text-xs text-white px-1 py-0.5 leading-tight">
+                  <span className="absolute top-0 right-0 rounded-full bg-pink-500 text-xs text-white px-1 py-0.5 leading-tight">
                     {unreadMessagesCount}
                   </span>
                 )}

@@ -53,7 +53,7 @@ export default function TermsOfUse() {
                         marginBottom: '10px',
                         color: '#fff'
                     }}>2. Eligibility</h2>
-                    <p style={{ marginBottom: '20px' }}>You must be at least [13/18] years old to use the Platform. By using the Platform, you represent and warrant that you are eligible to use the service and have the legal capacity to agree to these Terms.</p>
+                    <p style={{ marginBottom: '20px' }}>You must be at least 18 years old to use the Platform. By using the Platform, you represent and warrant that you are eligible to use the service and have the legal capacity to agree to these Terms.</p>
 
                     <h2 style={{
                         marginBottom: '10px',
@@ -76,7 +76,7 @@ export default function TermsOfUse() {
                         marginBottom: '10px',
                         color: '#fff'
                     }}>4. Content Ownership and License</h2>
-                    <p style={{ marginBottom: '20px' }}>You retain ownership of the content you post on the Platform, including text, images, videos, and other materials (the "User Content"). However, by posting User Content, you grant [Your Web Application Name] a non-exclusive, worldwide, royalty-free, sublicensable, and transferable license to use, display, distribute, modify, and create derivative works of your User Content in connection with the operation of the Platform.</p>
+                    <p style={{ marginBottom: '20px' }}>You retain ownership of the content you post on the Platform, including text, images, videos, and other materials (the "User Content"). However, by posting User Content, you grant mangopuff.com a non-exclusive, worldwide, royalty-free, sublicensable, and transferable license to use, display, distribute, modify, and create derivative works of your User Content in connection with the operation of the Platform.</p>
                     <p style={{ marginBottom: '20px' }}>You are solely responsible for ensuring that you have the necessary rights to share your User Content and that it does not infringe on the intellectual property rights of any third party.</p>
 
                     <h2 style={{
@@ -104,7 +104,7 @@ export default function TermsOfUse() {
                         marginBottom: '10px',
                         color: '#fff'
                     }}>7. Privacy and Data Collection</h2>
-                    <p style={{ marginBottom: '20px' }}>Your privacy is important to us. Please review our <a href="/privacy-policy" style={{ color: '#d3d3d3' }}>Privacy Policy</a> for information about how we collect, use, and protect your personal data.</p>
+                    <p style={{ marginBottom: '20px' }}>Your privacy is important to us. Please review our <a href="/policy/privacypolicy" style={{ color: '#d3d3d3' }}>Privacy Policy</a> for information about how we collect, use, and protect your personal data.</p>
 
                     <h2 style={{
                         marginBottom: '10px',
@@ -122,13 +122,13 @@ export default function TermsOfUse() {
                         marginBottom: '10px',
                         color: '#fff'
                     }}>10. Limitation of Liability</h2>
-                    <p style={{ marginBottom: '20px' }}>To the fullest extent permitted by law, [Your Web Application Name] is not liable for any indirect, incidental, special, consequential, or punitive damages, or for any loss of profits or data arising from your use of the Platform or any content provided on the Platform, even if we have been advised of the possibility of such damages.</p>
+                    <p style={{ marginBottom: '20px' }}>To the fullest extent permitted by law, mangopuff.com is not liable for any indirect, incidental, special, consequential, or punitive damages, or for any loss of profits or data arising from your use of the Platform or any content provided on the Platform, even if we have been advised of the possibility of such damages.</p>
 
                     <h2 style={{
                         marginBottom: '10px',
                         color: '#fff'
                     }}>11. Indemnification</h2>
-                    <p style={{ marginBottom: '20px' }}>You agree to indemnify, defend, and hold harmless [Your Web Application Name], its affiliates, and their respective officers, directors, employees, agents, and representatives from and against any claims, liabilities, damages, losses, costs, or expenses (including attorneys' fees) arising from your use of the Platform or your violation of these Terms.</p>
+                    <p style={{ marginBottom: '20px' }}>You agree to indemnify, defend, and hold harmless mangopuff.com, its affiliates, and their respective officers, directors, employees, agents, and representatives from and against any claims, liabilities, damages, losses, costs, or expenses (including attorneys' fees) arising from your use of the Platform or your violation of these Terms.</p>
 
                     <h2 style={{
                         marginBottom: '10px',

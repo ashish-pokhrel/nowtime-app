@@ -66,7 +66,7 @@ export default function UserRegister() {
   };
 
   const validatePassword = (password: string) => {
-    const criteria = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const criteria = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&_.])[A-Za-z\d@$!%*?&_.]{8,}$/;
     if (!criteria.test(password)) {
       setErrors((prev) => ({
         ...prev,

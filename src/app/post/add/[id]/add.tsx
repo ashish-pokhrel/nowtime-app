@@ -21,6 +21,7 @@ type Location = {
   region: string;
   country: string;
   postalCode: string;
+  cityRegion: string;
 };
 
 const FileUpload = ({
@@ -110,7 +111,7 @@ export default function AddPostPage({ params }: { params: Params}) {
       }
     };
 
-    fetchLocation();
+    // fetchLocation();
   }, [debouncedSearchTerm, page]);
 
   useEffect(() => {
@@ -165,7 +166,7 @@ export default function AddPostPage({ params }: { params: Params}) {
   };
 
   const handleLocationSelect = (location: Location) => {
-    setDebouncedSearchTerm(`${location.city}, ${location.region}`);
+    setDebouncedSearchTerm(`${location.cityRegion}`);
   };
 
   return (
@@ -235,7 +236,7 @@ export default function AddPostPage({ params }: { params: Params}) {
                   className="p-4 cursor-pointer hover:bg-gray-600"
                   onClick={() => handleLocationSelect(location)}
                 >
-                  {location.city}, {location.region}
+                  {location.cityRegion}
                 </li>
               ))}
             </ul>
