@@ -111,7 +111,7 @@ export default function AddPostPage({ params }: { params: Params}) {
       }
     };
 
-    // fetchLocation();
+    fetchLocation();
   }, [debouncedSearchTerm, page]);
 
   useEffect(() => {
