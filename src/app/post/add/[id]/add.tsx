@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchData, postFileData } from "../../../../utils/axios";
@@ -65,21 +64,17 @@ export default function AddPostPage({ params }: { params: Params}) {
   const [images, setImages] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  const [filteredLocations, setFilteredLocations] = useState<Location[]>([]);
-  const [page] = useState(0);
-  const take = 10;
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [locations, setLocations] = useState<Location[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     const getParams = async () => {
       const parsedParams = (await params)
       setSelectedBox(parsedParams.id);
-      setResolvedParams((parsedParams));
     }
     getParams();
-    const fetchGroups = async () => {
+    const fetchBoxes = async () => {
       try {
         const response = await fetchData("/group/GetAllDropDown");
         setBoxes(response?.data);
@@ -88,46 +83,39 @@ export default function AddPostPage({ params }: { params: Params}) {
       }
     };
 
-    fetchGroups();
-  }, []);
-
-  useEffect(() => {
+    fetchBoxes();
     const storedLocation = localStorage.getItem(displayLocationLocalStorage);
-    if (storedLocation) {
-      setDebouncedSearchTerm(storedLocation);
-    }
+    setSearchTerm(storedLocation ?? "");
+    setLocations([]);
   }, []);
 
-  useEffect(() => {
-    const fetchLocation = async () => {
+  const handleSearchChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    if (value) {
       try {
-        const skip = page * take;
-        const storedLocation = debouncedSearchTerm === "" ? localStorage.getItem(displayLocationLocalStorage) : debouncedSearchTerm;
-        const postData = await fetchData(
-          `/location?searchTerm=${storedLocation}&skip=${skip}&top=${take}`
-        );
-        setFilteredLocations(postData?.data.locations);
+        const response = await fetchData(`/location?searchTerm=${value}&skip=0&top=10`);
+        setLocations(response?.data.locations || []);
       } catch {
+        setLocations([]);
       }
-    };
+    } else {
+      setLocations([]);
+    }
+  };
 
-    // fetchLocation();
-  }, [debouncedSearchTerm, page]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setDebouncedSearchTerm(debouncedSearchTerm);
-    }, 500);
-
-    return () => clearTimeout(timeout);
-  }, [debouncedSearchTerm]);
+  const handleLocationSelect = (location: Location) => {
+    setSearchTerm(location.cityRegion);
+    setLocations([]); // Hide dropdown after selection
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError(null);
 
-    if (selectedBox === "" || !description) {
+    if (!selectedBox || !description || !searchTerm) {
       setError("Please fill out all fields.");
       setLoading(false);
       return;
@@ -135,42 +123,30 @@ export default function AddPostPage({ params }: { params: Params}) {
 
     try {
       const formData = new FormData();
-      const selectedGroupId =
-        selectedBox.toString().toLowerCase() === "other" ? "All" : selectedBox.toString();
+      selectedBox.toString().toLowerCase() === "other" ? "All" : selectedBox.toString();
       const userLocation = localStorage.getItem(userLocationLocalStorage);
       formData.append("description", description);
-      formData.append("groupId", selectedGroupId);
+      formData.append("groupId", selectedBox);
       formData.append("locationString", userLocation ?? "");
-      formData.append("postLocation", debouncedSearchTerm);
+      formData.append("postLocation", searchTerm);
       images.forEach((file) => formData.append("images", file));
 
-      var response = await postFileData("/post", formData);
-      if(response.status == 401 || response.Status == 401)
-      {
+      const response = await postFileData("/post", formData);
+      if (response.status === 401) {
         sessionStorage.clear();
         router.push("/user/signIn");
+      } else if (response.status === 200) {
+        router.push(`/feed/${selectedBox}`);
       }
-      else if(response.status == 200 || response.Status == 200)
-      {
-        router.push(`/feed/${selectedGroupId}`);
-      }
-    } catch (err) {
+    } catch {
       setError("Failed to add post. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDebouncedSearchTerm(event.target.value);
-  };
-
-  const handleLocationSelect = (location: Location) => {
-    setDebouncedSearchTerm(`${location.cityRegion}`);
-  };
-
   return (
-    <Layout backHref={`/feed/${resolvedParams?.id}`}>
+    <Layout>
       <BackButton />
       <div className="text-center mb-12">
         <h1 className="text-3xl md:text-4xl font-semibold">Create Post</h1>
@@ -207,14 +183,14 @@ export default function AddPostPage({ params }: { params: Params}) {
           >
             <option value="">Select a box</option>
             {boxes.map((box) => (
-              <option key={box.id + Math.random()} value={box.id}>
+              <option key={box.id} value={box.id}>
                 {box.title}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Post Area (Autocomplete) */}
+        {/* Location Search */}
         <div>
           <label htmlFor="postArea" className="block text-gray-300 mb-2">
             Location
@@ -224,15 +200,14 @@ export default function AddPostPage({ params }: { params: Params}) {
             type="text"
             className="w-full p-4 rounded-lg bg-gray-800 text-white"
             placeholder="Search location..."
+            value={searchTerm}
             onChange={handleSearchChange}
-            value={debouncedSearchTerm} // This binds the value to the input field
           />
-
-          {debouncedSearchTerm && filteredLocations.length > 0 && (
+          {locations.length > 0 && (
             <ul className="mt-2 bg-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-              {filteredLocations.map((location) => (
+              {locations.map((location) => (
                 <li
-                  key={location.id + Math.random()}
+                  key={location.id}
                   className="p-4 cursor-pointer hover:bg-gray-600"
                   onClick={() => handleLocationSelect(location)}
                 >
@@ -256,7 +231,7 @@ export default function AddPostPage({ params }: { params: Params}) {
               className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500"
               disabled={loading}
             >
-              {loading ? "Submitting..." : "Add Post"}
+              Add Post
             </button>
           )}
           {error && <p className="text-red-500 mt-2">{error}</p>}
