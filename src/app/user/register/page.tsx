@@ -129,15 +129,15 @@ export default function UserRegister() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
-      <div className="absolute top-4 left-4">
-        <Logo />
-      </div>
-      <div className="w-full max-w-4xl bg-gray-c-800 rounded-lg shadow-2xl p-4 sm:p-8">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-center text-indigo-400 mb-6 sm:mb-8">
-          Create Your Account
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+<div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
+  <div className="absolute top-4 left-4">
+    <Logo />
+  </div>
+  <div className="w-full max-w-4xl bg-gray-c-800 rounded-lg shadow-2xl p-4 sm:p-8 mt-16"> {/* Added mt-16 here */}
+    <h1 className="text-2xl sm:text-3xl font-semibold text-center text-indigo-400 mb-6 sm:mb-8">
+      Create Your Account
+    </h1>
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Name Fields in a Row */}
           <div className="flex flex-wrap -mx-2">
             <div className="w-full sm:w-1/3 px-2 mb-4">
