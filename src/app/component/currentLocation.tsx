@@ -22,7 +22,7 @@ const CurrentLocation = () => {
             const displayLocation = data.city + ", " + data.region;
             const stringfiedData = JSON.stringify(data);
             localStorage.setItem(userLocationLocalStorage, stringfiedData);
-            localStorage.setItem(displayLocationLocalStorage, displayLocation);
+            localStorage.setItem(displayLocationLocalStorage, "All");
             setLocationToDb(stringfiedData);
           }
       } catch {
