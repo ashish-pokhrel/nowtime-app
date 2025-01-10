@@ -123,10 +123,10 @@ export default function AddPostPage({ params }: { params: Params}) {
 
     try {
       const formData = new FormData();
-      selectedBox.toString().toLowerCase() === "other" ? "All" : selectedBox.toString();
+      var selBox = selectedBox.toString().toLowerCase() === "other" ? "All" : selectedBox.toString();
       const userLocation = localStorage.getItem(userLocationLocalStorage);
       formData.append("description", description);
-      formData.append("groupId", selectedBox);
+      formData.append("groupId", selBox);
       formData.append("locationString", userLocation ?? "");
       formData.append("postLocation", searchTerm);
       images.forEach((file) => formData.append("images", file));

@@ -1,10 +1,10 @@
-"use client";
-import { useState, useEffect, useCallback } from "react";
+"use client";import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { fetchData } from "../../../utils/axios"; 
+import { fetchData } from "../../../utils/axios";
 import PostCard from "../../component/postCard";
 import Layout from "../../component/navbar";
 import { displayLocationLocalStorage } from "../../../constant/constants";
+import LocationSelector from "../../component/locationSelector";
 
 type Post = {
   id: string;
@@ -48,6 +48,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
   const [postLocat, setPostLocation] = useState<string>("");
   const [box, setBox] = useState<Box>();
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
 
   // Debounce search term
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
           const data = await fetchData(`/group/${paramsData.id}`);
           setBox(data?.data);
           setLoading(false);
-        } catch{
+        } catch {
           setLoading(false);
         }
       };
@@ -78,6 +79,13 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     };
     fetchParams();
   }, [params]);
+
+  useEffect(() => {
+    const storedLocation = localStorage.getItem(displayLocationLocalStorage);
+    if (storedLocation) {
+      setSelectedAddress(storedLocation);
+    }
+  }, []);
 
   // Fetch post details
   const fetchDetails = useCallback(async () => {
@@ -135,9 +143,23 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     setSearchTerm(value);
     if (value.length > 2 || value.length === 0) {
       setHasMore(true);
-      setPage(0); 
+      setPage(0);
       setPostList([]);
     }
+  };
+
+  const handleAddressSelect = (address: string) => {
+    setSelectedAddress(address);
+  };
+
+  // Reset location function
+  const resetLocation = () => {
+    localStorage.removeItem(displayLocationLocalStorage);
+    setSelectedAddress("All");
+    setPostLocation("All");
+    setHasMore(true);
+    setPage(0);
+    setPostList([]);
   };
 
   if (loading) {
@@ -155,60 +177,72 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       </div>
     );
   }
+
   return (
     <Layout>
-      <div className="w-full"> {/* Use full width */}
+      <div className="w-full">
         {/* Box Title & Description */}
         <div className="text-center mb-12">
           <h1 className="text-2xl font-semibold text-white">
             {box?.title}
           </h1>
         </div>
-  
-        {/* Add New Post Button */}
-        <div className="text-center my-8">
-          <Link
-            href={`/post/add/${resolvedParams?.id}`}
-            className="group inline-block relative text-blue-600 text-lg font-semibold py-3 px-6 rounded-lg border-2 border-blue-600 overflow-hidden"
-          >
-            <span className="absolute inset-0 bg-blue-900 transform group-hover:scale-x-100 group-hover:scale-y-100 transition-all duration-300 scale-x-0 scale-y-0 origin-top-left z-0"></span>
-            <span className="relative z-10 group-hover:text-white group-hover:font-bold text-sm">
-              What's on your mind? <span className="text-xs">Add Here</span>
-            </span>
-          </Link>
-        </div>
-  
-        {/* Search and Location */}
-        <section className="my-8 px-4 w-full"> {/* Remove max width */}
-          {/* Flex Container for Centered Location and Search */}
-          <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-6">
-          
-            {/* Search Input */}
-            <div className="w-full md:w-96">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="bg-gray-800 text-white p-3 rounded-lg w-full border border-gray-600 focus:border-blue-500 focus:ring focus:ring-blue-300 transition duration-200"
-                placeholder="Search posts..."
-                aria-label="Search posts"
-              />
+
+        {/* Add New Post Button and Search */}
+        <div className="flex flex-col md:flex-row justify-center items-center my-8 space-y-6 md:space-y-0 md:space-x-8">
+          <div className="w-full md:w-1/2 bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
+            {/* Left side: Add New Post Button */}
+            <div className="w-full mb-6">
+              <Link
+                href={`/post/add/${resolvedParams?.id}`}
+                className="group inline-block relative text-blue-600 text-lg font-semibold py-3 px-6 rounded-lg border-2 border-blue-600 overflow-hidden w-full"
+              >
+                <span className="absolute inset-0 bg-blue-900 transform group-hover:scale-x-100 group-hover:scale-y-100 transition-all duration-300 scale-x-0 scale-y-0 origin-top-left z-0"></span>
+                <span className="relative z-10 group-hover:text-white group-hover:font-bold text-sm">
+                  What's on your mind? <span className="text-xs">Add Here</span>
+                </span>
+              </Link>
+            </div>
+            {/* Right side: Search and Location */}
+            <div className="flex flex-col md:flex-row items-center space-x-0 md:space-x-6 w-full">
+              {/* Location Selector */}
+              <div className="flex items-center space-x-2 mb-4 md:mb-0">
+              <span className="text-white font-semibold">Location:</span>
+                <div>
+                  <LocationSelector
+                    selectedAddress={selectedAddress}
+                    onAddressSelect={handleAddressSelect}
+                  />
+                </div>
+              </div>
+
+              {/* Search Input */}
+              <div className="w-full md:w-96">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="bg-gray-700 text-white p-3 rounded-lg w-full border border-gray-600 focus:border-blue-500 focus:ring focus:ring-blue-300 transition duration-200"
+                  placeholder="Search posts..."
+                  aria-label="Search posts"
+                />
+              </div>
             </div>
           </div>
-        </section>
-  
+        </div>
+
         {/* Post List */}
         <div className="space-y-8">
           {postList.map((post) => (
             <PostCard key={post.id + Math.random()} post={post} groupId={resolvedParams?.id || ""} />
           ))}
         </div>
-  
+
         {/* Scroll-to-load Indicator */}
         {loadingMore && (
           <div className="text-center text-white py-4">Loading more posts...</div>
         )}
-  
+
         {/* Error handling for no posts */}
         {!hasMore && !loadingMore && (
           <div className="text-center py-4">
@@ -229,5 +263,4 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
       </div>
     </Layout>
   );
-  
 }

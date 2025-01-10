@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   FaUserCircle,
-  FaMapMarkerAlt,
   FaCommentDots,
   FaSignOutAlt,
 } from "react-icons/fa";
@@ -16,6 +15,7 @@ import {
   displayLocationLocalStorage,
 } from "../../constant/constants";
 import { fetchData, postData } from "../../utils/axios";
+import LocationSelector from "../component/locationSelector";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -33,7 +33,6 @@ type Location = {
 
 const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [addressSearchTerm, setAddressSearchTerm] = useState("");
@@ -83,44 +82,12 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
     fetchLocation();
   }, [debouncedSearchTerm, page, take]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-      if (
-        addressDropdownRef.current &&
-        !addressDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsAddressDropdownOpen(false);
-      }
-    };
-
-    if (sessionStorage.getItem(accessTokenLocalStorage)) {
-      setIsSignedIn(true);
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   const getDeviceInfo = () => {
     return `${navigator.userAgent}, ${navigator.platform}`;
   };
 
-  const toggleAddressDropdown = () => {
-    setIsAddressDropdownOpen(!isAddressDropdownOpen);
-    if (!isAddressDropdownOpen) setAddressSearchTerm("");
-  };
-
-  const handleAddressSelect = (address: Location) => {
-    const displayLocation = `${address.cityRegion}`;
-    setSelectedAddress(displayLocation);
-    setIsAddressDropdownOpen(false);
-    localStorage.setItem(displayLocationLocalStorage, displayLocation);
-    window.location.reload();
+  const handleAddressSelect = (address: string) => {
+    setSelectedAddress(address);
   };
 
   const handleLogout = () => {
@@ -166,41 +133,10 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         </div>
 
         <div className="flex items-center space-x-6">
-          <div className="relative" ref={addressDropdownRef}>
-            <button
-              className="flex items-center justify-center text-xs md:text-xs hover:text-white focus:outline-none cursor-pointer"
-              onClick={toggleAddressDropdown}
-            >
-              <FaMapMarkerAlt className="mr-1" /> {selectedAddress || "Select Location"}
-            </button>
-            {isAddressDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-gray-c-800 rounded-lg shadow-lg overflow-hidden z-10">
-                <input
-                  type="text"
-                  placeholder="Search address..."
-                  className="w-full px-3 py-2 bg-gray-c-800 text-xs md:text-sm text-white rounded-t-lg focus:outline-none"
-                  value={addressSearchTerm}
-                  onChange={(e) => setAddressSearchTerm(e.target.value)}
-                  autoComplete="off"/>
-                <div className="max-h-48 overflow-y-auto">
-                  {availableAddresses.length > 0 ? (
-                    availableAddresses.map((address) => (
-                      <button
-                        key={address.id + Math.random()}
-                        className="block w-full text-left px-4 py-2 text-xxs md:text-xs md:text-sm text-white hover:bg-gray-600 cursor-pointer"
-                        onClick={() => handleAddressSelect(address)}>
-                        {address.cityRegion}
-                      </button>
-                    ))
-                  ) : (
-                    <div className="px-4 py-2 text-gray-c-800 text-xs md:text-sm">
-                      No addresses found.
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+        <LocationSelector
+                    selectedAddress={selectedAddress}
+                    onAddressSelect={handleAddressSelect}
+                  />
 
           {isSignedIn ? (
             <>
