@@ -107,10 +107,13 @@ const LocationSelector = ({
 
       {/* Reset Location Link */}
       {selectedAddress && selectedAddress !== 'All' && (
-        <a onClick={resetLocation}
-          className="text-xs font-semibold text-blue-500 cursor-pointer mt-2 block hover:text-blue-700 transition-all">
-          Reset Location
-        </a>
+       <a
+       onClick={resetLocation}
+       className="ml-5 text-[8px] mt-1 font-medium text-blue-500 cursor-pointer block hover:text-blue-700 transition-all"
+     >
+       Reset Location
+     </a>
+     
       )}
 
       {isAddressDropdownOpen && (
