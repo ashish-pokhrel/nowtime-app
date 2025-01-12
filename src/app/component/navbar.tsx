@@ -43,13 +43,15 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const addressDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
     const storedLocation = localStorage.getItem(displayLocationLocalStorage);
     if (storedLocation) {
       setSelectedAddress(storedLocation);
+    }
+    if (sessionStorage.getItem(accessTokenLocalStorage)) {
+      setIsSignedIn(true);
     }
   }, []);
 
