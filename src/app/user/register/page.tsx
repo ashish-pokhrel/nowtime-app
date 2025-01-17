@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postData, postFileData } from "../../../utils/axios";
 import Logo from "../../../app/component/logo";
-import { EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage } from "../../../constant/constants";
+import { EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage, userLocationLocalStorage } from "../../../constant/constants";
 
 type requestData = {
   firstName: string;
@@ -45,7 +45,7 @@ export default function UserRegister() {
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [displayVerificationCode, setDisplayVerificationCode] = useState(true);
+  const [displayVerificationCode, setDisplayVerificationCode] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, files } = e.target as HTMLInputElement;
@@ -77,6 +77,7 @@ export default function UserRegister() {
   const handleVerificationChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target as HTMLInputElement;
     setVerificationFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, validation: "" }));
   };
 
   const validatePassword = (password: string) => {
@@ -141,10 +142,12 @@ export default function UserRegister() {
     e.preventDefault();
 
     try {
+      const userLocation = localStorage.getItem(userLocationLocalStorage);
       const data = new FormData();
       data.append("email", formData?.email || "");
       data.append("code", verificationFormData?.code || "");
       data.append("deviceInfo", getDeviceInfo());
+      data.append("locationString", userLocation ?? "");
 
       const response = await postData("/user/verify-code", data);
       if (response?.status == 200) {
@@ -322,7 +325,7 @@ export default function UserRegister() {
           <form onSubmit={handleVerificationSubmit} className="space-y-4 sm:space-y-6">
 
             {/* Name Fields in a Row */}
-            <div className="flex flex-wrap -mx-2">
+            <div className="flex flex-wrap -mx-2 center">
               <div className="w-full sm:w-1/3 px-2 mb-4">
                 <label className="block text-gray-300 font-medium mb-2">
                   Email 

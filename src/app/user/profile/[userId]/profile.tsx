@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FaEnvelope, FaPhone } from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaGlobe } from "react-icons/fa";
 import Layout from "../../../component/navbar";
 import { fetchData } from "../../../../utils/axios";
 import Link from "next/link";
@@ -11,6 +11,7 @@ type User = {
   profileImage: string;
   email: string;
   phoneNumber: string;
+  country: string;
 };
 
 type Params = Promise<{ userId: string }>;
@@ -41,7 +42,7 @@ export default function Profile({ params }: { params: Params }) {
 
   return (
     <Layout backHref="/feed/All">
-            <BackButton />
+      <BackButton />
       {loading ? (
         <div className="min-h-screen flex items-center justify-center bg-black text-white">
           <span>Loading...</span>
@@ -94,11 +95,17 @@ export default function Profile({ params }: { params: Params }) {
                 {/* Edit Profile Button for Logged In User */}
                 {isLoggedUser && (
                   <div className="text-center">
+                    <div className="flex items-center gap-4 text-gray-300 cursor-pointer">
+                      <FaGlobe className="text-xl" />
+                      <span className="text-lg">{userData.country ? userData.country : "N/A"}</span>
+                    </div>
+
                     <Link href={`/user/profile/edit/${loggedUserId}`}>
                       <button className="mt-4 px-6 py-2 text-lg bg-blue-600 hover:bg-blue-500 rounded-full transition-all cursor-pointer">
                         Edit Profile
                       </button>
                     </Link>
+
                   </div>
                 )}
               </div>
