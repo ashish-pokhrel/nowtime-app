@@ -15,7 +15,7 @@ export default function Logo() {
       <img
         src="/logo.png"
         alt="mangopuff.com"
-        className="h-10 sm:h-10 md:h-10 lg:h-10 xl:h-10 object-cover"
+        className="h-8 sm:h-8 md:h-8 lg:h-8 xl:h-8 object-cover"
       />
       <span className="ml-1 ">angopuff</span>
     </div>

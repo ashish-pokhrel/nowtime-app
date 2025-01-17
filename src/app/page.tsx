@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FaHome, FaComment, FaUsers, FaPlane, FaShoppingCart, FaBriefcase } from "react-icons/fa";
 import { fetchData } from "../utils/axios";
 import Logo from "../app/component/logo";
+import { accessTokenLocalStorage } from "../constant/constants";
 
 type Box = {
   id: string;
@@ -27,6 +28,7 @@ export default function Home() {
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   // Fetch groups from the API on component mount
   useEffect(() => {
@@ -42,6 +44,12 @@ export default function Home() {
     };
 
     fetchGroups();
+  }, []);
+
+  useEffect(() => {
+    if (sessionStorage.getItem(accessTokenLocalStorage)) {
+      setIsSignedIn(true);
+    }
   }, []);
 
   // Show skeleton loader while data is being fetched
@@ -101,10 +109,12 @@ export default function Home() {
           <Link href="policy/privacypolicy" className="hover:underline underline">
             Privacy Policy
           </Link>
-          {" | "}
-          <Link href="user/signIn" className="hover:underline underline">
-            Sign In
-          </Link>
+          {( !isSignedIn && <span>
+            {" | "}
+            <Link href="user/signIn" className="hover:underline underline">
+              Sign In
+            </Link>
+          </span> )}
         </div>
         <p className="">
           &copy; {new Date().getFullYear()}{" "}
