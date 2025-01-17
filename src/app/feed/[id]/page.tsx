@@ -207,7 +207,7 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
             <div className="flex flex-col md:flex-row items-center space-x-0 md:space-x-6 w-full">
               {/* Location Selector */}
               <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <span className="text-white font-semibold">Location:</span>
+              {/* <span className="text-white font-semibold">Location:</span> */}
                 <div>
                   <LocationSelector
                     selectedAddress={selectedAddress}

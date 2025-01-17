@@ -9,13 +9,15 @@ export default function Logo() {
   };
 
   return (
-    <div className="cursor-pointer text-xl typing-effect" onClick={handleLogoClick}>
-      {/* <img
-        src="/logo.png" 
+    <div
+      className="cursor-pointer text-xl typing-effect flex items-center"
+      onClick={handleLogoClick}>
+      <img
+        src="/logo.png"
         alt="mangopuff.com"
-        className="h-10 sm:h-10 md:h-10 lg:h-10 xl:h-16 object-cover"
-      /> */}
-      <span className="object-cover" style={{ fontFamily: 'cursive' }}>Mangopuff</span>
+        className="h-10 sm:h-10 md:h-10 lg:h-10 xl:h-10 object-cover"
+      />
+      <span className="ml-1 ">angopuff</span>
     </div>
   );
 }
