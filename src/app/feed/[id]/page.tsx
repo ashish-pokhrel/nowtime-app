@@ -3,7 +3,7 @@ import Link from "next/link";
 import { fetchData } from "../../../utils/axios";
 import PostCard from "../../component/postCard";
 import Layout from "../../component/navbar";
-import { displayLocationLocalStorage } from "../../../constant/constants";
+import { displayLocationLocalStorage, userCountryLocalStorage } from "../../../constant/constants";
 import LocationSelector from "../../component/locationSelector";
 
 type Post = {
@@ -96,9 +96,10 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
 
     try {
       const postLocation = localStorage.getItem(displayLocationLocalStorage);
+      const country = localStorage.getItem(userCountryLocalStorage);
       setPostLocation(postLocation ?? "");
       const postData = await fetchData(
-        `/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}&postLocation=${postLocation}`
+        `/post?groupId=${id}&skip=${page}&top=${take}&searchTerm=${debouncedSearchTerm}&postLocation=${postLocation}&region=${country}`
       );
       if (!postData || !postData.data.posts.length) {
         setHasMore(false);

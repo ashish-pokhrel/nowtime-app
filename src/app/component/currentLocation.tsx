@@ -1,11 +1,13 @@
 "use client";
 import { useEffect } from "react";
-import {IP_LOCATION_URL, userLocationLocalStorage, displayLocationLocalStorage} from "../../constant/constants";
+import {IP_LOCATION_URL, userLocationLocalStorage, displayLocationLocalStorage, userCountryLocalStorage} from "../../constant/constants";
 import { fetchData} from "../../utils/axios";
 
 const setLocationToDb = async (locationString : string) => {
   try {
-    await fetchData(`/location/setlocation?locationString=${locationString}`);
+    const response = await fetchData(`/location/setlocation?locationString=${locationString}`);
+    const country = response?.data.country;
+    localStorage.setItem(userCountryLocalStorage, country);
   } catch {
   }
 };
@@ -19,7 +21,6 @@ const CurrentLocation = () => {
         {
             const response = await fetch(IP_LOCATION_URL);
             const data = await response.json();
-            const displayLocation = data.city + ", " + data.region;
             const stringfiedData = JSON.stringify(data);
             localStorage.setItem(userLocationLocalStorage, stringfiedData);
             localStorage.setItem(displayLocationLocalStorage, "All");
