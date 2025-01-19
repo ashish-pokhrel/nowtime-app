@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaHome, FaComment, FaUsers, FaPlane, FaShoppingCart, FaBriefcase } from "react-icons/fa";
+import { FaHome, FaComment, FaUsers, FaPlane, FaShoppingCart, FaBriefcase, FaHospital, FaUserFriends, FaCar } from "react-icons/fa";
 import { fetchData } from "../utils/axios";
 import Logo from "../app/component/logo";
 import { accessTokenLocalStorage } from "../constant/constants";
@@ -22,6 +22,9 @@ const iconMap: { [key: string]: React.ReactNode } = {
   "fa-plane": <FaPlane />,
   "fa-shopping-cart": <FaShoppingCart />,
   "fa-briefcase": <FaBriefcase />,
+  "fa-health": <FaHospital/>,
+  "fa-immigration": <FaUserFriends/>,
+  "fa-ride": <FaCar/>
 };
 
 export default function Home() {

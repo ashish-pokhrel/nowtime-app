@@ -172,7 +172,7 @@ export default function AddPostPage({ params }: { params: Params}) {
         {/* Box Selection */}
         <div>
           <label htmlFor="box" className="block text-gray-300 mb-2">
-            Select Box
+            Category
           </label>
           <select
             id="box"
@@ -181,7 +181,7 @@ export default function AddPostPage({ params }: { params: Params}) {
             className="w-full p-4 rounded-lg bg-gray-800 text-white"
             required
           >
-            <option value="">Select a box</option>
+            <option value="">Select a category</option>
             {boxes.map((box) => (
               <option key={box.id} value={box.id}>
                 {box.title}
