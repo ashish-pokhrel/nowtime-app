@@ -41,6 +41,15 @@ const LocationSelector = ({
   }, [addressSearchTerm]);
 
   useEffect(() => {
+    const defaultAddress = localStorage.getItem(displayLocationLocalStorage);
+    if (defaultAddress == null || defaultAddress == "" || defaultAddress == undefined) {
+      onAddressSelect("All"); 
+      localStorage.setItem(displayLocationLocalStorage, "All");
+    }
+}, []);
+
+
+  useEffect(() => {
     const fetchLocation = async () => {
       try {
         if (!availableAddresses || debouncedSearchTerm) {
@@ -117,7 +126,7 @@ const LocationSelector = ({
       )}
 
       {isAddressDropdownOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-lg overflow-hidden z-10">
+        <div className="absolute mt-4 w-64 bg-gray-800 rounded-lg shadow-lg overflow-hidden z-10">
           <input
             type="text"
             placeholder="Search address..."
