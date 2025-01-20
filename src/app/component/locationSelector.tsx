@@ -41,6 +41,15 @@ const LocationSelector = ({
   }, [addressSearchTerm]);
 
   useEffect(() => {
+    const defaultAddress = localStorage.getItem(displayLocationLocalStorage);
+    if (defaultAddress == null || defaultAddress == "" || defaultAddress == undefined) {
+      onAddressSelect("All"); 
+      localStorage.setItem(displayLocationLocalStorage, "All");
+    }
+}, []);
+
+
+  useEffect(() => {
     const fetchLocation = async () => {
       try {
         if (!availableAddresses || debouncedSearchTerm) {

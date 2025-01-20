@@ -42,8 +42,7 @@ export default function PostCard({ post, groupId }: PostCardProps) {
   const handleLikeToggle = async () => {
     try {
       if (isLiked) {
-        var respone = await postData(`post/unlike/${post.id}`, { groupId });
-        debugger
+        await postData(`post/unlike/${post.id}`, { groupId });
         setLikes(likes - 1);
       } else {
         await postData(`post/like/${post.id}`, { groupId });

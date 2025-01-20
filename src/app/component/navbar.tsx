@@ -12,102 +12,63 @@ import {
   userGuidLocalStorage,
   profileImageLocalStorage,
   tokenExpiresInLocalStorage,
-  displayLocationLocalStorage,
 } from "../../constant/constants";
 import { fetchData, postData } from "../../utils/axios";
-import LocationSelector from "../component/locationSelector";
+import CountrySelector from "../component/countrySelector";
 
 interface LayoutProps {
   children: React.ReactNode;
   backHref?: string;
 }
 
-type Location = {
-  id: number;
-  city: string;
-  region: string;
-  country: string;
-  postalCode: string;
-  cityRegion: string;
+type Country = {
+  name: string;
+  code: string; // Alpha-2 code
 };
 
 const Layout = ({ children, backHref = "/" }: LayoutProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
-  const [addressSearchTerm, setAddressSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
-  const [availableAddresses, setAvailableAddresses] = useState<Location[]>([]);
-  const [take] = useState(10);
-  const [page] = useState(0);
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
-
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const storedLocation = localStorage.getItem(displayLocationLocalStorage);
-    if (storedLocation) {
-      setSelectedAddress(storedLocation);
-    }
     if (sessionStorage.getItem(accessTokenLocalStorage)) {
       setIsSignedIn(true);
     }
+    const storedCountry = localStorage.getItem("selectedCountry");
+    if (storedCountry) {
+      setSelectedCountry(JSON.parse(storedCountry));
+    }
+
   }, []);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (addressSearchTerm.length > 2) {
-        setDebouncedSearchTerm(addressSearchTerm);
-      }
-    }, 300);
-
-    return () => clearTimeout(handler);
-  }, [addressSearchTerm]);
-
-  useEffect(() => {
-    const fetchLocation = async () => {
-      try {
-        if(!availableAddresses || (debouncedSearchTerm || debouncedSearchTerm != ""))
-        {
-          const skip = page * take;
-          const postData = await fetchData(
-            `/location?searchTerm=${debouncedSearchTerm}&skip=${skip}&top=${take}`
-          );
-          setAvailableAddresses(postData?.data.locations || []);
-        }
-      } catch {
-        // Handle error (if necessary)
-      }
-    };
-
-    fetchLocation();
-  }, [debouncedSearchTerm, page, take]);
 
   const getDeviceInfo = () => {
     return `${navigator.userAgent}, ${navigator.platform}`;
   };
 
-  const handleAddressSelect = (address: string) => {
-    setSelectedAddress(address);
+  const handleCountrySelect = (country: Country) => {
+    setSelectedCountry(country);
+    localStorage.setItem("selectedCountry", JSON.stringify(country));
   };
 
   const handleLogout = () => {
-   const formData = 
+    const formData =
     {
-      userId:  "00000000-0000-0000-0000-000000000000", 
+      userId: "00000000-0000-0000-0000-000000000000",
       deviceInfo: getDeviceInfo()
     }
     const logout = async () => {
       const response = await postData("/User/signOut", formData);
-        if(response?.status == 200)
-        {
-          sessionStorage.removeItem(accessTokenLocalStorage);
-          sessionStorage.removeItem(userGuidLocalStorage);
-          sessionStorage.removeItem(profileImageLocalStorage);
-          sessionStorage.removeItem(tokenExpiresInLocalStorage);
-          router.push("/user/signIn");
-        }
+      if (response?.status == 200) {
+        sessionStorage.removeItem(accessTokenLocalStorage);
+        sessionStorage.removeItem(userGuidLocalStorage);
+        sessionStorage.removeItem(profileImageLocalStorage);
+        sessionStorage.removeItem(tokenExpiresInLocalStorage);
+        router.push("/user/signIn");
+      }
     }
     logout();
   };
@@ -118,7 +79,6 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         const response = await fetchData("/message/getunreadchats");
         setUnreadMessagesCount(response?.data.count);
       } catch {
-        // Handle error (if necessary)
       }
     };
 
@@ -135,11 +95,10 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         </div>
 
         <div className="flex items-center space-x-6">
-        <LocationSelector
-                    selectedAddress={selectedAddress}
-                    onAddressSelect={handleAddressSelect}
-                  />
-
+        <CountrySelector
+            selectedCountry={selectedCountry}
+            onCountrySelect={handleCountrySelect}
+          />
           {isSignedIn ? (
             <>
               {/* Profile Icon with Unread Messages Count */}
@@ -152,19 +111,19 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                     <FaUserCircle className="text-2xl" />
                   </button>
                   {unreadMessagesCount > 0 && (
-                  <span className="absolute top-0 right-0 rounded-full bg-pink-500 text-xs text-white px-1 py-0.5 leading-tight">
-                    {unreadMessagesCount}
-                  </span>
-                )}
+                    <span className="absolute top-0 right-0 rounded-full bg-pink-500 text-xs text-white px-1 py-0.5 leading-tight">
+                      {unreadMessagesCount}
+                    </span>
+                  )}
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-gray-c-800 rounded-lg shadow-lg overflow-hidden z-10">
-                      <Link 
+                      <Link
                         href={`/user/profile/00000000-0000-0000-0000-000000000000`}
-                      className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
-                         <div className="flex items-center space-x-2">
-                         <FaUserCircle /> 
-                         <span>View Profile</span>
-                         </div>
+                        className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
+                        <div className="flex items-center space-x-2">
+                          <FaUserCircle />
+                          <span>View Profile</span>
+                        </div>
                       </Link>
                       {/* Chat Icon inside Profile Dropdown */}
                       <Link href="/chat/' '" className="block px-4 py-2 text-white hover:bg-gray-600 cursor-pointer">
@@ -181,10 +140,10 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
                       <button
                         className="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 cursor-pointer"
                         onClick={handleLogout}>
-                         <div className="flex items-center space-x-2">
-                         <FaSignOutAlt /> 
-                         <span className="">Log Out</span>
-                         </div>
+                        <div className="flex items-center space-x-2">
+                          <FaSignOutAlt />
+                          <span className="">Log Out</span>
+                        </div>
                       </button>
                     </div>
                   )}

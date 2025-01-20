@@ -153,16 +153,6 @@ export default function DetailsPage({ params }: { params: Promise<{ id: string }
     setSelectedAddress(address);
   };
 
-  // Reset location function
-  const resetLocation = () => {
-    localStorage.removeItem(displayLocationLocalStorage);
-    setSelectedAddress("All");
-    setPostLocation("All");
-    setHasMore(true);
-    setPage(0);
-    setPostList([]);
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-black text-white">
