@@ -126,7 +126,7 @@ const LocationSelector = ({
       )}
 
       {isAddressDropdownOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-lg overflow-hidden z-10">
+        <div className="absolute mt-4 w-64 bg-gray-800 rounded-lg shadow-lg overflow-hidden z-10">
           <input
             type="text"
             placeholder="Search address..."
