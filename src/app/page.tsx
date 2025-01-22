@@ -15,7 +15,7 @@ import {
 } from "react-icons/fa";
 import { fetchData } from "../utils/axios";
 import Logo from "../app/component/logo";
-import { accessTokenLocalStorage } from "../constant/constants";
+import { accessTokenLocalStorage, CACHE_KEY } from "../constant/constants";
 
 type Box = {
   id: string;
@@ -25,7 +25,6 @@ type Box = {
   color: string;
 };
 
-// Map icon strings to React icon components
 const iconMap: { [key: string]: React.ReactNode } = {
   "fa-home": <FaHome />,
   "fa-comments": <FaComment />,
@@ -44,31 +43,37 @@ export default function Home() {
   const [error, setError] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
 
-  // Fetch groups from the API on component mount
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        setLoading(true); // Ensure loading state is set
-        const data = await fetchData("/group");
-        setBoxes(data?.data || []);
+        setLoading(true);
+        const cachedBoxes = localStorage.getItem(CACHE_KEY);
+        if (cachedBoxes) {
+          setBoxes(JSON.parse(cachedBoxes));
+          setLoading(false); 
+        }
+        else
+        {
+          const data = await fetchData("/group");
+          setBoxes(data?.data || []);
+          localStorage.setItem(CACHE_KEY, JSON.stringify(data?.data || []));
+        }
       } catch (err: any) {
         setError(err.message || "Failed to fetch groups");
       } finally {
-        setLoading(false); // End loading state
+        setLoading(false);
       }
     };
 
     fetchGroups();
   }, []);
 
-  // Check if the user is signed in
   useEffect(() => {
     if (sessionStorage.getItem(accessTokenLocalStorage)) {
       setIsSignedIn(true);
     }
   }, []);
 
-  // Show skeleton loader while data is being fetched
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -86,7 +91,6 @@ export default function Home() {
     );
   }
 
-  // Show error message if fetching fails
   if (error) {
     return <div className="text-center text-red-500 mt-4">{error}</div>;
   }
