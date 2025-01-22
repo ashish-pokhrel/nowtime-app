@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postData, postFileData } from "../../../utils/axios";
 import Logo from "../../../app/component/logo";
-import { EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage, userLocationLocalStorage } from "../../../constant/constants";
+import {accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage, userLocationLocalStorage } from "../../../constant/constants";
 
 type requestData = {
   firstName: string;
@@ -152,9 +152,6 @@ export default function UserRegister() {
       const response = await postData("/user/verify-code", data);
       if (response?.status == 200) {
         setDisplayVerificationCode(true);
-        const currentDateTime = new Date();
-        currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
-        sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
         const { jwtToken, refreshToken, profileImage } = response.data.user;
         sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
         sessionStorage.setItem(userGuidLocalStorage, refreshToken);

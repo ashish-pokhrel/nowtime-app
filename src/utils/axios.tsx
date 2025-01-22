@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API_URL } from '../constant/constants';
-import {EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage} from "../constant/constants";
+import {accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage} from "../constant/constants";
 
 
 // Set up the API client with base URL
@@ -31,7 +31,6 @@ const handleError = (error: any) => {
     sessionStorage.removeItem(accessTokenLocalStorage);
     sessionStorage.removeItem(userGuidLocalStorage);
     sessionStorage.removeItem(profileImageLocalStorage);
-    sessionStorage.removeItem(tokenExpiresInLocalStorage);
     window.location.href = "/user/signIn";
   }
   if (axios.isAxiosError(error)) {
@@ -65,9 +64,6 @@ export const refreshTokenAndRetry = async () => {
   const response = await apiClient.get(`/user/refreshToken?refreshToken=${refreshToken}`);
   if (response.status === 200) {
     sessionStorage.clear();
-    const currentDateTime = new Date();
-    currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
-    sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
     const { jwtToken, refreshToken, profileImage } = response.data.user;
     sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
     sessionStorage.setItem(userGuidLocalStorage, refreshToken);

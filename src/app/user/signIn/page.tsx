@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postData } from "../../../utils/axios";
 import Logo from "../../../app/component/logo";
-import { EXPIRE_MINUTES, accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage, GOOGLE_CLIENT_ID, userLocationLocalStorage } from "../../../constant/constants";
+import { accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, GOOGLE_CLIENT_ID, userLocationLocalStorage } from "../../../constant/constants";
 import Link from "next/link";
 import { GoogleLogin } from '@react-oauth/google';
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -55,9 +55,6 @@ export default function SignIn() {
     try {
       const response = await postData("/user/signin", updatedFormData);
       if (response?.status === 200) {
-        const currentDateTime = new Date();
-        currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
-        sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
         const { jwtToken, refreshToken, profileImage } = response.data.user;
         sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
         sessionStorage.setItem(userGuidLocalStorage, refreshToken);
@@ -82,9 +79,6 @@ export default function SignIn() {
     try {
       const res = await postData("/user/signin-google", { token: response.credential, deviceInfo: getDeviceInfo(), locationString: localStorage.getItem(userLocationLocalStorage)});
       if (res?.status === 200) {
-        const currentDateTime = new Date();
-        currentDateTime.setMinutes(currentDateTime.getMinutes() + EXPIRE_MINUTES);
-        sessionStorage.setItem(tokenExpiresInLocalStorage, currentDateTime.toISOString());
         const { jwtToken, refreshToken, profileImage } = res.data.user;
         sessionStorage.setItem(accessTokenLocalStorage, jwtToken);
         sessionStorage.setItem(userGuidLocalStorage, refreshToken);
