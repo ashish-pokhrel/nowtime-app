@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postData, postFileData } from "../../../utils/axios";
 import Logo from "../../../app/component/logo";
-import {accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, tokenExpiresInLocalStorage, userLocationLocalStorage } from "../../../constant/constants";
+import {accessTokenLocalStorage, userGuidLocalStorage, profileImageLocalStorage, userLocationLocalStorage } from "../../../constant/constants";
 
 type requestData = {
   firstName: string;

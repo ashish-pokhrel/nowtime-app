@@ -11,7 +11,6 @@ import {
   accessTokenLocalStorage,
   userGuidLocalStorage,
   profileImageLocalStorage,
-  tokenExpiresInLocalStorage,
 } from "../../constant/constants";
 import { fetchData, postData } from "../../utils/axios";
 import CountrySelector from "../component/countrySelector";
@@ -66,7 +65,6 @@ const Layout = ({ children, backHref = "/" }: LayoutProps) => {
         sessionStorage.removeItem(accessTokenLocalStorage);
         sessionStorage.removeItem(userGuidLocalStorage);
         sessionStorage.removeItem(profileImageLocalStorage);
-        sessionStorage.removeItem(tokenExpiresInLocalStorage);
         router.push("/user/signIn");
       }
     }
